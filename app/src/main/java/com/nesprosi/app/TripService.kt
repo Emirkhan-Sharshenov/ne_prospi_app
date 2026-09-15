@@ -36,6 +36,7 @@ import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.speech.tts.TextToSpeech
 import android.telephony.SmsManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -77,7 +78,20 @@ class TripService : Service(), LocationListener {
         /** Когда показан вопрос «Вы проснулись?» — время, после которого будильник зазвонит снова. */
         val checkDeadline: Long? = null,
         val simulated: Boolean = false,
-    )
+        /** Расстояние в начале поездки и расстояние, на котором разбудим — для полосы прогресса. */
+        val startDistance: Double? = null,
+        val wakeDistance: Double? = null,
+    ) {
+        /** Доля пройденного пути до будильника, 0…1. */
+        val progress: Float?
+            get() {
+                val start = startDistance ?: return null
+                val d = distance ?: return null
+                val wake = wakeDistance ?: 0.0
+                if (start <= wake) return 1f
+                return ((start - d) / (start - wake)).toFloat().coerceIn(0f, 1f)
+            }
+    }
 
     companion object {
         private const val ACTION_START = "com.nesprosi.app.START"
@@ -130,6 +144,12 @@ class TripService : Service(), LocationListener {
         /** Ответ «Да, я не сплю». */
         fun confirmAwake(ctx: Context) = send(ctx, ACTION_AWAKE)
 
+        /** Кнопка «Завершить» для уведомления и виджета. */
+        fun stopPendingIntent(ctx: Context): PendingIntent = PendingIntent.getService(
+            ctx, 1, Intent(ctx, TripService::class.java).setAction(ACTION_STOP),
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+        )
+
         fun backupFired(ctx: Context) =
             ContextCompat.startForegroundService(ctx, Intent(ctx, TripService::class.java).setAction(ACTION_BACKUP))
 
@@ -169,7 +189,13 @@ class TripService : Service(), LocationListener {
     private var smsStartSent = false
     private var smsArrivedSent = false
 
+    private var startDistance: Double? = null
     private var listeningGps = false
+    private var gpsIntervalMs = 0L
+    private var lastWidgetUpdate = 0L
+    private var tts: TextToSpeech? = null
+    private var ttsReady = false
+    private val announced = mutableSetOf<Int>()
     private var simRunnable: Runnable? = null
     private var wakeLock: PowerManager.WakeLock? = null
 
@@ -231,6 +257,8 @@ class TripService : Service(), LocationListener {
 
     override fun onDestroy() {
         cleanup()
+        tts?.shutdown()
+        tts = null
         if (state.active) {
             state = State()
             publish()
@@ -266,7 +294,8 @@ class TripService : Service(), LocationListener {
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "NeProspi:trip")
             .apply { acquire(6 * 60 * 60 * 1000L) }
 
-        if (simulated) startSimulation(place) else startLocationUpdates()
+        if (simulated) startSimulation(place) else startLocationUpdates(2000L)
+        initVoice()
         scheduleBackup()
         handler.postDelayed(watchdog, 20_000)
         publishState()
@@ -286,6 +315,8 @@ class TripService : Service(), LocationListener {
         batteryWarned = false
         smsStartSent = false
         smsArrivedSent = false
+        startDistance = null
+        announced.clear()
     }
 
     /** Завершение поездки. result == null — определить по тому, был ли будильник. */
@@ -297,13 +328,19 @@ class TripService : Service(), LocationListener {
                 Reason.BACKUP -> TripRecord.BACKUP
                 else -> TripRecord.ARRIVED
             }
-            prefs.addHistory(TripRecord(place.name, startedAt, System.currentTimeMillis(), r, simulated))
+            prefs.addHistory(
+                TripRecord(place.name, startedAt, System.currentTimeMillis(), r, simulated, place.lat, place.lon)
+            )
         }
         cleanup()
+        tts?.shutdown()
+        tts = null
+        ttsReady = false
         tripStore.edit().clear().apply()
         dest = null
         state = State()
         publish()
+        TripWidget.updateAll(this)
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -364,15 +401,37 @@ class TripService : Service(), LocationListener {
     // ---------- GPS ----------
 
     @SuppressLint("MissingPermission")
-    private fun startLocationUpdates() {
+    private fun startLocationUpdates(intervalMs: Long) {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
         val lm = getSystemService(LocationManager::class.java)
+        if (listeningGps) lm.removeUpdates(this)
         for (provider in listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)) {
             if (provider in lm.allProviders) {
-                runCatching { lm.requestLocationUpdates(provider, 2000L, 0f, this, Looper.getMainLooper()) }
+                runCatching { lm.requestLocationUpdates(provider, intervalMs, 0f, this, Looper.getMainLooper()) }
             }
         }
         listeningGps = true
+        gpsIntervalMs = intervalMs
+    }
+
+    /** На каком расстоянии от остановки зазвонит будильник (для времени — оценка по скорости). */
+    private fun wakeDistance(): Double =
+        if (prefs.mode == Prefs.MODE_DIST) prefs.distMeters.toDouble()
+        else max(150.0, (smoothedSpeed ?: 8.0) * prefs.minutes * 60)
+
+    /**
+     * Экономия батареи: пока до будильника далеко, GPS спрашиваем редко, ближе — чаще.
+     * Главная жалоба на такие приложения — разряд батареи.
+     */
+    private fun gpsIntervalFor(d: Double): Long {
+        if (phase == Phase.ALARM || phase == Phase.CHECK) return 2000L
+        val left = d - wakeDistance()
+        return when {
+            left > 8000 -> 20_000L
+            left > 3000 -> 8000L
+            left > 1000 -> 4000L
+            else -> 2000L
+        }
     }
 
     private fun stopLocationUpdates() {
@@ -440,6 +499,12 @@ class TripService : Service(), LocationListener {
             smsStartSent = true
             sendSms(s(R.string.sms_start, place.name, Geo.mapLink(loc.latitude, loc.longitude)))
         }
+        if (startDistance == null) startDistance = d
+        if (!simulated) {
+            val interval = gpsIntervalFor(d)
+            if (interval != gpsIntervalMs) startLocationUpdates(interval)
+        }
+        announceDistance(d)
 
         when (phase) {
             Phase.WAITING_GPS, Phase.RIDING, Phase.WARNED -> {
@@ -498,6 +563,8 @@ class TripService : Service(), LocationListener {
         backupAt = backupAt,
         checkDeadline = checkDeadline,
         simulated = simulated,
+        startDistance = startDistance,
+        wakeDistance = wakeDistance(),
     )
 
     private fun publishState() {
@@ -505,7 +572,53 @@ class TripService : Service(), LocationListener {
         publish()
     }
 
-    private fun publish() = listeners.forEach { it(state) }
+    private fun publish() {
+        listeners.forEach { it(state) }
+        // виджет обновляем не чаще раза в 15 секунд, но смену этапа — сразу
+        val now = System.currentTimeMillis()
+        if (now - lastWidgetUpdate > 15_000 || state.phase == Phase.ALARM || !state.active) {
+            lastWidgetUpdate = now
+            TripWidget.updateAll(this)
+        }
+    }
+
+    // ---------- Голосовые подсказки ----------
+
+    private fun initVoice() {
+        if (!prefs.voice || tts != null) return
+        tts = TextToSpeech(this) { status ->
+            val engine = tts ?: return@TextToSpeech
+            if (status != TextToSpeech.SUCCESS) return@TextToSpeech
+            val lang = if (Lang.isKyrgyz(this)) java.util.Locale.forLanguageTag("ky") else java.util.Locale.forLanguageTag("ru")
+            if (engine.setLanguage(lang) < TextToSpeech.LANG_AVAILABLE) engine.setLanguage(java.util.Locale.forLanguageTag("ru"))
+            engine.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build()
+            )
+            ttsReady = true
+        }
+    }
+
+    private fun speak(text: String) {
+        if (!ttsReady) return
+        // не говорим вслух, если человек просил тишину, а наушников нет
+        if ((prefs.vibrationOnly || prefs.headphonesOnly) && !headphonesConnected()) return
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "nesprosi")
+    }
+
+    /** «До остановки 2 километра», «…1 километр» — только если будильник ещё не близко. */
+    private fun announceDistance(d: Double) {
+        if (phase != Phase.RIDING && phase != Phase.WAITING_GPS) return
+        val start = startDistance ?: return
+        for (mark in listOf(5000, 2000, 1000)) {
+            if (d <= mark && start > mark + 300 && mark > wakeDistance() * 1.3 && announced.add(mark)) {
+                speak(s(R.string.voice_distance, Geo.formatDistance(lctx, mark.toDouble())))
+                break
+            }
+        }
+    }
 
     private fun checkGps() {
         if (simulated || phase == Phase.ALARM || phase == Phase.CHECK || gpsLost) return
@@ -611,39 +724,50 @@ class TripService : Service(), LocationListener {
         )
     }
 
-    private fun stopPendingIntent(): PendingIntent = PendingIntent.getService(
-        this, 1, Intent(this, TripService::class.java).setAction(ACTION_STOP),
-        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-    )
+    private fun stopPendingIntent(): PendingIntent = stopPendingIntent(this)
 
     private fun openAppIntent(): PendingIntent = PendingIntent.getActivity(
         this, 0, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
         PendingIntent.FLAG_IMMUTABLE,
     )
 
-    private fun tripNotification(text: String): Notification =
-        NotificationCompat.Builder(this, CH_TRIP)
+    /**
+     * Уведомление поездки. На экране блокировки видны полоса прогресса и обратный отсчёт до прибытия —
+     * как «живые» уведомления в Don't Miss the Stop и WakeSignal.
+     */
+    private fun tripNotification(text: String, progress: Float? = null, arriveAt: Long? = null): Notification {
+        val builder = NotificationCompat.Builder(this, CH_TRIP)
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(s(R.string.notif_trip_title, dest?.name ?: s(R.string.dest_fallback)))
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setCategory(NotificationCompat.CATEGORY_NAVIGATION)
             .setContentIntent(openAppIntent())
             .addAction(0, s(R.string.notif_finish), stopPendingIntent())
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-            .build()
+        if (progress != null) builder.setProgress(100, (progress * 100).roundToInt(), false)
+        if (arriveAt != null) {
+            builder.setWhen(arriveAt).setShowWhen(true).setUsesChronometer(true).setChronometerCountDown(true)
+        } else {
+            builder.setShowWhen(false)
+        }
+        return builder.build()
+    }
 
     private fun updateTripNotification(d: Double, eta: Double?) {
-        val text = when (phase) {
-            Phase.ALARM -> s(R.string.notif_alarm_ringing)
-            Phase.CHECK -> s(R.string.notif_check_soon)
+        val notification = when (phase) {
+            Phase.ALARM -> tripNotification(s(R.string.notif_alarm_ringing))
+            Phase.CHECK -> tripNotification(s(R.string.notif_check_soon))
             else -> {
                 val left = Geo.formatDistance(lctx, d)
-                if (eta != null) s(R.string.notif_left_eta, left, Geo.formatEta(lctx, eta)) else s(R.string.notif_left, left)
+                val text = if (eta != null) s(R.string.notif_left_eta, left, Geo.formatEta(lctx, eta)) else s(R.string.notif_left, left)
+                tripNotification(text, state.progress, eta?.let { System.currentTimeMillis() + (it * 1000).toLong() })
             }
         }
-        nm.notify(ID_TRIP, tripNotification(text))
+        nm.notify(ID_TRIP, notification)
     }
 
     private fun infoNotification(title: String, text: String): Notification =
@@ -658,6 +782,7 @@ class TripService : Service(), LocationListener {
 
     private fun sendWarning() {
         phase = Phase.WARNED
+        speak(s(R.string.voice_warn, dest?.name.orEmpty()))
         nm.notify(
             ID_WARN,
             NotificationCompat.Builder(this, CH_WARN)

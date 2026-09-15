@@ -181,4 +181,65 @@
     <string name="offline_always">Всегда использовать офлайн-карту</string>
     <string name="offline_always_desc">Иначе офлайн-карта включается сама, когда нет интернета</string>
     <string name="map_attribution">Карты и остановки © участники OpenStreetMap (ODbL)</string>
+
+    <!-- новый главный экран -->
+    <string name="where_to">Куда едем?</string>
+    <string name="where_hint">Нажмите на остановку на карте или найдите адрес</string>
+    <string name="where_hint_short">Выберите, когда разбудить, и начните поездку</string>
+    <string name="saved_title">Мои места</string>
+    <string name="recent_title">Недавние</string>
+    <string name="wake_label">Когда разбудить</string>
+    <string name="mode_dist_short">По расстоянию</string>
+    <string name="mode_time_short">По времени</string>
+    <string name="backup_label">Страховка — разбудить в любом случае через</string>
+    <string name="simulate_short">🧪 Проверить на симуляции</string>
+    <string name="from_you">%1$s от вас</string>
+    <string name="eta_short">≈ %1$s</string>
+    <string name="accuracy_value_gps">GPS ±%1$d м</string>
+    <string name="clear_dest">Убрать точку</string>
+    <string name="my_location">Моё местоположение</string>
+    <string name="setup_banner">⚠️ Настройки телефона могут помешать будильнику (%1$d). Нажмите, чтобы исправить</string>
+    <string name="share_short">📤 Близким</string>
+    <string name="stop_short">■ Завершить</string>
+
+    <!-- проверка надёжности -->
+    <string name="setup_title">Проверка надёжности</string>
+    <string name="setup_open">🛡️ Проверка надёжности</string>
+    <string name="setup_intro">Android может усыпить приложение в фоне, и тогда будильник не сработает. Проверьте, что всё отмечено зелёным.</string>
+    <string name="setup_all_ok">✅ Всё готово — будильник сработает</string>
+    <string name="setup_issues">⚠️ Нужно исправить: %1$d</string>
+    <string name="setup_done">Готово</string>
+    <string name="fix">Исправить</string>
+    <string name="chk_location">Точное местоположение</string>
+    <string name="chk_location_desc">Чтобы знать, где вы едете</string>
+    <string name="chk_location_services">Геолокация включена</string>
+    <string name="chk_location_services_desc">Переключатель «Местоположение» в быстрых настройках</string>
+    <string name="chk_notifications">Уведомления</string>
+    <string name="chk_notifications_desc">Предупреждение и экран будильника</string>
+    <string name="chk_fullscreen">Будильник поверх блокировки</string>
+    <string name="chk_fullscreen_desc">Экран будильника на заблокированном телефоне</string>
+    <string name="chk_battery">Работа в фоне без ограничений</string>
+    <string name="chk_battery_desc">Чтобы Android не усыпил приложение в пути</string>
+    <string name="chk_exact">Точные будильники</string>
+    <string name="chk_exact_desc">Нужны для страховочного таймера</string>
+    <string name="chk_volume">Громкость будильника</string>
+    <string name="chk_volume_desc">Сейчас на нуле. Приложение поднимет её само, но лучше проверить</string>
+    <string name="oem_title">Совет для вашего телефона</string>
+    <string name="oem_samsung">Samsung: Настройки → Батарея → Ограничения фоновой работы. Проверьте, что «Не проспи» нет в списках «Спящие приложения» и «Приложения в глубоком сне».</string>
+    <string name="oem_xiaomi">Xiaomi, Redmi, POCO: в настройках приложения включите «Автозапуск», а в «Контроле активности» выберите «Нет ограничений».</string>
+    <string name="oem_huawei">Huawei, Honor: Настройки → Батарея → Запуск приложений → «Не проспи» → управлять вручную, включите все переключатели.</string>
+    <string name="oem_oppo">OPPO, realme, OnePlus, vivo: в настройках приложения разрешите работу в фоне и автозапуск.</string>
+    <string name="oem_other">Если телефон закрывает приложения в фоне, найдите «Не проспи» в настройках батареи и снимите ограничения.</string>
+    <string name="open_app_settings">Открыть настройки приложения</string>
+
+    <!-- голос -->
+    <string name="voice_title">Голосовые подсказки</string>
+    <string name="voice_desc">Скажет, сколько осталось ехать и когда готовиться выходить. В тихих режимах — только в наушники</string>
+    <string name="voice_distance">До остановки %1$s</string>
+    <string name="voice_warn">Приготовьтесь, скоро выходить: %1$s</string>
+
+    <!-- виджет -->
+    <string name="widget_description">Не проспи: поездка одним нажатием</string>
+    <string name="widget_no_places">Сохраните место в приложении — оно появится здесь</string>
+    <string name="widget_trip">%1$s · осталось %2$s</string>
 </resources>

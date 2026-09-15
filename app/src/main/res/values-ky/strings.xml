@@ -181,4 +181,65 @@
     <string name="offline_always">Дайыма офлайн картаны колдонуу</string>
     <string name="offline_always_desc">Болбосо, интернет жок болгондо офлайн карта өзү күйөт</string>
     <string name="map_attribution">Карталар жана аялдамалар © OpenStreetMap катышуучулары (ODbL)</string>
+
+    <!-- жаңы негизги экран -->
+    <string name="where_to">Кайда барасыз?</string>
+    <string name="where_hint">Картадан аялдаманы басыңыз же даректи издеңиз</string>
+    <string name="where_hint_short">Качан ойготууну тандап, сапарды баштаңыз</string>
+    <string name="saved_title">Менин жерлерим</string>
+    <string name="recent_title">Акыркылар</string>
+    <string name="wake_label">Качан ойготуу</string>
+    <string name="mode_dist_short">Аралык боюнча</string>
+    <string name="mode_time_short">Убакыт боюнча</string>
+    <string name="backup_label">Камсыздандыруу — баары бир ойготуу</string>
+    <string name="simulate_short">🧪 Сыноо менен текшерүү</string>
+    <string name="from_you">Сизден %1$s</string>
+    <string name="eta_short">≈ %1$s</string>
+    <string name="accuracy_value_gps">GPS ±%1$d м</string>
+    <string name="clear_dest">Чекитти алып салуу</string>
+    <string name="my_location">Менин жайгашкан жерим</string>
+    <string name="setup_banner">⚠️ Телефондун жөндөөлөрү ойготкучка тоскоол болушу мүмкүн (%1$d). Оңдоо үчүн басыңыз</string>
+    <string name="share_short">📤 Жакындарга</string>
+    <string name="stop_short">■ Бүтүрүү</string>
+
+    <!-- ишенимдүүлүк текшерүүсү -->
+    <string name="setup_title">Ишенимдүүлүктү текшерүү</string>
+    <string name="setup_open">🛡️ Ишенимдүүлүктү текшерүү</string>
+    <string name="setup_intro">Android тиркемени фондо уктатып коюшу мүмкүн, анда ойготкуч иштебейт. Баары жашыл белгиленгенин текшериңиз.</string>
+    <string name="setup_all_ok">✅ Баары даяр — ойготкуч иштейт</string>
+    <string name="setup_issues">⚠️ Оңдоо керек: %1$d</string>
+    <string name="setup_done">Даяр</string>
+    <string name="fix">Оңдоо</string>
+    <string name="chk_location">Так жайгашкан жер</string>
+    <string name="chk_location_desc">Кайда баратканыңызды билүү үчүн</string>
+    <string name="chk_location_services">Геолокация күйгүзүлгөн</string>
+    <string name="chk_location_services_desc">Ыкчам жөндөөлөрдөгү «Жайгашкан жер» которгучу</string>
+    <string name="chk_notifications">Билдирмелер</string>
+    <string name="chk_notifications_desc">Эскертме жана ойготкуч экраны</string>
+    <string name="chk_fullscreen">Бекитилген экрандагы ойготкуч</string>
+    <string name="chk_fullscreen_desc">Бекитилген телефондо ойготкуч экраны</string>
+    <string name="chk_battery">Фондо чектөөсүз иштөө</string>
+    <string name="chk_battery_desc">Android жолдо тиркемени уктатпашы үчүн</string>
+    <string name="chk_exact">Так ойготкучтар</string>
+    <string name="chk_exact_desc">Камсыздандыруу таймери үчүн керек</string>
+    <string name="chk_volume">Ойготкучтун үнү</string>
+    <string name="chk_volume_desc">Азыр нөлдө. Тиркеме өзү көтөрөт, бирок текшерип коюңуз</string>
+    <string name="oem_title">Телефонуңуз үчүн кеңеш</string>
+    <string name="oem_samsung">Samsung: Жөндөөлөр → Батарея → Фондогу иштөөнү чектөө. «Уктап калба» «Уктаган тиркемелер» жана «Терең уктаган тиркемелер» тизмесинде жок экенин текшериңиз.</string>
+    <string name="oem_xiaomi">Xiaomi, Redmi, POCO: тиркеменин жөндөөлөрүндө «Автоматтык баштоону» күйгүзүп, «Активдүүлүктү көзөмөлдөөдө» «Чектөөсүз» тандаңыз.</string>
+    <string name="oem_huawei">Huawei, Honor: Жөндөөлөр → Батарея → Тиркемелерди иштетүү → «Уктап калба» → кол менен башкаруу, бардык которгучтарды күйгүзүңүз.</string>
+    <string name="oem_oppo">OPPO, realme, OnePlus, vivo: тиркеменин жөндөөлөрүндө фондо иштөөгө жана автоматтык баштоого уруксат бериңиз.</string>
+    <string name="oem_other">Телефон фондогу тиркемелерди жаап салса, батарея жөндөөлөрүнөн «Уктап калба» таап, чектөөлөрдү алып салыңыз.</string>
+    <string name="open_app_settings">Тиркеменин жөндөөлөрүн ачуу</string>
+
+    <!-- үн -->
+    <string name="voice_title">Үн менен кеңештер</string>
+    <string name="voice_desc">Канча калганын жана качан түшүүгө даярданууну айтат. Тынч режимдерде — кулакчынга гана</string>
+    <string name="voice_distance">Аялдамага чейин %1$s</string>
+    <string name="voice_warn">Даярданыңыз, жакында түшөсүз: %1$s</string>
+
+    <!-- виджет -->
+    <string name="widget_description">Уктап калба: бир басуу менен сапар</string>
+    <string name="widget_no_places">Тиркемеде жерди сактаңыз — ал бул жерде пайда болот</string>
+    <string name="widget_trip">%1$s · калды %2$s</string>
 </resources>

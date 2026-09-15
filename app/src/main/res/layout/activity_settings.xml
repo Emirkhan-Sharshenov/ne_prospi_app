@@ -40,6 +40,14 @@
             android:orientation="vertical"
             android:padding="14dp">
 
+            <Button
+                android:id="@+id/setupBtn"
+                style="@style/Widget.Material3.Button.TonalButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:text="@string/setup_open" />
+
             <!-- Язык -->
             <LinearLayout style="@style/Card">
                 <TextView style="@style/CardTitle" android:text="@string/set_language" />
@@ -90,6 +98,11 @@
                     style="@style/Switch"
                     android:text="@string/headphones_only" />
                 <TextView style="@style/SwitchNote" android:text="@string/headphones_only_desc" />
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/voiceSwitch"
+                    style="@style/Switch"
+                    android:text="@string/voice_title" />
+                <TextView style="@style/SwitchNote" android:text="@string/voice_desc" />
             </LinearLayout>
 
             <!-- Близкие -->

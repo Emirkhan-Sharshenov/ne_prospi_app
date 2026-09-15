@@ -54,6 +54,22 @@
             android:parentActivityName=".MainActivity" />
 
         <activity
+            android:name=".SetupActivity"
+            android:exported="false" />
+
+        <receiver
+            android:name=".TripWidget"
+            android:exported="false"
+            android:label="@string/widget_description">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <activity
             android:name=".AlarmActivity"
             android:exported="false"
             android:excludeFromRecents="true"

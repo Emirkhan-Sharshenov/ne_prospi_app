@@ -20,6 +20,8 @@ data class TripRecord(
     val endedAt: Long,
     val result: String,
     val simulated: Boolean,
+    val lat: Double? = null,
+    val lon: Double? = null,
 ) {
     companion object {
         const val ARRIVED = "arrived"
@@ -69,6 +71,26 @@ class Prefs(context: Context) {
     var headphonesOnly: Boolean
         get() = sp.getBoolean("headphonesOnly", false)
         set(v) = putBool("headphonesOnly", v)
+    var voice: Boolean
+        get() = sp.getBoolean("voice", false)
+        set(v) = putBool("voice", v)
+
+    /** Проверку надёжности показываем сами один раз, при первом запуске. */
+    var setupShown: Boolean
+        get() = sp.getBoolean("setupShown", false)
+        set(v) = putBool("setupShown", v)
+
+    /** Недавние поездки (без повторов и сохранённых мест) — для быстрого выбора. */
+    fun recentPlaces(limit: Int): List<Place> {
+        val saved = places.map { it.lat to it.lon }.toSet()
+        return history.asSequence()
+            .filter { !it.simulated && it.lat != null && it.lon != null }
+            .map { Place(it.dest, it.lat!!, it.lon!!) }
+            .filter { (it.lat to it.lon) !in saved }
+            .distinctBy { it.name }
+            .take(limit)
+            .toList()
+    }
 
     // ---------- Близкие ----------
     var contactPhone: String
@@ -126,6 +148,8 @@ class Prefs(context: Context) {
                 TripRecord(
                     o.getString("dest"), o.getLong("startedAt"), o.getLong("endedAt"),
                     o.getString("result"), o.optBoolean("simulated"),
+                    o.optDouble("lat").takeIf { v -> !v.isNaN() },
+                    o.optDouble("lon").takeIf { v -> !v.isNaN() },
                 )
             }
         }
@@ -135,6 +159,7 @@ class Prefs(context: Context) {
                 arr.put(
                     JSONObject().put("dest", it.dest).put("startedAt", it.startedAt).put("endedAt", it.endedAt)
                         .put("result", it.result).put("simulated", it.simulated)
+                        .apply { if (it.lat != null && it.lon != null) put("lat", it.lat).put("lon", it.lon) }
                 )
             }
             putStr("history", arr.toString())

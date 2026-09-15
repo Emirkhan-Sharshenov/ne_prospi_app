@@ -9,4 +9,7 @@
     <color name="danger">#E53935</color>
     <color name="warn">#C98A00</color>
     <color name="ok">#1F7A4D</color>
+    <color name="accent_container">#26375E</color>
+    <color name="warn_container">#4A3610</color>
+    <color name="on_warn_container">#FFE2A8</color>
 </resources>

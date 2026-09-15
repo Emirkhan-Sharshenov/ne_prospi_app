@@ -71,6 +71,7 @@ class SettingsActivity : AppCompatActivity() {
         }
         prefs = Prefs(this)
         findViewById<View>(R.id.backBtn).setOnClickListener { finish() }
+        findViewById<View>(R.id.setupBtn).setOnClickListener { startActivity(Intent(this, SetupActivity::class.java)) }
 
         setupLanguage()
         setupTheme()
@@ -143,6 +144,7 @@ class SettingsActivity : AppCompatActivity() {
         bindSwitch(R.id.vibrationOnlySwitch, prefs.vibrationOnly) { prefs.vibrationOnly = it }
         bindSwitch(R.id.flashlightSwitch, prefs.flashlight) { prefs.flashlight = it }
         bindSwitch(R.id.headphonesSwitch, prefs.headphonesOnly) { prefs.headphonesOnly = it }
+        bindSwitch(R.id.voiceSwitch, prefs.voice) { prefs.voice = it }
     }
 
     private fun renderSound() {
