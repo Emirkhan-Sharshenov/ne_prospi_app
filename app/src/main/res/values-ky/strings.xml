@@ -1,0 +1,184 @@
+<resources>
+    <string name="app_name">Уктап калба</string>
+    <string name="app_title">🚌  Уктап калба</string>
+    <string name="history">Тарых</string>
+    <string name="settings">Жөндөөлөр</string>
+    <string name="back">Артка</string>
+    <string name="cancel">Жокко чыгаруу</string>
+    <string name="ok">OK</string>
+    <string name="delete">Өчүрүү</string>
+    <string name="save">Сактоо</string>
+    <string name="allow">Уруксат берүү</string>
+    <string name="enable">Күйгүзүү</string>
+    <string name="open_settings">Жөндөөлөрдү ачуу</string>
+
+    <!-- бирдиктер -->
+    <string name="meters_value">%1$d м</string>
+    <string name="km_value">%1$.1f км</string>
+    <string name="km_value_int">%1$d км</string>
+    <string name="sec_value">%1$d сек</string>
+    <string name="minutes_value">%1$d мүн</string>
+    <string name="speed_value">%1$d км/саат</string>
+    <string name="accuracy_value">±%1$d м</string>
+
+    <!-- 1. Кайда барабыз -->
+    <string name="card_where">1. Кайда барасыз</string>
+    <string name="search_hint">Көчө, аялдама, район…</string>
+    <string name="search_btn">Табуу</string>
+    <string name="dest_hint">Же картаны басыңыз — чекит жакынкы аялдамага тартылат.</string>
+    <string name="dest_label">📍 %1$s</string>
+    <string name="resolving_address">📍 Дарек аныкталууда…</string>
+    <string name="point_on_map">Картадагы чекит</string>
+    <string name="point_near">Картадагы чекит · %1$s</string>
+    <string name="stop_unnamed">Аялдама</string>
+    <string name="stop_near">Аялдама · %1$s</string>
+    <string name="dest_fallback">аялдама</string>
+    <string name="save_place">⭐ Жерди сактоо</string>
+    <string name="place_name_title">Жердин аталышы</string>
+    <string name="place_name_hint">Мисалы, «Үй» же «Жумуш»</string>
+    <string name="place_actions_title">«%1$s»</string>
+    <string name="place_pin">📱 Негизги экранга белги</string>
+    <string name="place_delete_confirm">«%1$s» өчүрүлсүнбү?</string>
+    <string name="pin_unsupported">Бул телефон негизги экрандагы белгилерди колдобойт</string>
+    <string name="shortcut_long_label">Сапар: %1$s</string>
+    <string name="searching">Изделүүдө…</string>
+    <string name="search_unavailable">Издөө иштебей жатат — чекитти картадан белгилеңиз</string>
+    <string name="nothing_found">Эч нерсе табылган жок</string>
+
+    <!-- 2. Качан ойготуу -->
+    <string name="card_when">2. Качан ойготуу</string>
+    <string name="mode_dist">Аялдамага чейинки аралык боюнча</string>
+    <string name="mode_time">Жетерден бир нече мүнөт мурун</string>
+    <string name="backup_title">Камсыздандыруу: баары бир ойготуу</string>
+    <string name="backup_off">өчүк</string>
+    <string name="when_note">Адегенде жумшак эскертме келет, андан кийин бекитилген экрандын үстүндө катуу ойготкуч шыңгырайт. GPS жоголсо да, камсыздандыруу ойготот.</string>
+
+    <!-- 3. Сапар -->
+    <string name="card_trip">3. Сапар</string>
+    <string name="phase_idle">башталган жок</string>
+    <string name="phase_waiting">GPS изделүүдө…</string>
+    <string name="phase_riding">жолдо</string>
+    <string name="phase_warned">жакында түшөсүз</string>
+    <string name="phase_alarm">ойготкуч!</string>
+    <string name="phase_check">текшерүү</string>
+    <string name="phase_gps_lost">GPS жок</string>
+    <string name="stat_distance">Аялдамага чейин</string>
+    <string name="stat_eta">Жетүүгө чейин</string>
+    <string name="stat_speed">Ылдамдык</string>
+    <string name="stat_accuracy">GPS тактыгы</string>
+    <string name="start_trip">▶  Сапарды баштоо</string>
+    <string name="simulate_trip">🧪  Сапарды сыноо (текшерүү үчүн)</string>
+    <string name="stop_trip">■  Сапарды бүтүрүү</string>
+    <string name="share_trip">📤  Жакындарга жөнөтүү</string>
+    <string name="backup_at">🛟 Камсыздандыруу %1$s иштейт</string>
+    <string name="simulation_note">🧪 Сыноо: жакындарга SMS жөнөтүлбөйт</string>
+    <string name="lock_note">Баштагандан кийин телефонду бекитип, чөнтөккө салсаңыз болот — тиркеме сизди ойготот.</string>
+    <string name="battery_unrestricted">🔋 Фондо чектөөсүз иштөөгө уруксат берүү</string>
+
+    <!-- баштоодон мурунку диалогдор -->
+    <string name="perm_location_title">Жайгашкан жерге уруксат керек</string>
+    <string name="perm_location_msg">GPS болбосо, тиркеме аялдамага жакындап калганыңызды билбейт.</string>
+    <string name="location_off_title">Геолокация өчүк</string>
+    <string name="location_off_msg">Кайда баратканыңызды көрүү үчүн жайгашкан жерди аныктоону күйгүзүңүз.</string>
+    <string name="battery_low_title">Заряд аз: %1$d%%</string>
+    <string name="battery_low_msg">Телефон аялдамаңызга жеткенге чейин өчүп калышы мүмкүн. Кубаттагычка туташтырыңыз же камсыздандыруу таймерин күйгүзүңүз.</string>
+    <string name="start_anyway_2">Баары бир баштоо</string>
+    <string name="notif_denied">Билдирмелер өчүк: ойготкуч экраны чыкпайт, бирок үн жана титирөө болот</string>
+    <string name="fsi_title">Бекитилген экрандагы ойготкуч</string>
+    <string name="fsi_msg">Ойготкуч бекитилген телефондо чыгышы үчүн толук экранда көрсөтүүгө уруксат бериңиз.</string>
+    <string name="start_anyway">Мунсуз баштоо</string>
+
+    <!-- бөлүшүү -->
+    <string name="share_text">Мен «%1$s» бара жатам. Азыр мен бул жердемин: %2$s</string>
+    <string name="share_text_no_loc">Мен «%1$s» бара жатам: %2$s</string>
+    <string name="share_chooser">Жакындарга жөнөтүү</string>
+
+    <!-- тарых -->
+    <string name="history_title">Сапарлардын тарыхы</string>
+    <string name="history_empty">Азырынча сапарлар болгон жок</string>
+    <string name="history_clear">Тазалоо</string>
+    <string name="history_item">%1$s → %2$s\n%3$s · %4$d мүн</string>
+    <string name="history_simulated">%1$s · сыноо</string>
+    <string name="result_arrived">аялдамада ойготту</string>
+    <string name="result_backup">камсыздандыруу иштеди</string>
+    <string name="result_stopped">кол менен бүтүрүлдү</string>
+
+    <!-- билдирмелер -->
+    <string name="ch_trip">Сапар</string>
+    <string name="ch_trip_desc">Сапар учурунда аялдамага чейинки аралык</string>
+    <string name="ch_warn">Жакында түшөсүз</string>
+    <string name="ch_warn_desc">Аялдама алдындагы жумшак эскертме</string>
+    <string name="ch_alarm">Ойготкуч</string>
+    <string name="ch_alarm_desc">Аялдамадагы катуу ойготкуч</string>
+    <string name="ch_info">Сапардын абалы</string>
+    <string name="ch_info_desc">GPS жоголду, заряд аз</string>
+    <string name="notif_trip_title">Барам: %1$s</string>
+    <string name="notif_waiting_gps">GPS изделүүдө…</string>
+    <string name="notif_left">Калды %1$s</string>
+    <string name="notif_left_eta">Калды %1$s · %2$s кийин жетесиз</string>
+    <string name="notif_alarm_ringing">Ойготкуч шыңгырап жатат</string>
+    <string name="notif_check_soon">Бир мүнөттөн кийин ойгонгонуңузду текшерем</string>
+    <string name="notif_finish">Бүтүрүү</string>
+    <string name="warn_title">Аялдамаңыз жакындап калды</string>
+    <string name="warn_text">Түшүүгө даярданыңыз: %1$s</string>
+    <string name="alarm_title">⏰ Түшүңүз!</string>
+    <string name="alarm_text">Сиз жакындап калдыңыз: %1$s</string>
+    <string name="alarm_backup_title">⏰ Камсыздандыруу ойготкучу</string>
+    <string name="alarm_backup_text">%1$d мүн өттү — кайда экениңизди текшериңиз</string>
+    <string name="alarm_passed_title">⚠️ Аялдамадан өтүп кеттиңиз!</string>
+    <string name="alarm_passed_text">«%1$s» артта калды — жакынкы аялдамада түшүңүз</string>
+    <string name="alarm_repeat_title">⏰ Ойгондуңузбу?</string>
+    <string name="gps_lost_title">Кайда баратканыңызды көрбөй жатам</string>
+    <string name="gps_lost_text">GPS жоголду. Камсыздандыруу %1$s ойготот.</string>
+    <string name="gps_lost_text_no_backup">GPS жоголду. Уктап калбаш үчүн камсыздандыруу таймерин күйгүзүңүз.</string>
+    <string name="battery_trip_title">Заряд %1$d%%</string>
+    <string name="battery_trip_text">Телефон жакында өчөт. Ойготкуч иштеши үчүн кубаттагычка туташтырыңыз.</string>
+    <string name="check_title">Ойгондуңузбу?</string>
+    <string name="check_text">«Ооба, уктаган жокмун» баскычын басыңыз, болбосо ойготкуч кайра шыңгырайт</string>
+
+    <!-- ойготкуч экраны -->
+    <string name="alarm_big">ТҮШҮҢҮЗ!</string>
+    <string name="alarm_passed_big">ӨТҮП КЕТТИҢИЗ!</string>
+    <string name="alarm_backup_big">КАЙДАСЫЗ?</string>
+    <string name="alarm_backup_body">Камсыздандыруу иштеди. Түшүүчү убак болгонун текшериңиз.</string>
+    <string name="alarm_arriving">Сиз жакындап калдыңыз:\n%1$s</string>
+    <string name="hold_to_dismiss">Өчүрүү үчүн басып туруңуз</string>
+    <string name="check_big">Ойгондуңузбу?</string>
+    <string name="check_countdown">Ойготкуч %1$d сек кийин кайра шыңгырайт</string>
+    <string name="im_awake">Ооба, уктаган жокмун</string>
+
+    <!-- SMS -->
+    <string name="sms_start">Уктап калба: «%1$s» бара жатам. Мен бул жердемин: %2$s</string>
+    <string name="sms_arrived">Уктап калба: «%1$s» жакындап калдым. Мен бул жердемин: %2$s</string>
+
+    <!-- жөндөөлөр -->
+    <string name="set_language">Тил</string>
+    <string name="lang_system">Телефондогудай</string>
+    <string name="set_theme">Тема</string>
+    <string name="theme_system">Телефондогудай</string>
+    <string name="theme_light">Жарык</string>
+    <string name="theme_dark">Караңгы</string>
+    <string name="set_alarm">Ойготкуч</string>
+    <string name="alarm_sound">🎵 Обон: %1$s</string>
+    <string name="alarm_sound_default">стандарттык</string>
+    <string name="vibration_only">Үнсүз, титирөө гана</string>
+    <string name="vibration_only_desc">Маршруткадагы кошуналарды ойготпош үчүн</string>
+    <string name="flashlight">Фонарь менен жымылдатуу</string>
+    <string name="headphones_only">Үн кулакчынга гана</string>
+    <string name="headphones_only_desc">Кулакчын туташпаса — титирөө гана</string>
+    <string name="set_family">Жакындар</string>
+    <string name="contact_phone_hint">Номер, мисалы +996 555 123 456</string>
+    <string name="sms_enabled">SMS жөнөтүү: жолго чыкканда жана жакындаганда</string>
+    <string name="sms_note">SMS сиздин номериңизден кетет жана тариф боюнча төлөнөт. Сыноодо жөнөтүлбөйт. Сапар учурундагы «Жакындарга жөнөтүү» баскычы шилтемени Telegram же WhatsApp аркылуу бөлүшөт.</string>
+    <string name="sms_perm_denied">SMS уруксаты болбосо, билдирүүлөр жөнөтүлбөйт</string>
+    <string name="set_offline">Офлайн карта</string>
+    <string name="offline_not_downloaded">Кыргызстандын картасы жүктөлгөн жок. Интернетсиз мурун ачылган жерлер гана көрүнөт.</string>
+    <string name="offline_downloading">Жүктөлүүдө… %1$d%%</string>
+    <string name="offline_ready">Кыргызстандын картасы жүктөлдү (%1$d МБ) жана интернетсиз иштейт.</string>
+    <string name="offline_failed">Картаны жүктөө мүмкүн болбоду. Интернетти текшерип, кайра аракет кылыңыз.</string>
+    <string name="offline_download">Кыргызстандын картасын жүктөө (%1$d МБ)</string>
+    <string name="offline_delete">Картаны өчүрүү</string>
+    <string name="offline_always">Дайыма офлайн картаны колдонуу</string>
+    <string name="offline_always_desc">Болбосо, интернет жок болгондо офлайн карта өзү күйөт</string>
+    <string name="map_attribution">Карталар жана аялдамалар © OpenStreetMap катышуучулары (ODbL)</string>
+</resources>

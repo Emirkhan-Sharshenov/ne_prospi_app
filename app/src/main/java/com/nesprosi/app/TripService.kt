@@ -1,6 +1,8 @@
 package com.nesprosi.app
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,15 +10,22 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.content.pm.ServiceInfo
+import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CameraManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.media.AudioAttributes
+import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.RingtoneManager
 import android.media.ToneGenerator
+import android.net.Uri
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -27,9 +36,12 @@ import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.telephony.SmsManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
+import java.text.DateFormat
+import java.util.Date
 import java.util.concurrent.CopyOnWriteArraySet
 import kotlin.math.PI
 import kotlin.math.cos
@@ -39,28 +51,40 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 
 /**
- * Фоновая служба поездки: следит за GPS, пока экран заблокирован,
- * присылает предупреждение и включает будильник у остановки.
+ * Фоновая служба поездки: следит за GPS при заблокированном экране,
+ * присылает предупреждение, будит у остановки и проверяет, что человек проснулся.
  */
 class TripService : Service(), LocationListener {
 
-    enum class Phase { WAITING_GPS, RIDING, WARNED, ALARM }
+    enum class Phase { WAITING_GPS, RIDING, WARNED, ALARM, CHECK }
+
+    /** Почему звонит будильник. */
+    enum class Reason { ARRIVED, BACKUP, PASSED, REPEAT }
 
     data class State(
         val active: Boolean = false,
         val dest: Place? = null,
         val phase: Phase = Phase.WAITING_GPS,
+        val reason: Reason = Reason.ARRIVED,
         val lat: Double? = null,
         val lon: Double? = null,
         val distance: Double? = null,
         val etaSec: Double? = null,
         val speed: Double? = null,
         val accuracy: Float? = null,
+        val gpsLost: Boolean = false,
+        val backupAt: Long? = null,
+        /** Когда показан вопрос «Вы проснулись?» — время, после которого будильник зазвонит снова. */
+        val checkDeadline: Long? = null,
+        val simulated: Boolean = false,
     )
 
     companion object {
         private const val ACTION_START = "com.nesprosi.app.START"
         private const val ACTION_STOP = "com.nesprosi.app.STOP"
+        private const val ACTION_DISMISS = "com.nesprosi.app.DISMISS"
+        private const val ACTION_AWAKE = "com.nesprosi.app.AWAKE"
+        private const val ACTION_BACKUP = "com.nesprosi.app.BACKUP"
         private const val EXTRA_NAME = "name"
         private const val EXTRA_LAT = "lat"
         private const val EXTRA_LON = "lon"
@@ -69,9 +93,16 @@ class TripService : Service(), LocationListener {
         private const val CH_TRIP = "trip"
         private const val CH_WARN = "warn"
         private const val CH_ALARM = "alarm"
+        private const val CH_INFO = "info"
         private const val ID_TRIP = 1
         private const val ID_WARN = 2
         private const val ID_ALARM = 3
+        private const val ID_GPS = 4
+        private const val ID_BATTERY = 5
+
+        private const val CHECK_DELAY_MS = 60_000L
+        private const val CHECK_ANSWER_MS = 30_000L
+        private const val GPS_LOST_MS = 3 * 60_000L
 
         var state = State()
             private set
@@ -90,24 +121,54 @@ class TripService : Service(), LocationListener {
             ContextCompat.startForegroundService(ctx, intent)
         }
 
-        fun stop(ctx: Context) {
-            if (state.active) ctx.startService(Intent(ctx, TripService::class.java).setAction(ACTION_STOP))
+        /** Завершить поездку кнопкой. */
+        fun stop(ctx: Context) = send(ctx, ACTION_STOP)
+
+        /** Будильник выключен удержанием кнопки. */
+        fun dismiss(ctx: Context) = send(ctx, ACTION_DISMISS)
+
+        /** Ответ «Да, я не сплю». */
+        fun confirmAwake(ctx: Context) = send(ctx, ACTION_AWAKE)
+
+        fun backupFired(ctx: Context) =
+            ContextCompat.startForegroundService(ctx, Intent(ctx, TripService::class.java).setAction(ACTION_BACKUP))
+
+        private fun send(ctx: Context, action: String) {
+            if (state.active) ctx.startService(Intent(ctx, TripService::class.java).setAction(action))
         }
     }
 
     private lateinit var prefs: Prefs
+    private lateinit var lctx: Context // контекст с языком приложения
     private val handler = Handler(Looper.getMainLooper())
     private val nm by lazy { getSystemService(NotificationManager::class.java) }
     private val audio by lazy { getSystemService(AudioManager::class.java) }
+    private val alarmManager by lazy { getSystemService(AlarmManager::class.java) }
+    private val tripStore by lazy { getSharedPreferences("active_trip", Context.MODE_PRIVATE) }
     private val vibrator: Vibrator by lazy {
         if (Build.VERSION.SDK_INT >= 31) getSystemService(VibratorManager::class.java).defaultVibrator
         else @Suppress("DEPRECATION") (getSystemService(VIBRATOR_SERVICE) as Vibrator)
     }
 
     private var dest: Place? = null
+    private var simulated = false
+    private var startedAt = 0L
+    private var backupAt: Long? = null
     private var phase = Phase.WAITING_GPS
+    private var reason = Reason.ARRIVED
+    private var firstAlarmReason: Reason? = null
+    private var checkDeadline: Long? = null
+
     private var lastFix: Location? = null
+    private var lastFixAt = 0L
     private var smoothedSpeed: Double? = null
+    private var closestDistance = Double.MAX_VALUE
+    private var passedFired = false
+    private var gpsLost = false
+    private var batteryWarned = false
+    private var smsStartSent = false
+    private var smsArrivedSent = false
+
     private var listeningGps = false
     private var simRunnable: Runnable? = null
     private var wakeLock: PowerManager.WakeLock? = null
@@ -116,11 +177,32 @@ class TripService : Service(), LocationListener {
     private var tone: ToneGenerator? = null
     private var volume = 0.25f
     private var savedAlarmVolume: Int? = null
+    private var torchOn = false
+    private var torchCameraId: String? = null
+
     private val rampVolume = object : Runnable {
         override fun run() {
             volume = min(1f, volume + 0.05f)
             player?.setVolume(volume, volume)
             if (volume < 1f) handler.postDelayed(this, 1000)
+        }
+    }
+    private val flashRunnable = object : Runnable {
+        override fun run() {
+            setTorch(!torchOn)
+            handler.postDelayed(this, 400)
+        }
+    }
+    private val backupRunnable = Runnable { onBackup() }
+    private val checkPromptRunnable = Runnable { showCheckPrompt() }
+    private val repeatRunnable = Runnable {
+        if (phase == Phase.CHECK && checkDeadline != null) startAlarm(Reason.REPEAT)
+    }
+    private val watchdog = object : Runnable {
+        override fun run() {
+            checkGps()
+            checkBattery()
+            handler.postDelayed(this, 20_000)
         }
     }
 
@@ -129,13 +211,19 @@ class TripService : Service(), LocationListener {
     override fun onCreate() {
         super.onCreate()
         prefs = Prefs(this)
+        lctx = Lang.wrap(this)
         createChannels()
     }
 
+    private fun s(id: Int, vararg args: Any): String = lctx.getString(id, *args)
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
-            ACTION_START -> startTrip(intent)
-            ACTION_STOP -> stopTrip()
+            ACTION_START -> startTrip(intent, redelivered = flags and START_FLAG_REDELIVERY != 0)
+            ACTION_STOP -> finishTrip(null)
+            ACTION_DISMISS -> onDismiss()
+            ACTION_AWAKE -> if (phase == Phase.CHECK) finishTrip(null)
+            ACTION_BACKUP -> onBackupIntent()
             else -> if (!state.active) stopSelf()
         }
         return START_REDELIVER_INTENT
@@ -152,52 +240,67 @@ class TripService : Service(), LocationListener {
 
     // ---------- Поездка ----------
 
-    @SuppressLint("MissingPermission")
-    private fun startTrip(intent: Intent) {
+    private fun startTrip(intent: Intent, redelivered: Boolean) {
         cleanup()
         val place = Place(
-            intent.getStringExtra(EXTRA_NAME) ?: "Остановка",
+            intent.getStringExtra(EXTRA_NAME) ?: s(R.string.dest_fallback),
             intent.getDoubleExtra(EXTRA_LAT, 0.0),
             intent.getDoubleExtra(EXTRA_LON, 0.0),
         )
         dest = place
-        phase = Phase.WAITING_GPS
-        lastFix = null
-        smoothedSpeed = null
+        simulated = intent.getBooleanExtra(EXTRA_SIMULATE, false)
+        resetTripFields()
 
-        try {
-            ServiceCompat.startForeground(
-                this, ID_TRIP, tripNotification("Ищу GPS…"),
-                if (Build.VERSION.SDK_INT >= 29) ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION else 0,
-            )
-        } catch (e: Exception) {
+        val saved = if (redelivered) savedStartedAt(place) else null
+        startedAt = saved ?: System.currentTimeMillis()
+        backupAt = prefs.backupMinutes.takeIf { it > 0 }?.let { startedAt + it * 60_000L }
+
+        if (!goForeground(tripNotification(s(R.string.notif_waiting_gps)), withLocation = true)) {
             stopSelf()
             return
         }
+        saveTrip(place)
 
         // не даём процессору уснуть, пока идёт поездка (максимум 6 часов)
         wakeLock = getSystemService(PowerManager::class.java)
             .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "NeProspi:trip")
             .apply { acquire(6 * 60 * 60 * 1000L) }
 
-        if (intent.getBooleanExtra(EXTRA_SIMULATE, false)) {
-            startSimulation(place)
-        } else {
-            val lm = getSystemService(LocationManager::class.java)
-            for (provider in listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)) {
-                if (provider in lm.allProviders) {
-                    runCatching { lm.requestLocationUpdates(provider, 2000L, 0f, this, Looper.getMainLooper()) }
-                }
-            }
-            listeningGps = true
-        }
-
-        state = State(active = true, dest = place, phase = phase)
-        publish()
+        if (simulated) startSimulation(place) else startLocationUpdates()
+        scheduleBackup()
+        handler.postDelayed(watchdog, 20_000)
+        publishState()
     }
 
-    private fun stopTrip() {
+    private fun resetTripFields() {
+        phase = Phase.WAITING_GPS
+        reason = Reason.ARRIVED
+        firstAlarmReason = null
+        checkDeadline = null
+        lastFix = null
+        lastFixAt = System.currentTimeMillis()
+        smoothedSpeed = null
+        closestDistance = Double.MAX_VALUE
+        passedFired = false
+        gpsLost = false
+        batteryWarned = false
+        smsStartSent = false
+        smsArrivedSent = false
+    }
+
+    /** Завершение поездки. result == null — определить по тому, был ли будильник. */
+    private fun finishTrip(result: String?) {
+        val place = dest
+        if (place != null && state.active) {
+            val r = result ?: when (firstAlarmReason) {
+                null -> TripRecord.STOPPED
+                Reason.BACKUP -> TripRecord.BACKUP
+                else -> TripRecord.ARRIVED
+            }
+            prefs.addHistory(TripRecord(place.name, startedAt, System.currentTimeMillis(), r, simulated))
+        }
         cleanup()
+        tripStore.edit().clear().apply()
         dest = null
         state = State()
         publish()
@@ -208,10 +311,68 @@ class TripService : Service(), LocationListener {
     private fun cleanup() {
         stopLocationUpdates()
         stopSimulation()
-        stopAlarm()
-        nm.cancel(ID_WARN)
+        stopAlarmEffects()
+        cancelBackup()
+        handler.removeCallbacks(watchdog)
+        handler.removeCallbacks(checkPromptRunnable)
+        handler.removeCallbacks(repeatRunnable)
+        listOf(ID_WARN, ID_ALARM, ID_GPS, ID_BATTERY).forEach { nm.cancel(it) }
         wakeLock?.let { if (it.isHeld) it.release() }
         wakeLock = null
+    }
+
+    /** Переводит службу в foreground. Сначала пробуем с GPS, если нельзя — как проигрывание звука. */
+    private fun goForeground(notification: Notification, withLocation: Boolean): Boolean {
+        val types = mutableListOf<Int>()
+        if (Build.VERSION.SDK_INT >= 29) {
+            if (withLocation) types += ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION
+            types += ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            types += 0
+        }
+        for (type in types) {
+            try {
+                ServiceCompat.startForeground(this, ID_TRIP, notification, type)
+                return true
+            } catch (e: Exception) {
+                // пробуем следующий вариант
+            }
+        }
+        return false
+    }
+
+    private fun saveTrip(place: Place) {
+        tripStore.edit()
+            .putString("name", place.name)
+            .putString("lat", place.lat.toString())
+            .putString("lon", place.lon.toString())
+            .putLong("startedAt", startedAt)
+            .putBoolean("simulated", simulated)
+            .apply()
+    }
+
+    private fun savedTrip(): Place? {
+        val name = tripStore.getString("name", null) ?: return null
+        val lat = tripStore.getString("lat", null)?.toDoubleOrNull() ?: return null
+        val lon = tripStore.getString("lon", null)?.toDoubleOrNull() ?: return null
+        return Place(name, lat, lon)
+    }
+
+    private fun savedStartedAt(place: Place): Long? =
+        if (savedTrip() == place) tripStore.getLong("startedAt", 0).takeIf { it > 0 } else null
+
+    // ---------- GPS ----------
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
+        val lm = getSystemService(LocationManager::class.java)
+        for (provider in listOf(LocationManager.GPS_PROVIDER, LocationManager.NETWORK_PROVIDER)) {
+            if (provider in lm.allProviders) {
+                runCatching { lm.requestLocationUpdates(provider, 2000L, 0f, this, Looper.getMainLooper()) }
+            }
+        }
+        listeningGps = true
     }
 
     private fun stopLocationUpdates() {
@@ -237,7 +398,7 @@ class TripService : Service(), LocationListener {
                     latitude = lat
                     longitude = lon
                     accuracy = 5f
-                    speed = v.toFloat()
+                    speed = if (d > 1) v.toFloat() else 0f
                     time = System.currentTimeMillis()
                 }
                 onLocationChanged(fake)
@@ -255,48 +416,66 @@ class TripService : Service(), LocationListener {
 
     override fun onLocationChanged(loc: Location) {
         val place = dest ?: return
-        if (phase == Phase.ALARM) return
-
         val last = lastFix
         // грубая точка от вышек не должна перебивать недавнюю точную точку GPS
         if (last != null && loc.accuracy > 100 && last.accuracy <= 100 && loc.time - last.time < 30_000) return
 
         val d = Geo.distance(loc.latitude, loc.longitude, place.lat, place.lon)
-
         var sample: Double? = if (loc.hasSpeed()) loc.speed.toDouble() else null
         if (sample == null && last != null && loc.accuracy < 50 && last.accuracy < 50) {
             val dt = (loc.time - last.time) / 1000.0
             if (dt > 0.5) sample = last.distanceTo(loc) / dt
         }
-        val s = sample
-        if (s != null) smoothedSpeed = smoothedSpeed?.let { it * 0.7 + s * 0.3 } ?: s
+        val sp = sample
+        if (sp != null) smoothedSpeed = smoothedSpeed?.let { it * 0.7 + sp * 0.3 } ?: sp
         lastFix = loc
+        lastFixAt = System.currentTimeMillis()
+        if (gpsLost) {
+            gpsLost = false
+            nm.cancel(ID_GPS)
+        }
         val eta = smoothedSpeed?.takeIf { it > 1.0 }?.let { d / it }
 
-        val hit: Boolean
-        val warn: Boolean
-        if (prefs.mode == Prefs.MODE_DIST) {
-            val r = prefs.distMeters
-            hit = d <= r
-            warn = d <= r * 2.5
-        } else {
-            val t = prefs.minutes * 60.0
-            hit = (eta != null && eta <= t) || d <= 150
-            warn = eta != null && eta <= t * 2.5
+        if (!smsStartSent) {
+            smsStartSent = true
+            sendSms(s(R.string.sms_start, place.name, Geo.mapLink(loc.latitude, loc.longitude)))
         }
 
-        if (phase == Phase.WAITING_GPS) phase = Phase.RIDING
-        when {
-            hit -> startAlarm()
-            warn && phase == Phase.RIDING -> sendWarning()
+        when (phase) {
+            Phase.WAITING_GPS, Phase.RIDING, Phase.WARNED -> {
+                if (phase == Phase.WAITING_GPS) phase = Phase.RIDING
+                closestDistance = min(closestDistance, d)
+                val hit: Boolean
+                val warn: Boolean
+                if (prefs.mode == Prefs.MODE_DIST) {
+                    val r = prefs.distMeters
+                    hit = d <= r
+                    warn = d <= r * 2.5
+                } else {
+                    val t = prefs.minutes * 60.0
+                    hit = (eta != null && eta <= t) || d <= 150
+                    warn = eta != null && eta <= t * 2.5
+                }
+                when {
+                    hit -> startAlarm(Reason.ARRIVED)
+                    warn && phase == Phase.RIDING -> sendWarning()
+                }
+            }
+            Phase.ALARM, Phase.CHECK -> {
+                // человек выключил будильник, но автобус уехал дальше — будим снова
+                closestDistance = min(closestDistance, d)
+                if (!passedFired && firstAlarmReason != Reason.BACKUP &&
+                    d > closestDistance + 400 && (smoothedSpeed ?: 0.0) > 3.0
+                ) {
+                    passedFired = true
+                    startAlarm(Reason.PASSED)
+                }
+            }
         }
 
-        state = State(true, place, phase, loc.latitude, loc.longitude, d, eta, smoothedSpeed, loc.accuracy)
+        state = currentState(loc, d, eta)
         publish()
-        if (phase != Phase.ALARM) {
-            val etaText = eta?.let { " · прибытие через ${Geo.formatEta(it)}" } ?: ""
-            nm.notify(ID_TRIP, tripNotification("Осталось ${Geo.formatDistance(d)}$etaText"))
-        }
+        updateTripNotification(d, eta)
     }
 
     override fun onProviderEnabled(provider: String) {}
@@ -304,29 +483,130 @@ class TripService : Service(), LocationListener {
     @Deprecated("Deprecated in Java")
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
+    private fun currentState(loc: Location? = lastFix, d: Double? = state.distance, eta: Double? = state.etaSec) = State(
+        active = true,
+        dest = dest,
+        phase = phase,
+        reason = reason,
+        lat = loc?.latitude,
+        lon = loc?.longitude,
+        distance = d,
+        etaSec = eta,
+        speed = smoothedSpeed,
+        accuracy = loc?.accuracy,
+        gpsLost = gpsLost,
+        backupAt = backupAt,
+        checkDeadline = checkDeadline,
+        simulated = simulated,
+    )
+
+    private fun publishState() {
+        state = currentState()
+        publish()
+    }
+
     private fun publish() = listeners.forEach { it(state) }
+
+    private fun checkGps() {
+        if (simulated || phase == Phase.ALARM || phase == Phase.CHECK || gpsLost) return
+        if (System.currentTimeMillis() - lastFixAt < GPS_LOST_MS) return
+        gpsLost = true
+        val text = backupAt?.let { s(R.string.gps_lost_text, timeText(it)) } ?: s(R.string.gps_lost_text_no_backup)
+        nm.notify(ID_GPS, infoNotification(s(R.string.gps_lost_title), text))
+        publishState()
+    }
+
+    private fun checkBattery() {
+        if (batteryWarned) return
+        val (level, charging) = batteryLevel(this)
+        if (level in 0..10 && !charging) {
+            batteryWarned = true
+            nm.notify(ID_BATTERY, infoNotification(s(R.string.battery_trip_title, level), s(R.string.battery_trip_text)))
+        }
+    }
+
+    // ---------- Страховочный таймер ----------
+
+    private fun backupPendingIntent(): PendingIntent = PendingIntent.getBroadcast(
+        this, 10, Intent(this, AlarmReceiver::class.java),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
+
+    private fun scheduleBackup() {
+        val at = backupAt ?: return
+        val canExact = Build.VERSION.SDK_INT < 31 || alarmManager.canScheduleExactAlarms()
+        if (canExact) {
+            // AlarmManager сработает, даже если система закроет приложение
+            val show = PendingIntent.getActivity(
+                this, 11, Intent(this, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE,
+            )
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(at, show), backupPendingIntent())
+        } else {
+            handler.postDelayed(backupRunnable, max(0L, at - System.currentTimeMillis()))
+        }
+    }
+
+    private fun cancelBackup() {
+        handler.removeCallbacks(backupRunnable)
+        runCatching { alarmManager.cancel(backupPendingIntent()) }
+    }
+
+    private fun onBackupIntent() {
+        if (state.active) {
+            // служба уже работает; startForegroundService требует снова вызвать startForeground
+            goForeground(tripNotification(s(R.string.notif_alarm_ringing)), withLocation = !simulated)
+            onBackup()
+            return
+        }
+        // система закрыла приложение — восстанавливаем поездку и будим
+        val place = savedTrip()
+        if (!goForeground(tripNotification(s(R.string.notif_alarm_ringing)), withLocation = false) || place == null) {
+            tripStore.edit().clear().apply()
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+            stopSelf()
+            return
+        }
+        dest = place
+        simulated = tripStore.getBoolean("simulated", false)
+        resetTripFields()
+        startedAt = tripStore.getLong("startedAt", System.currentTimeMillis())
+        wakeLock = getSystemService(PowerManager::class.java)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "NeProspi:trip")
+            .apply { acquire(30 * 60 * 1000L) }
+        onBackup()
+    }
+
+    private fun onBackup() {
+        backupAt = null
+        if (phase != Phase.ALARM && phase != Phase.CHECK) startAlarm(Reason.BACKUP)
+    }
 
     // ---------- Уведомления ----------
 
     private fun createChannels() {
         nm.createNotificationChannel(
-            NotificationChannel(CH_TRIP, "Поездка", NotificationManager.IMPORTANCE_LOW).apply {
-                description = "Расстояние до остановки во время поездки"
+            NotificationChannel(CH_TRIP, s(R.string.ch_trip), NotificationManager.IMPORTANCE_LOW).apply {
+                description = s(R.string.ch_trip_desc)
             }
         )
         nm.createNotificationChannel(
-            NotificationChannel(CH_WARN, "Скоро выходить", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Мягкое предупреждение перед остановкой"
+            NotificationChannel(CH_WARN, s(R.string.ch_warn), NotificationManager.IMPORTANCE_HIGH).apply {
+                description = s(R.string.ch_warn_desc)
                 enableVibration(true)
                 vibrationPattern = longArrayOf(0, 300, 150, 300)
             }
         )
         nm.createNotificationChannel(
-            NotificationChannel(CH_ALARM, "Будильник", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Громкий будильник у остановки"
-                setSound(null, null) // звук включает сама служба на громкости будильника
+            NotificationChannel(CH_ALARM, s(R.string.ch_alarm), NotificationManager.IMPORTANCE_HIGH).apply {
+                description = s(R.string.ch_alarm_desc)
+                setSound(null, null) // звук включает сама служба
                 enableVibration(false)
                 lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CH_INFO, s(R.string.ch_info), NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = s(R.string.ch_info_desc)
             }
         )
     }
@@ -336,23 +616,45 @@ class TripService : Service(), LocationListener {
         PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
     )
 
-    private fun tripNotification(text: String): Notification {
-        val open = PendingIntent.getActivity(
-            this, 0, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
-            PendingIntent.FLAG_IMMUTABLE,
-        )
-        return NotificationCompat.Builder(this, CH_TRIP)
+    private fun openAppIntent(): PendingIntent = PendingIntent.getActivity(
+        this, 0, Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+        PendingIntent.FLAG_IMMUTABLE,
+    )
+
+    private fun tripNotification(text: String): Notification =
+        NotificationCompat.Builder(this, CH_TRIP)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle("Еду до: ${dest?.name ?: "остановки"}")
+            .setContentTitle(s(R.string.notif_trip_title, dest?.name ?: s(R.string.dest_fallback)))
             .setContentText(text)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setSilent(true)
-            .setContentIntent(open)
-            .addAction(0, "Завершить", stopPendingIntent())
+            .setContentIntent(openAppIntent())
+            .addAction(0, s(R.string.notif_finish), stopPendingIntent())
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
             .build()
+
+    private fun updateTripNotification(d: Double, eta: Double?) {
+        val text = when (phase) {
+            Phase.ALARM -> s(R.string.notif_alarm_ringing)
+            Phase.CHECK -> s(R.string.notif_check_soon)
+            else -> {
+                val left = Geo.formatDistance(lctx, d)
+                if (eta != null) s(R.string.notif_left_eta, left, Geo.formatEta(lctx, eta)) else s(R.string.notif_left, left)
+            }
+        }
+        nm.notify(ID_TRIP, tripNotification(text))
     }
+
+    private fun infoNotification(title: String, text: String): Notification =
+        NotificationCompat.Builder(this, CH_INFO)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setContentIntent(openAppIntent())
+            .setAutoCancel(true)
+            .build()
 
     private fun sendWarning() {
         phase = Phase.WARNED
@@ -360,8 +662,8 @@ class TripService : Service(), LocationListener {
             ID_WARN,
             NotificationCompat.Builder(this, CH_WARN)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("Скоро ваша остановка")
-                .setContentText("Приготовьтесь выходить: ${dest?.name}")
+                .setContentTitle(s(R.string.warn_title))
+                .setContentText(s(R.string.warn_text, dest?.name.orEmpty()))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_REMINDER)
                 .setAutoCancel(true)
@@ -369,45 +671,115 @@ class TripService : Service(), LocationListener {
         )
     }
 
+    private fun timeText(at: Long): String = DateFormat.getTimeInstance(DateFormat.SHORT).format(Date(at))
+
     // ---------- Будильник ----------
 
-    private fun startAlarm() {
-        phase = Phase.ALARM
-        stopLocationUpdates()
-        stopSimulation()
-        nm.cancel(ID_WARN)
+    private fun alarmActivityIntent(): PendingIntent = PendingIntent.getActivity(
+        this, 2,
+        Intent(this, AlarmActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION),
+        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+    )
 
-        val alarmIntent = Intent(this, AlarmActivity::class.java)
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-        val fullScreen = PendingIntent.getActivity(
-            this, 2, alarmIntent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
-        )
+    /** Уведомление, которое открывает экран будильника поверх блокировки. */
+    private fun showFullScreen(title: String, text: String) {
+        val fullScreen = alarmActivityIntent()
+        // обновление уже показанного уведомления не открывает экран заново — поэтому сначала убираем старое
+        nm.cancel(ID_ALARM)
         nm.notify(
             ID_ALARM,
             NotificationCompat.Builder(this, CH_ALARM)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle("⏰ Выходите!")
-                .setContentText("Вы подъезжаете: ${dest?.name}")
+                .setContentTitle(title)
+                .setContentText(text)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setOngoing(true)
-                .setFullScreenIntent(fullScreen, true) // показывает экран будильника поверх блокировки
-                .setContentIntent(fullScreen)
-                .addAction(0, "Я проснулся", stopPendingIntent())
+                .setFullScreenIntent(fullScreen, true)
+                .setContentIntent(fullScreen) // выключить можно только на экране будильника, удержанием
                 .build()
         )
-        nm.notify(ID_TRIP, tripNotification("Будильник звонит"))
-        // если приложение сейчас открыто, показываем экран будильника сразу
-        runCatching { startActivity(alarmIntent) }
-
-        raiseAlarmVolume()
-        playSound()
-        vibrate()
+        // если приложение сейчас на экране, открываем сразу
+        runCatching {
+            startActivity(
+                Intent(this, AlarmActivity::class.java)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+            )
+        }
     }
 
-    private fun stopAlarm() {
+    private fun startAlarm(why: Reason) {
+        handler.removeCallbacks(checkPromptRunnable)
+        handler.removeCallbacks(repeatRunnable)
+        stopAlarmEffects()
+        phase = Phase.ALARM
+        reason = why
+        checkDeadline = null
+        if (firstAlarmReason == null) firstAlarmReason = why
+        nm.cancel(ID_WARN)
+        if (why == Reason.BACKUP) cancelBackup()
+
+        val place = dest
+        val name = place?.name.orEmpty()
+        val (title, text) = when (why) {
+            Reason.ARRIVED -> s(R.string.alarm_title) to s(R.string.alarm_text, name)
+            Reason.BACKUP -> s(R.string.alarm_backup_title) to
+                s(R.string.alarm_backup_text, ((System.currentTimeMillis() - startedAt) / 60_000).toInt())
+            Reason.PASSED -> s(R.string.alarm_passed_title) to s(R.string.alarm_passed_text, name)
+            Reason.REPEAT -> s(R.string.alarm_repeat_title) to s(R.string.alarm_text, name)
+        }
+        showFullScreen(title, text)
+        nm.notify(ID_TRIP, tripNotification(s(R.string.notif_alarm_ringing)))
+        startAlarmEffects()
+
+        if (why == Reason.ARRIVED && !smsArrivedSent && place != null) {
+            smsArrivedSent = true
+            val loc = lastFix
+            val link = if (loc != null) Geo.mapLink(loc.latitude, loc.longitude) else Geo.mapLink(place.lat, place.lon)
+            sendSms(s(R.string.sms_arrived, name, link))
+        }
+        publishState()
+    }
+
+    /** Будильник выключен удержанием: через минуту спросим, проснулся ли человек. */
+    private fun onDismiss() {
+        if (phase != Phase.ALARM) return
+        stopAlarmEffects()
+        nm.cancel(ID_ALARM)
+        phase = Phase.CHECK
+        checkDeadline = null
+        handler.postDelayed(checkPromptRunnable, CHECK_DELAY_MS)
+        nm.notify(ID_TRIP, tripNotification(s(R.string.notif_check_soon)))
+        publishState()
+    }
+
+    private fun showCheckPrompt() {
+        if (phase != Phase.CHECK) return
+        checkDeadline = System.currentTimeMillis() + CHECK_ANSWER_MS
+        showFullScreen(s(R.string.check_title), s(R.string.check_text))
+        vibrateOnce(longArrayOf(0, 400, 200, 400))
+        handler.postDelayed(repeatRunnable, CHECK_ANSWER_MS)
+        publishState()
+    }
+
+    private fun startAlarmEffects() {
+        if (!prefs.vibrationOnly) {
+            if (prefs.headphonesOnly) {
+                if (headphonesConnected()) playSound(AudioAttributes.USAGE_MEDIA)
+            } else {
+                raiseAlarmVolume()
+                playSound(AudioAttributes.USAGE_ALARM)
+            }
+        }
+        vibrateAlarm()
+        if (prefs.flashlight) startFlash()
+    }
+
+    private fun stopAlarmEffects() {
         handler.removeCallbacks(rampVolume)
+        handler.removeCallbacks(flashRunnable)
+        if (torchOn) setTorch(false)
         player?.runCatching { stop(); release() }
         player = null
         tone?.runCatching { stopTone(); release() }
@@ -415,7 +787,15 @@ class TripService : Service(), LocationListener {
         vibrator.cancel()
         savedAlarmVolume?.let { runCatching { audio.setStreamVolume(AudioManager.STREAM_ALARM, it, 0) } }
         savedAlarmVolume = null
-        nm.cancel(ID_ALARM)
+    }
+
+    private fun headphonesConnected(): Boolean {
+        val types = mutableSetOf(
+            AudioDeviceInfo.TYPE_WIRED_HEADSET, AudioDeviceInfo.TYPE_WIRED_HEADPHONES,
+            AudioDeviceInfo.TYPE_BLUETOOTH_A2DP, AudioDeviceInfo.TYPE_USB_HEADSET,
+        )
+        if (Build.VERSION.SDK_INT >= 31) types += AudioDeviceInfo.TYPE_BLE_HEADSET
+        return audio.getDevices(AudioManager.GET_DEVICES_OUTPUTS).any { it.type in types }
     }
 
     /** Если громкость будильника почти на нуле — поднимаем её, чтобы точно разбудить. */
@@ -431,16 +811,18 @@ class TripService : Service(), LocationListener {
         }
     }
 
-    private fun playSound() {
-        val uri = RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM)
+    private fun playSound(usage: Int) {
+        val uri = prefs.alarmSound?.let { Uri.parse(it) }
+            ?: RingtoneManager.getActualDefaultRingtoneUri(this, RingtoneManager.TYPE_ALARM)
             ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
             ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
-        volume = 0.25f
+        // в наушниках начинаем тише, чтобы не оглушить
+        volume = if (usage == AudioAttributes.USAGE_MEDIA) 0.1f else 0.25f
         try {
             player = MediaPlayer().apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_ALARM) // звучит даже в беззвучном режиме
+                        .setUsage(usage)
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .build()
                 )
@@ -450,24 +832,68 @@ class TripService : Service(), LocationListener {
                 setVolume(volume, volume)
                 start()
             }
-            handler.postDelayed(rampVolume, 1000) // громкость нарастает
+            handler.postDelayed(rampVolume, 1000)
         } catch (e: Exception) {
             player?.release()
             player = null
-            tone = runCatching {
-                ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME)
-                    .also { it.startTone(ToneGenerator.TONE_SUP_RINGTONE) }
-            }.getOrNull()
+            if (usage == AudioAttributes.USAGE_ALARM) {
+                tone = runCatching {
+                    ToneGenerator(AudioManager.STREAM_ALARM, ToneGenerator.MAX_VOLUME)
+                        .also { it.startTone(ToneGenerator.TONE_SUP_RINGTONE) }
+                }.getOrNull()
+            }
         }
     }
 
     @Suppress("DEPRECATION")
-    private fun vibrate() {
-        val effect = VibrationEffect.createWaveform(longArrayOf(0, 700, 300, 700, 300, 1200, 600), 0)
+    private fun vibrate(effect: VibrationEffect) {
         if (Build.VERSION.SDK_INT >= 33) {
             vibrator.vibrate(effect, VibrationAttributes.createForUsage(VibrationAttributes.USAGE_ALARM))
         } else {
             vibrator.vibrate(effect, AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build())
         }
     }
+
+    private fun vibrateAlarm() = vibrate(VibrationEffect.createWaveform(longArrayOf(0, 700, 300, 700, 300, 1200, 600), 0))
+
+    private fun vibrateOnce(pattern: LongArray) = vibrate(VibrationEffect.createWaveform(pattern, -1))
+
+    private fun startFlash() {
+        val cm = getSystemService(CameraManager::class.java)
+        torchCameraId = runCatching {
+            cm.cameraIdList.firstOrNull {
+                cm.getCameraCharacteristics(it).get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
+            }
+        }.getOrNull()
+        if (torchCameraId != null) handler.post(flashRunnable)
+    }
+
+    private fun setTorch(on: Boolean) {
+        val id = torchCameraId ?: return
+        runCatching { getSystemService(CameraManager::class.java).setTorchMode(id, on) }
+        torchOn = on
+    }
+
+    // ---------- SMS близким ----------
+
+    private fun sendSms(text: String) {
+        val phone = prefs.contactPhone.trim()
+        if (simulated || !prefs.smsEnabled || phone.isEmpty()) return
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return
+        runCatching {
+            val sms = if (Build.VERSION.SDK_INT >= 31) getSystemService(SmsManager::class.java)
+            else @Suppress("DEPRECATION") SmsManager.getDefault()
+            sms.sendMultipartTextMessage(phone, null, sms.divideMessage(text), null, null)
+        }
+    }
+}
+
+/** Уровень заряда в процентах и заряжается ли телефон. */
+fun batteryLevel(ctx: Context): Pair<Int, Boolean> {
+    val intent = ctx.registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)) ?: return -1 to false
+    val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+    val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+    val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+    val charging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL
+    return (if (level >= 0 && scale > 0) level * 100 / scale else -1) to charging
 }

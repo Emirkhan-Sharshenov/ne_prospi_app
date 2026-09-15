@@ -5,21 +5,24 @@
     android:background="#D10000"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="28dp">
 
     <TextView
+        android:id="@+id/alarmEmoji"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="⏰"
         android:textSize="80sp" />
 
     <TextView
+        android:id="@+id/alarmBig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="ВЫХОДИТЕ!"
+        android:gravity="center"
+        android:text="@string/alarm_big"
         android:textColor="#FFFFFF"
-        android:textSize="46sp"
+        android:textSize="42sp"
         android:textStyle="bold" />
 
     <TextView
@@ -31,16 +34,43 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp" />
 
+    <FrameLayout
+        android:id="@+id/holdBtn"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/hold_bg"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ProgressBar
+            android:id="@+id/holdProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:max="1000"
+            android:progressDrawable="@drawable/hold_progress" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="@string/hold_to_dismiss"
+            android:textColor="#000000"
+            android:textSize="21sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
     <Button
         android:id="@+id/awakeBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="92dp"
         android:layout_marginTop="48dp"
         android:backgroundTint="#FFFFFF"
-        android:paddingHorizontal="40dp"
-        android:paddingVertical="20dp"
-        android:text="Я проснулся"
+        android:text="@string/im_awake"
         android:textColor="#000000"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:visibility="gone" />
 </LinearLayout>

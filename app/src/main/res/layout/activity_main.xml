@@ -6,6 +6,42 @@
     android:background="@color/bg"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="4dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/app_title"
+            android:textColor="@color/text"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/historyBtn"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/history"
+            android:text="🕘"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/settingsBtn"
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/settings"
+            android:text="⚙️"
+            android:textSize="20sp" />
+    </LinearLayout>
+
     <org.osmdroid.views.MapView
         android:id="@+id/map"
         android:layout_width="match_parent"
@@ -26,7 +62,7 @@
             <!-- 1. Куда едем -->
             <LinearLayout style="@style/Card">
 
-                <TextView style="@style/CardTitle" android:text="1. Куда едем" />
+                <TextView style="@style/CardTitle" android:text="@string/card_where" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -39,7 +75,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:hint="Улица, станция, остановка…"
+                        android:hint="@string/search_hint"
                         android:imeOptions="actionSearch"
                         android:inputType="text"
                         android:textColor="@color/text"
@@ -50,7 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Найти" />
+                        android:text="@string/search_btn" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -63,7 +99,7 @@
                     android:id="@+id/destText"
                     style="@style/Muted"
                     android:layout_marginTop="10dp"
-                    android:text="Или нажмите на карту, чтобы отметить остановку."
+                    android:text="@string/dest_hint"
                     android:textColor="@color/text"
                     android:textSize="15sp" />
 
@@ -72,7 +108,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="⭐ Сохранить место"
+                    android:text="@string/save_place"
                     android:visibility="gone" />
 
                 <LinearLayout
@@ -85,7 +121,7 @@
             <!-- 2. Когда будить -->
             <LinearLayout style="@style/Card">
 
-                <TextView style="@style/CardTitle" android:text="2. Когда будить" />
+                <TextView style="@style/CardTitle" android:text="@string/card_when" />
 
                 <RadioGroup
                     android:id="@+id/modeGroup"
@@ -94,15 +130,13 @@
 
                     <RadioButton
                         android:id="@+id/modeDist"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="По расстоянию до остановки" />
+                        style="@style/Radio"
+                        android:text="@string/mode_dist" />
 
                     <RadioButton
                         android:id="@+id/modeTime"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="За несколько минут до прибытия" />
+                        style="@style/Radio"
+                        android:text="@string/mode_time" />
                 </RadioGroup>
 
                 <LinearLayout
@@ -118,20 +152,33 @@
                         android:layout_weight="1"
                         android:paddingVertical="12dp" />
 
-                    <TextView
-                        android:id="@+id/valueText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:minWidth="72dp"
-                        android:textColor="@color/text"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
+                    <TextView android:id="@+id/valueText" style="@style/SliderValue" />
                 </LinearLayout>
 
                 <TextView
                     style="@style/Muted"
-                    android:text="Сначала придёт мягкое уведомление, потом — громкий будильник поверх экрана блокировки." />
+                    android:layout_marginTop="12dp"
+                    android:text="@string/backup_title"
+                    android:textColor="@color/text"
+                    android:textSize="15sp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <SeekBar
+                        android:id="@+id/backupSeek"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:paddingVertical="12dp" />
+
+                    <TextView android:id="@+id/backupText" style="@style/SliderValue" />
+                </LinearLayout>
+
+                <TextView style="@style/Muted" android:text="@string/when_note" />
             </LinearLayout>
 
             <!-- 3. Поездка -->
@@ -147,7 +194,7 @@
                         style="@style/CardTitle"
                         android:layout_width="0dp"
                         android:layout_weight="1"
-                        android:text="3. Поездка" />
+                        android:text="@string/card_trip" />
 
                     <TextView
                         android:id="@+id/phaseText"
@@ -157,7 +204,7 @@
                         android:background="@drawable/badge_bg"
                         android:paddingHorizontal="10dp"
                         android:paddingVertical="3dp"
-                        android:text="не начата"
+                        android:text="@string/phase_idle"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -168,12 +215,12 @@
                     android:orientation="horizontal">
 
                     <LinearLayout style="@style/StatBox">
-                        <TextView style="@style/StatLabel" android:text="До остановки" />
+                        <TextView style="@style/StatLabel" android:text="@string/stat_distance" />
                         <TextView android:id="@+id/distText" style="@style/StatValue" />
                     </LinearLayout>
 
                     <LinearLayout style="@style/StatBox">
-                        <TextView style="@style/StatLabel" android:text="Прибытие через" />
+                        <TextView style="@style/StatLabel" android:text="@string/stat_eta" />
                         <TextView android:id="@+id/etaText" style="@style/StatValue" />
                     </LinearLayout>
                 </LinearLayout>
@@ -184,15 +231,20 @@
                     android:orientation="horizontal">
 
                     <LinearLayout style="@style/StatBox">
-                        <TextView style="@style/StatLabel" android:text="Скорость" />
+                        <TextView style="@style/StatLabel" android:text="@string/stat_speed" />
                         <TextView android:id="@+id/speedText" style="@style/StatValue" />
                     </LinearLayout>
 
                     <LinearLayout style="@style/StatBox">
-                        <TextView style="@style/StatLabel" android:text="Точность GPS" />
+                        <TextView style="@style/StatLabel" android:text="@string/stat_accuracy" />
                         <TextView android:id="@+id/accText" style="@style/StatValue" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tripStatus"
+                    style="@style/Muted"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/startBtn"
@@ -200,7 +252,7 @@
                     android:layout_height="64dp"
                     android:layout_marginTop="12dp"
                     android:enabled="false"
-                    android:text="▶  Начать поездку"
+                    android:text="@string/start_trip"
                     android:textSize="17sp" />
 
                 <Button
@@ -209,7 +261,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
-                    android:text="🧪  Симуляция поездки (для проверки)" />
+                    android:text="@string/simulate_trip" />
 
                 <Button
                     android:id="@+id/stopBtn"
@@ -217,21 +269,27 @@
                     android:layout_height="64dp"
                     android:layout_marginTop="12dp"
                     android:backgroundTint="@color/danger"
-                    android:text="■  Завершить поездку"
+                    android:text="@string/stop_trip"
                     android:textColor="#FFFFFF"
                     android:textSize="17sp"
                     android:visibility="gone" />
 
-                <TextView
-                    style="@style/Muted"
-                    android:text="После старта можно заблокировать телефон и убрать в карман — приложение разбудит вас." />
+                <Button
+                    android:id="@+id/shareBtn"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/share_trip"
+                    android:visibility="gone" />
+
+                <TextView style="@style/Muted" android:text="@string/lock_note" />
 
                 <Button
                     android:id="@+id/batteryBtn"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="🔋 Разрешить работу в фоне без ограничений" />
+                    android:text="@string/battery_unrestricted" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

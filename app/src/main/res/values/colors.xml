@@ -1,11 +1,12 @@
 <resources>
-    <color name="bg">#0F1420</color>
-    <color name="card">#182033</color>
-    <color name="line">#2A3550</color>
-    <color name="text">#E8ECF5</color>
-    <color name="muted">#8D99B3</color>
-    <color name="accent">#4F8CFF</color>
-    <color name="danger">#E53935</color>
-    <color name="warn">#C98A00</color>
-    <color name="ok">#1F7A4D</color>
+    <!-- светлая тема (тёмная — в values-night) -->
+    <color name="bg">#F2F4F9</color>
+    <color name="card">#FFFFFF</color>
+    <color name="line">#D8DEEA</color>
+    <color name="text">#141A2A</color>
+    <color name="muted">#5E6A84</color>
+    <color name="accent">#2F6FE4</color>
+    <color name="danger">#D93030</color>
+    <color name="warn">#B97800</color>
+    <color name="ok">#2E7D4F</color>
 </resources>

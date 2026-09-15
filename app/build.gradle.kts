@@ -11,8 +11,12 @@ android {
         applicationId = "com.nesprosi.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
+    }
+
+    androidResources {
+        generateLocaleConfig = false
     }
 
     buildTypes {
@@ -35,4 +39,5 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("com.google.android.material:material:1.12.0")
     implementation("org.osmdroid:osmdroid-android:6.1.20")
+    implementation("org.osmdroid:osmdroid-mapsforge:6.1.20") // офлайн-карта
 }

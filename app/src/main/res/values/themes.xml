@@ -1,5 +1,5 @@
 <resources>
-    <style name="Theme.NeProspi" parent="Theme.Material3.Dark.NoActionBar">
+    <style name="Theme.NeProspi" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="android:colorBackground">@color/bg</item>
@@ -58,5 +58,33 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/text</item>
         <item name="android:text">—</item>
+    </style>
+
+    <style name="SliderValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">end</item>
+        <item name="android:minWidth">72dp</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Radio">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Switch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">6dp</item>
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="SwitchNote" parent="Muted">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
     </style>
 </resources>
