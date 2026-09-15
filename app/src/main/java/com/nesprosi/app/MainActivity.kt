@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
         private const val EXTRA_LAT = "lat"
         private const val EXTRA_LON = "lon"
         private const val SNAP_METERS = 80.0
-        private const val STOPS_MIN_ZOOM = 15.0
+        private const val STOPS_MIN_ZOOM = 16.0 // при меньшем масштабе значки закрывают улицы
         private const val STOPS_REFRESH_MS = 30L * 24 * 60 * 60 * 1000
     }
 

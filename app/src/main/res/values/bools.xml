@@ -1,0 +1,4 @@
+<resources>
+    <!-- тёмные значки в строке состояния на светлом фоне -->
+    <bool name="light_bars">true</bool>
+</resources>

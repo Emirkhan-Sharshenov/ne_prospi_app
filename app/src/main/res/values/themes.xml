@@ -4,6 +4,8 @@
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="android:colorBackground">@color/bg</item>
         <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowLightStatusBar">@bool/light_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/light_bars</item>
     </style>
 
     <style name="Card">
