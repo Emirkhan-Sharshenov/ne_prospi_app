@@ -589,8 +589,10 @@ class TripService : Service(), LocationListener {
         tts = TextToSpeech(this) { status ->
             val engine = tts ?: return@TextToSpeech
             if (status != TextToSpeech.SUCCESS) return@TextToSpeech
-            val lang = if (Lang.isKyrgyz(this)) java.util.Locale.forLanguageTag("ky") else java.util.Locale.forLanguageTag("ru")
-            if (engine.setLanguage(lang) < TextToSpeech.LANG_AVAILABLE) engine.setLanguage(java.util.Locale.forLanguageTag("ru"))
+            // язык приложения; если голоса для него нет (например, кыргызского) — русский, потом английский
+            val fallbacks = listOf(Lang.locale(this), java.util.Locale.forLanguageTag("ru"), java.util.Locale.ENGLISH)
+                .let { if (Lang.language(this) == "ky") it else listOf(it[0], java.util.Locale.ENGLISH) }
+            fallbacks.firstOrNull { engine.setLanguage(it) >= TextToSpeech.LANG_AVAILABLE }
             engine.setAudioAttributes(
                 AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_ASSISTANCE_NAVIGATION_GUIDANCE)

@@ -57,6 +57,10 @@
             android:name=".SetupActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".OfflineMapsActivity"
+            android:exported="false" />
+
         <receiver
             android:name=".TripWidget"
             android:exported="false"

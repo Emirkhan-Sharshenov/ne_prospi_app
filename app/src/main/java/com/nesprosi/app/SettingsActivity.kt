@@ -7,8 +7,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -30,15 +28,6 @@ class SettingsActivity : AppCompatActivity() {
     private lateinit var prefs: Prefs
     private lateinit var soundBtn: Button
     private lateinit var smsSwitch: MaterialSwitch
-    private lateinit var offlineStatus: TextView
-    private lateinit var offlineDownload: Button
-    private lateinit var offlineDelete: Button
-    private val handler = Handler(Looper.getMainLooper())
-    private val pollOffline = object : Runnable {
-        override fun run() {
-            if (renderOffline()) handler.postDelayed(this, 1000)
-        }
-    }
 
     private val ringtonePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK) return@registerForActivityResult
@@ -72,28 +61,27 @@ class SettingsActivity : AppCompatActivity() {
         prefs = Prefs(this)
         findViewById<View>(R.id.backBtn).setOnClickListener { finish() }
         findViewById<View>(R.id.setupBtn).setOnClickListener { startActivity(Intent(this, SetupActivity::class.java)) }
+        findViewById<View>(R.id.offlineMapsBtn).setOnClickListener { startActivity(Intent(this, OfflineMapsActivity::class.java)) }
 
         setupLanguage()
         setupTheme()
+        setupUnits()
         setupAlarm()
         setupFamily()
-        setupOffline()
     }
 
     override fun onResume() {
         super.onResume()
-        handler.post(pollOffline)
-    }
-
-    override fun onPause() {
-        handler.removeCallbacks(pollOffline)
-        super.onPause()
+        val count = OfflineMap.files(this).size
+        findViewById<TextView>(R.id.offlineSummary).text =
+            if (count == 0) getString(R.string.offline_none) else getString(R.string.offline_count, count)
     }
 
     private fun setupLanguage() {
         val group = findViewById<RadioGroup>(R.id.langGroup)
         group.check(
             when (Lang.current()) {
+                "en" -> R.id.langEn
                 "ru" -> R.id.langRu
                 "ky" -> R.id.langKy
                 else -> R.id.langSystem
@@ -101,6 +89,7 @@ class SettingsActivity : AppCompatActivity() {
         )
         group.setOnCheckedChangeListener { _, id ->
             val locales = when (id) {
+                R.id.langEn -> LocaleListCompat.forLanguageTags("en")
                 R.id.langRu -> LocaleListCompat.forLanguageTags("ru")
                 R.id.langKy -> LocaleListCompat.forLanguageTags("ky")
                 else -> LocaleListCompat.getEmptyLocaleList()
@@ -125,6 +114,24 @@ class SettingsActivity : AppCompatActivity() {
                 else -> Prefs.THEME_SYSTEM
             }
             prefs.applyTheme()
+        }
+    }
+
+    private fun setupUnits() {
+        val group = findViewById<RadioGroup>(R.id.unitsGroup)
+        group.check(
+            when (prefs.units) {
+                Prefs.UNITS_METRIC -> R.id.unitsMetric
+                Prefs.UNITS_IMPERIAL -> R.id.unitsImperial
+                else -> R.id.unitsAuto
+            }
+        )
+        group.setOnCheckedChangeListener { _, id ->
+            prefs.units = when (id) {
+                R.id.unitsMetric -> Prefs.UNITS_METRIC
+                R.id.unitsImperial -> Prefs.UNITS_IMPERIAL
+                else -> Prefs.UNITS_AUTO
+            }
         }
     }
 
@@ -162,37 +169,6 @@ class SettingsActivity : AppCompatActivity() {
                 smsPermission.launch(Manifest.permission.SEND_SMS)
             }
         }
-    }
-
-    private fun setupOffline() {
-        offlineStatus = findViewById(R.id.offlineStatus)
-        offlineDownload = findViewById(R.id.offlineDownload)
-        offlineDelete = findViewById(R.id.offlineDelete)
-        offlineDownload.text = getString(R.string.offline_download, OfflineMap.SIZE_MB)
-        offlineDownload.setOnClickListener {
-            OfflineMap.startDownload(this)
-            handler.removeCallbacks(pollOffline)
-            handler.post(pollOffline)
-        }
-        offlineDelete.setOnClickListener {
-            OfflineMap.delete(this)
-            renderOffline()
-        }
-        bindSwitch(R.id.offlineAlwaysSwitch, prefs.offlineAlways) { prefs.offlineAlways = it }
-    }
-
-    /** Показывает состояние офлайн-карты. true — идёт загрузка, нужно обновлять дальше. */
-    private fun renderOffline(): Boolean {
-        val status = OfflineMap.status(this)
-        offlineStatus.text = when (status) {
-            is OfflineMap.Status.Downloading -> getString(R.string.offline_downloading, status.percent)
-            OfflineMap.Status.Ready -> getString(R.string.offline_ready, (OfflineMap.file(this).length() / 1_000_000).toInt())
-            OfflineMap.Status.Failed -> getString(R.string.offline_failed)
-            OfflineMap.Status.NotDownloaded -> getString(R.string.offline_not_downloaded)
-        }
-        offlineDownload.visibility = if (status is OfflineMap.Status.NotDownloaded || status == OfflineMap.Status.Failed) View.VISIBLE else View.GONE
-        offlineDelete.visibility = if (status == OfflineMap.Status.NotDownloaded || status == OfflineMap.Status.Failed) View.GONE else View.VISIBLE
-        return status is OfflineMap.Status.Downloading
     }
 
     private fun bindSwitch(id: Int, value: Boolean, onChange: (Boolean) -> Unit): MaterialSwitch {

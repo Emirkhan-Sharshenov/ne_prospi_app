@@ -19,14 +19,9 @@
     <string name="sec_value">%1$d сек</string>
     <string name="minutes_value">%1$d мүн</string>
     <string name="speed_value">%1$d км/саат</string>
-    <string name="accuracy_value">±%1$d м</string>
 
     <!-- 1. Кайда барабыз -->
-    <string name="card_where">1. Кайда барасыз</string>
-    <string name="search_hint">Көчө, аялдама, район…</string>
-    <string name="search_btn">Табуу</string>
-    <string name="dest_hint">Же картаны басыңыз — чекит жакынкы аялдамага тартылат.</string>
-    <string name="dest_label">📍 %1$s</string>
+    <string name="search_hint">Көчө, аялдама, бекет…</string>
     <string name="resolving_address">📍 Дарек аныкталууда…</string>
     <string name="point_on_map">Картадагы чекит</string>
     <string name="point_near">Картадагы чекит · %1$s</string>
@@ -46,34 +41,18 @@
     <string name="nothing_found">Эч нерсе табылган жок</string>
 
     <!-- 2. Качан ойготуу -->
-    <string name="card_when">2. Качан ойготуу</string>
-    <string name="mode_dist">Аялдамага чейинки аралык боюнча</string>
-    <string name="mode_time">Жетерден бир нече мүнөт мурун</string>
-    <string name="backup_title">Камсыздандыруу: баары бир ойготуу</string>
     <string name="backup_off">өчүк</string>
-    <string name="when_note">Адегенде жумшак эскертме келет, андан кийин бекитилген экрандын үстүндө катуу ойготкуч шыңгырайт. GPS жоголсо да, камсыздандыруу ойготот.</string>
 
     <!-- 3. Сапар -->
-    <string name="card_trip">3. Сапар</string>
-    <string name="phase_idle">башталган жок</string>
     <string name="phase_waiting">GPS изделүүдө…</string>
     <string name="phase_riding">жолдо</string>
     <string name="phase_warned">жакында түшөсүз</string>
     <string name="phase_alarm">ойготкуч!</string>
     <string name="phase_check">текшерүү</string>
     <string name="phase_gps_lost">GPS жок</string>
-    <string name="stat_distance">Аялдамага чейин</string>
-    <string name="stat_eta">Жетүүгө чейин</string>
-    <string name="stat_speed">Ылдамдык</string>
-    <string name="stat_accuracy">GPS тактыгы</string>
     <string name="start_trip">▶  Сапарды баштоо</string>
-    <string name="simulate_trip">🧪  Сапарды сыноо (текшерүү үчүн)</string>
-    <string name="stop_trip">■  Сапарды бүтүрүү</string>
-    <string name="share_trip">📤  Жакындарга жөнөтүү</string>
     <string name="backup_at">🛟 Камсыздандыруу %1$s иштейт</string>
     <string name="simulation_note">🧪 Сыноо: жакындарга SMS жөнөтүлбөйт</string>
-    <string name="lock_note">Баштагандан кийин телефонду бекитип, чөнтөккө салсаңыз болот — тиркеме сизди ойготот.</string>
-    <string name="battery_unrestricted">🔋 Фондо чектөөсүз иштөөгө уруксат берүү</string>
 
     <!-- баштоодон мурунку диалогдор -->
     <string name="perm_location_title">Жайгашкан жерге уруксат керек</string>
@@ -162,22 +141,17 @@
     <string name="alarm_sound">🎵 Обон: %1$s</string>
     <string name="alarm_sound_default">стандарттык</string>
     <string name="vibration_only">Үнсүз, титирөө гана</string>
-    <string name="vibration_only_desc">Маршруткадагы кошуналарды ойготпош үчүн</string>
+    <string name="vibration_only_desc">Транспорттогу кошуналарды ойготпош үчүн</string>
     <string name="flashlight">Фонарь менен жымылдатуу</string>
     <string name="headphones_only">Үн кулакчынга гана</string>
     <string name="headphones_only_desc">Кулакчын туташпаса — титирөө гана</string>
     <string name="set_family">Жакындар</string>
-    <string name="contact_phone_hint">Номер, мисалы +996 555 123 456</string>
+    <string name="contact_phone_hint">Өлкө коду менен телефон номери</string>
     <string name="sms_enabled">SMS жөнөтүү: жолго чыкканда жана жакындаганда</string>
-    <string name="sms_note">SMS сиздин номериңизден кетет жана тариф боюнча төлөнөт. Сыноодо жөнөтүлбөйт. Сапар учурундагы «Жакындарга жөнөтүү» баскычы шилтемени Telegram же WhatsApp аркылуу бөлүшөт.</string>
+    <string name="sms_note">SMS сиздин номериңизден кетет жана тариф боюнча төлөнөт. Сыноодо жөнөтүлбөйт. Сапар учурундагы «Жакындарга» баскычы шилтемени каалаган мессенджер аркылуу жөнөтөт.</string>
     <string name="sms_perm_denied">SMS уруксаты болбосо, билдирүүлөр жөнөтүлбөйт</string>
-    <string name="set_offline">Офлайн карта</string>
-    <string name="offline_not_downloaded">Кыргызстандын картасы жүктөлгөн жок. Интернетсиз мурун ачылган жерлер гана көрүнөт.</string>
-    <string name="offline_downloading">Жүктөлүүдө… %1$d%%</string>
-    <string name="offline_ready">Кыргызстандын картасы жүктөлдү (%1$d МБ) жана интернетсиз иштейт.</string>
+    <string name="set_offline">Офлайн карталар</string>
     <string name="offline_failed">Картаны жүктөө мүмкүн болбоду. Интернетти текшерип, кайра аракет кылыңыз.</string>
-    <string name="offline_download">Кыргызстандын картасын жүктөө (%1$d МБ)</string>
-    <string name="offline_delete">Картаны өчүрүү</string>
     <string name="offline_always">Дайыма офлайн картаны колдонуу</string>
     <string name="offline_always_desc">Болбосо, интернет жок болгондо офлайн карта өзү күйөт</string>
     <string name="map_attribution">Карталар жана аялдамалар © OpenStreetMap катышуучулары (ODbL)</string>
@@ -195,7 +169,6 @@
     <string name="simulate_short">🧪 Сыноо менен текшерүү</string>
     <string name="from_you">Сизден %1$s</string>
     <string name="eta_short">≈ %1$s</string>
-    <string name="accuracy_value_gps">GPS ±%1$d м</string>
     <string name="clear_dest">Чекитти алып салуу</string>
     <string name="my_location">Менин жайгашкан жерим</string>
     <string name="setup_banner">⚠️ Телефондун жөндөөлөрү ойготкучка тоскоол болушу мүмкүн (%1$d). Оңдоо үчүн басыңыз</string>
@@ -242,4 +215,34 @@
     <string name="widget_description">Уктап калба: бир басуу менен сапар</string>
     <string name="widget_no_places">Тиркемеде жерди сактаңыз — ал бул жерде пайда болот</string>
     <string name="widget_trip">%1$s · калды %2$s</string>
+
+    <!-- для всего мира -->
+    <string name="feet_value">%1$d фт</string>
+    <string name="miles_value">%1$.1f ми</string>
+    <string name="miles_value_int">%1$d ми</string>
+    <string name="speed_mph">%1$d миль/саат</string>
+    <string name="gps_accuracy">GPS ±%1$s</string>
+    <string name="set_units">Аралык бирдиги</string>
+    <string name="units_auto">Автоматтык (өлкө боюнча)</string>
+    <string name="units_metric">Километр жана метр</string>
+    <string name="units_imperial">Миля жана фут</string>
+    <string name="offline_title">Офлайн карталар</string>
+    <string name="offline_manage">Офлайн карталарды башкаруу</string>
+    <string name="offline_intro">Картаны интернетсиз көрүү үчүн өлкөңүздүн же аймагыңыздын картасын жүктөп алыңыз. Ойготкучтун өзү GPS менен иштейт, ага карта да, интернет да керек эмес.</string>
+    <string name="offline_suggest">Өлкөңүздүн картасы: %1$s (%2$s)</string>
+    <string name="offline_suggest_regions">%1$s аймактарга бөлүнгөн — өзүңүздүкүн тандаңыз</string>
+    <string name="offline_choose_region">Аймакты тандоо</string>
+    <string name="offline_download_btn">Жүктөө</string>
+    <string name="offline_downloaded">Жүктөлгөндөр</string>
+    <string name="offline_choose">Өлкөнү же аймакты тандоо</string>
+    <string name="offline_source">Карталар: download.mapsforge.org, маалыматтар © OpenStreetMap катышуучулары</string>
+    <string name="offline_download_title">Офлайн карта: %1$s</string>
+    <string name="offline_downloading_name">%1$s — жүктөлүүдө %2$d%%</string>
+    <string name="offline_ready_name">%1$s · %2$d МБ</string>
+    <string name="offline_delete_confirm">«%1$s» картасы өчүрүлсүнбү?</string>
+    <string name="offline_none">Азырынча офлайн карталар жок</string>
+    <string name="offline_count">Жүктөлгөн карталар: %1$d</string>
+    <string name="offline_folder">📁 %1$s</string>
+    <string name="offline_file">🗺️ %1$s · %2$s</string>
+    <string name="offline_confirm">Файлдын көлөмү — %1$s. Wi-Fi аркылуу жүктөгөн жакшы.</string>
 </resources>

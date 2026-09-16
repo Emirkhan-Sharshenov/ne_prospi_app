@@ -1,66 +1,56 @@
-# Не проспи — будильник на остановку (Android)
+# Don't Oversleep · Не проспи · Уктап калба
 
-Отмечаете остановку на карте, начинаете поездку и блокируете телефон.
-Приложение следит за GPS в фоне. Сначала оно присылает мягкое уведомление «скоро выходить»,
-потом включает громкий будильник поверх экрана блокировки.
+**A stop alarm for Android that works worldwide.** Pick your stop on the map, start the trip and lock your phone.
+The app follows your GPS in the background, gives you a gentle heads-up first, then a loud alarm over the lock screen.
 
-## 📥 Скачать
-**[Последняя версия APK](https://github.com/Emirkhan-Sharshenov/ne_prospi_app/releases/latest)** — откройте файл на телефоне и разрешите установку. Нужен Android 8.0+.
+**Будильник на остановку для Android, работает в любой стране.** Отмечаете остановку на карте, начинаете поездку и блокируете телефон — приложение разбудит вас перед выходом.
 
-## Возможности
-**Надёжность**
-- 🛟 Страховочный таймер: будильник сработает через заданное время, даже если пропал GPS или система закрыла приложение
-- 📡 Предупреждение, если GPS пропал больше чем на 3 минуты
-- 🔋 Предупреждение о низком заряде: при старте (меньше 15%) и в пути (10%)
-- ✋ Будильник выключается только удержанием кнопки 2 секунды. Через минуту приложение спрашивает «Вы проснулись?», и без ответа будильник звонит снова
-- ⚠️ Если после будильника автобус уехал дальше, приложение будит снова: «Вы проехали остановку!»
-- 🛡️ Проверка надёжности: разрешения, фоновая работа, точные будильники и советы для Samsung, Xiaomi, Huawei и других
-- 🔋 Экономия батареи: пока до остановки далеко, GPS опрашивается реже
+## 📥 Download / Скачать
+**[Latest APK / Последняя версия](https://github.com/Emirkhan-Sharshenov/ne_prospi_app/releases/latest)** — open the file on your phone and allow installation. Android 8.0+.
 
-**Бишкек и Кыргызстан**
-- 🚏 1557 остановок из OpenStreetMap встроены в приложение; нажатие на карту притягивается к ближайшей
-- 🇰🇬 Интерфейс на русском и кыргызском
-- 🗺️ Офлайн-карта Кыргызстана (58 МБ, скачивается в настройках)
+## Features
+**Works everywhere**
+- 🌍 Any country: map, address search and stops (bus, tram, train, metro, ferry) from OpenStreetMap
+- 🗺️ Offline maps for any country or region (mapsforge), the app suggests your country's map
+- 📏 Kilometres or miles — chosen automatically by country
+- 🗣️ English, Русский, Кыргызча
+- 🇰🇬 Kyrgyzstan's 1,557 stops are built in and work without internet
 
-**Удобство**
-- 🗺️ Карта на весь экран и нижняя панель в три шага: куда едем → когда разбудить → поездка с прогрессом
-- 🔒 На экране блокировки — полоса прогресса и обратный отсчёт до прибытия
-- 🗣️ Голосовые подсказки: «До остановки 1 километр»
-- 🧩 Виджет на главном экране и недавние поездки для запуска в одно нажатие
-- 📱 Ярлык сохранённого места на главном экране: поездка начинается одним нажатием
-- 🎵 Выбор мелодии, режим «только вибрация», мигание фонариком
-- 🎧 Звук только в наушники
-- 📤 Отправить поездку близким: ссылка через Telegram или WhatsApp, либо автоматические SMS
-- 🕘 История поездок, светлая и тёмная тема
+**Reliability**
+- 🛟 Backup timer — rings after a set time even if GPS is lost or Android closes the app
+- ✋ Hold-to-dismiss, then “Are you awake?” one minute later; no answer — the alarm rings again
+- ⚠️ Wakes you again if you passed your stop
+- 🛡️ Reliability check with fixes and tips for Samsung, Xiaomi, Huawei, OPPO
+- 🔋 Battery saving: GPS is polled less often while your stop is far away; GPS-lost and low-battery warnings
 
-## Как устроено
-- `MainActivity.kt` — карта, остановки, поиск, сохранённые места, ярлыки, история.
-- `TripService.kt` — фоновая служба: GPS, страховка, будильник, проверка «проснулся ли», SMS.
-- `AlarmActivity.kt` — экран будильника поверх блокировки (удержание, вопрос «Вы проснулись?»).
-- `SettingsActivity.kt` — язык, тема, звук, голос, близкие, офлайн-карта.
-- `SetupActivity.kt` + `Reliability.kt` — проверка надёжности; `TripWidget.kt` — виджет.
-- `Net.kt` — поиск адресов (Nominatim) и остановки; `OfflineMap.kt` — офлайн-карта (mapsforge).
-- `Prefs.kt` — настройки, история, формулы расстояния.
-- `assets/stops.tsv` — остановки Кыргызстана (обновляются из OpenStreetMap раз в месяц).
+**Comfort**
+- Full-screen map with a three-step bottom panel: where to → when to wake → trip progress
+- Lock screen progress bar and arrival countdown, voice announcements
+- Home screen widget, shortcuts, recent trips, history
+- Vibration-only, headphones-only, flashlight, custom sound
+- Share your trip with family via any messenger, or automatic SMS
 
-## Сборка
-`build.bat` → `NeProspi.apk`
+## Project structure
+- `MainActivity.kt` — wires the main screen parts together
+- `main/MapController.kt` — map, tiles (online/offline), stops layer, destination, “me”
+- `main/SearchPanel.kt` — search bar and results
+- `main/SheetPanels.kt` — bottom panel: `IdlePanel`, `DestinationPanel`, `TripPanel`
+- `main/TripLauncher.kt` — permission checks and starting a trip
+- `main/PlaceActions.kt` — saved places, shortcuts, sharing, history
+- `TripService.kt` — background trip: GPS, alarms, backup timer, voice, SMS
+- `AlarmActivity.kt` — alarm screen over the lock screen
+- `Stops.kt` — stops worldwide (built-in Kyrgyzstan + OpenStreetMap by area, cached for 30 days)
+- `OfflineMap.kt` + `OfflineMapsActivity.kt` — offline maps catalogue and downloads
+- `Net.kt` — address search (Nominatim); `Geo.kt` — distances and units; `Lang.kt` — language and country
+- `SettingsActivity.kt`, `SetupActivity.kt` + `Reliability.kt`, `TripWidget.kt`, `Prefs.kt`
 
-## Установка на телефон
-- **Через USB:** включите на телефоне «Для разработчиков → Отладка по USB», подключите кабель и запустите `install-to-phone.bat`.
-- **Без кабеля:** перекиньте `NeProspi.apk` на телефон (Telegram «Избранное», Google Диск), откройте файл и разрешите установку из этого источника.
+## Build
+`build.bat` → `NeProspi.apk` (JDK 17, Android SDK 35)
 
-## Настройка телефона (важно)
-1. Разрешите доступ к местоположению, уведомления и будильник на весь экран, когда приложение спросит.
-2. Нажмите «Разрешить работу в фоне без ограничений».
-3. Xiaomi / Redmi / POCO: Настройки → Приложения → Не проспи → включите «Автозапуск», в «Контроле активности» выберите «Нет ограничений».
-   Huawei / Honor: «Запуск приложений» → управлять вручную.
-   Samsung: Батарея → «Не ограничено».
-4. Громкость будильника: если она почти на нуле, приложение само поднимет её до 85%.
+## Limitations
+- Stops, search and maps use free public OpenStreetMap services. They are fine for personal use and small groups; for thousands of users the app would need its own servers or a paid provider.
+- Stop data depends on how well your city is mapped in OpenStreetMap. You can always tap any point on the map — the alarm works by GPS.
+- The alarm can't work if the phone is switched off or in airplane mode.
+- Translations (Kyrgyz and English) were not reviewed by native speakers — corrections are welcome.
 
-## Ограничения
-- Если полностью выключить телефон или включить режим полёта, приложение не сработает.
-- Живое слежение за поездкой для родителей требует своего сервера; сейчас близкие получают ссылку на место в момент старта и при подъезде.
-- Кыргызский перевод сделан без носителя языка — буду рад исправлениям.
-
-Данные карт и остановок © участники [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL).
+Map and stop data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributors (ODbL). Offline maps: [mapsforge](https://download.mapsforge.org/).

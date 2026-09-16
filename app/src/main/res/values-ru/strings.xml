@@ -1,0 +1,248 @@
+<resources>
+    <string name="app_name">Не проспи</string>
+    <string name="app_title">🚌  Не проспи</string>
+    <string name="history">История</string>
+    <string name="settings">Настройки</string>
+    <string name="back">Назад</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">OK</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="allow">Разрешить</string>
+    <string name="enable">Включить</string>
+    <string name="open_settings">Открыть настройки</string>
+
+    <!-- единицы -->
+    <string name="meters_value">%1$d м</string>
+    <string name="km_value">%1$.1f км</string>
+    <string name="km_value_int">%1$d км</string>
+    <string name="sec_value">%1$d с</string>
+    <string name="minutes_value">%1$d мин</string>
+    <string name="speed_value">%1$d км/ч</string>
+
+    <!-- 1. Куда едем -->
+    <string name="search_hint">Улица, остановка, станция…</string>
+    <string name="resolving_address">📍 Определяю адрес…</string>
+    <string name="point_on_map">Точка на карте</string>
+    <string name="point_near">Точка на карте · %1$s</string>
+    <string name="stop_unnamed">Остановка</string>
+    <string name="stop_near">Остановка · %1$s</string>
+    <string name="dest_fallback">остановка</string>
+    <string name="save_place">⭐ Сохранить место</string>
+    <string name="place_name_title">Название места</string>
+    <string name="place_name_hint">Например, «Дом» или «Работа»</string>
+    <string name="place_actions_title">«%1$s»</string>
+    <string name="place_pin">📱 Ярлык на главный экран</string>
+    <string name="place_delete_confirm">Удалить «%1$s»?</string>
+    <string name="pin_unsupported">Этот телефон не поддерживает ярлыки на главном экране</string>
+    <string name="shortcut_long_label">Поездка: %1$s</string>
+    <string name="searching">Ищу…</string>
+    <string name="search_unavailable">Поиск недоступен — отметьте точку на карте</string>
+    <string name="nothing_found">Ничего не найдено</string>
+
+    <!-- 2. Когда будить -->
+    <string name="backup_off">выкл</string>
+
+    <!-- 3. Поездка -->
+    <string name="phase_waiting">ищу GPS…</string>
+    <string name="phase_riding">в пути</string>
+    <string name="phase_warned">скоро выходить</string>
+    <string name="phase_alarm">будильник!</string>
+    <string name="phase_check">проверка</string>
+    <string name="phase_gps_lost">нет GPS</string>
+    <string name="start_trip">▶  Начать поездку</string>
+    <string name="backup_at">🛟 Страховка сработает в %1$s</string>
+    <string name="simulation_note">🧪 Симуляция: SMS близким не отправляются</string>
+
+    <!-- диалоги перед стартом -->
+    <string name="perm_location_title">Нужен доступ к местоположению</string>
+    <string name="perm_location_msg">Без GPS приложение не узнает, что вы подъезжаете к остановке.</string>
+    <string name="location_off_title">Геолокация выключена</string>
+    <string name="location_off_msg">Включите определение местоположения, чтобы приложение видело, где вы едете.</string>
+    <string name="battery_low_title">Мало заряда: %1$d%%</string>
+    <string name="battery_low_msg">Телефон может выключиться до вашей остановки. Подключите зарядку или включите страховочный таймер.</string>
+    <string name="start_anyway_2">Всё равно начать</string>
+    <string name="notif_denied">Уведомления выключены: экран будильника не появится, но звук и вибрация будут</string>
+    <string name="fsi_title">Будильник на экране блокировки</string>
+    <string name="fsi_msg">Разрешите приложению показывать будильник на весь экран, чтобы он появлялся на заблокированном телефоне.</string>
+    <string name="start_anyway">Начать без этого</string>
+
+    <!-- поделиться -->
+    <string name="share_text">Я еду до «%1$s». Сейчас я здесь: %2$s</string>
+    <string name="share_text_no_loc">Я еду до «%1$s»: %2$s</string>
+    <string name="share_chooser">Отправить близким</string>
+
+    <!-- история -->
+    <string name="history_title">История поездок</string>
+    <string name="history_empty">Поездок пока не было</string>
+    <string name="history_clear">Очистить</string>
+    <string name="history_item">%1$s → %2$s\n%3$s · %4$d мин</string>
+    <string name="history_simulated">%1$s · симуляция</string>
+    <string name="result_arrived">разбудил у остановки</string>
+    <string name="result_backup">сработала страховка</string>
+    <string name="result_stopped">завершена вручную</string>
+
+    <!-- уведомления -->
+    <string name="ch_trip">Поездка</string>
+    <string name="ch_trip_desc">Расстояние до остановки во время поездки</string>
+    <string name="ch_warn">Скоро выходить</string>
+    <string name="ch_warn_desc">Мягкое предупреждение перед остановкой</string>
+    <string name="ch_alarm">Будильник</string>
+    <string name="ch_alarm_desc">Громкий будильник у остановки</string>
+    <string name="ch_info">Состояние поездки</string>
+    <string name="ch_info_desc">Пропал GPS, мало заряда</string>
+    <string name="notif_trip_title">Еду до: %1$s</string>
+    <string name="notif_waiting_gps">Ищу GPS…</string>
+    <string name="notif_left">Осталось %1$s</string>
+    <string name="notif_left_eta">Осталось %1$s · прибытие через %2$s</string>
+    <string name="notif_alarm_ringing">Будильник звонит</string>
+    <string name="notif_check_soon">Через минуту проверю, что вы проснулись</string>
+    <string name="notif_finish">Завершить</string>
+    <string name="warn_title">Скоро ваша остановка</string>
+    <string name="warn_text">Приготовьтесь выходить: %1$s</string>
+    <string name="alarm_title">⏰ Выходите!</string>
+    <string name="alarm_text">Вы подъезжаете: %1$s</string>
+    <string name="alarm_backup_title">⏰ Страховочный будильник</string>
+    <string name="alarm_backup_text">Прошло %1$d мин — проверьте, где вы</string>
+    <string name="alarm_passed_title">⚠️ Вы проехали остановку!</string>
+    <string name="alarm_passed_text">«%1$s» уже позади — выходите на ближайшей</string>
+    <string name="alarm_repeat_title">⏰ Вы проснулись?</string>
+    <string name="gps_lost_title">Не вижу, где вы едете</string>
+    <string name="gps_lost_text">GPS пропал. Страховка разбудит в %1$s.</string>
+    <string name="gps_lost_text_no_backup">GPS пропал. Включите страховочный таймер, чтобы не проспать.</string>
+    <string name="battery_trip_title">Заряд %1$d%%</string>
+    <string name="battery_trip_text">Телефон скоро сядет. Подключите зарядку, чтобы будильник сработал.</string>
+    <string name="check_title">Вы проснулись?</string>
+    <string name="check_text">Нажмите «Да, я не сплю», иначе будильник зазвонит снова</string>
+
+    <!-- экран будильника -->
+    <string name="alarm_big">ВЫХОДИТЕ!</string>
+    <string name="alarm_passed_big">ПРОЕХАЛИ!</string>
+    <string name="alarm_backup_big">ГДЕ ВЫ?</string>
+    <string name="alarm_backup_body">Сработала страховка. Проверьте, не пора ли выходить.</string>
+    <string name="alarm_arriving">Вы подъезжаете:\n%1$s</string>
+    <string name="hold_to_dismiss">Удерживайте, чтобы выключить</string>
+    <string name="check_big">Вы проснулись?</string>
+    <string name="check_countdown">Будильник зазвонит снова через %1$d с</string>
+    <string name="im_awake">Да, я не сплю</string>
+
+    <!-- SMS -->
+    <string name="sms_start">Не проспи: еду до «%1$s». Я здесь: %2$s</string>
+    <string name="sms_arrived">Не проспи: подъезжаю к «%1$s». Я здесь: %2$s</string>
+
+    <!-- настройки -->
+    <string name="set_language">Язык</string>
+    <string name="lang_system">Как в телефоне</string>
+    <string name="set_theme">Тема</string>
+    <string name="theme_system">Как в телефоне</string>
+    <string name="theme_light">Светлая</string>
+    <string name="theme_dark">Тёмная</string>
+    <string name="set_alarm">Будильник</string>
+    <string name="alarm_sound">🎵 Мелодия: %1$s</string>
+    <string name="alarm_sound_default">стандартная</string>
+    <string name="vibration_only">Только вибрация, без звука</string>
+    <string name="vibration_only_desc">Чтобы не будить соседей в транспорте</string>
+    <string name="flashlight">Мигать фонариком</string>
+    <string name="headphones_only">Звук только в наушники</string>
+    <string name="headphones_only_desc">Если наушники не подключены — только вибрация</string>
+    <string name="set_family">Близкие</string>
+    <string name="contact_phone_hint">Номер телефона с кодом страны</string>
+    <string name="sms_enabled">Отправлять SMS: когда выехал и когда подъезжаю</string>
+    <string name="sms_note">SMS уходят с вашего номера и оплачиваются по тарифу. В симуляции не отправляются. Кнопка «Близким» во время поездки отправляет ссылку через любой мессенджер.</string>
+    <string name="sms_perm_denied">Без разрешения на SMS сообщения не отправятся</string>
+    <string name="set_offline">Офлайн-карты</string>
+    <string name="offline_failed">Не удалось скачать карту. Проверьте интернет и попробуйте снова.</string>
+    <string name="offline_always">Всегда использовать офлайн-карту</string>
+    <string name="offline_always_desc">Иначе офлайн-карта включается сама, когда нет интернета</string>
+    <string name="map_attribution">Карты и остановки © участники OpenStreetMap (ODbL)</string>
+
+    <!-- новый главный экран -->
+    <string name="where_to">Куда едем?</string>
+    <string name="where_hint">Нажмите на остановку на карте или найдите адрес</string>
+    <string name="where_hint_short">Выберите, когда разбудить, и начните поездку</string>
+    <string name="saved_title">Мои места</string>
+    <string name="recent_title">Недавние</string>
+    <string name="wake_label">Когда разбудить</string>
+    <string name="mode_dist_short">По расстоянию</string>
+    <string name="mode_time_short">По времени</string>
+    <string name="backup_label">Страховка — разбудить в любом случае через</string>
+    <string name="simulate_short">🧪 Проверить на симуляции</string>
+    <string name="from_you">%1$s от вас</string>
+    <string name="eta_short">≈ %1$s</string>
+    <string name="clear_dest">Убрать точку</string>
+    <string name="my_location">Моё местоположение</string>
+    <string name="setup_banner">⚠️ Настройки телефона могут помешать будильнику (%1$d). Нажмите, чтобы исправить</string>
+    <string name="share_short">📤 Близким</string>
+    <string name="stop_short">■ Завершить</string>
+
+    <!-- проверка надёжности -->
+    <string name="setup_title">Проверка надёжности</string>
+    <string name="setup_open">🛡️ Проверка надёжности</string>
+    <string name="setup_intro">Android может усыпить приложение в фоне, и тогда будильник не сработает. Проверьте, что всё отмечено зелёным.</string>
+    <string name="setup_all_ok">✅ Всё готово — будильник сработает</string>
+    <string name="setup_issues">⚠️ Нужно исправить: %1$d</string>
+    <string name="setup_done">Готово</string>
+    <string name="fix">Исправить</string>
+    <string name="chk_location">Точное местоположение</string>
+    <string name="chk_location_desc">Чтобы знать, где вы едете</string>
+    <string name="chk_location_services">Геолокация включена</string>
+    <string name="chk_location_services_desc">Переключатель «Местоположение» в быстрых настройках</string>
+    <string name="chk_notifications">Уведомления</string>
+    <string name="chk_notifications_desc">Предупреждение и экран будильника</string>
+    <string name="chk_fullscreen">Будильник поверх блокировки</string>
+    <string name="chk_fullscreen_desc">Экран будильника на заблокированном телефоне</string>
+    <string name="chk_battery">Работа в фоне без ограничений</string>
+    <string name="chk_battery_desc">Чтобы Android не усыпил приложение в пути</string>
+    <string name="chk_exact">Точные будильники</string>
+    <string name="chk_exact_desc">Нужны для страховочного таймера</string>
+    <string name="chk_volume">Громкость будильника</string>
+    <string name="chk_volume_desc">Сейчас на нуле. Приложение поднимет её само, но лучше проверить</string>
+    <string name="oem_title">Совет для вашего телефона</string>
+    <string name="oem_samsung">Samsung: Настройки → Батарея → Ограничения фоновой работы. Проверьте, что «Не проспи» нет в списках «Спящие приложения» и «Приложения в глубоком сне».</string>
+    <string name="oem_xiaomi">Xiaomi, Redmi, POCO: в настройках приложения включите «Автозапуск», а в «Контроле активности» выберите «Нет ограничений».</string>
+    <string name="oem_huawei">Huawei, Honor: Настройки → Батарея → Запуск приложений → «Не проспи» → управлять вручную, включите все переключатели.</string>
+    <string name="oem_oppo">OPPO, realme, OnePlus, vivo: в настройках приложения разрешите работу в фоне и автозапуск.</string>
+    <string name="oem_other">Если телефон закрывает приложения в фоне, найдите «Не проспи» в настройках батареи и снимите ограничения.</string>
+    <string name="open_app_settings">Открыть настройки приложения</string>
+
+    <!-- голос -->
+    <string name="voice_title">Голосовые подсказки</string>
+    <string name="voice_desc">Скажет, сколько осталось ехать и когда готовиться выходить. В тихих режимах — только в наушники</string>
+    <string name="voice_distance">До остановки %1$s</string>
+    <string name="voice_warn">Приготовьтесь, скоро выходить: %1$s</string>
+
+    <!-- виджет -->
+    <string name="widget_description">Не проспи: поездка одним нажатием</string>
+    <string name="widget_no_places">Сохраните место в приложении — оно появится здесь</string>
+    <string name="widget_trip">%1$s · осталось %2$s</string>
+
+    <!-- для всего мира -->
+    <string name="feet_value">%1$d фт</string>
+    <string name="miles_value">%1$.1f ми</string>
+    <string name="miles_value_int">%1$d ми</string>
+    <string name="speed_mph">%1$d миль/ч</string>
+    <string name="gps_accuracy">GPS ±%1$s</string>
+    <string name="set_units">Единицы расстояния</string>
+    <string name="units_auto">Автоматически (по стране)</string>
+    <string name="units_metric">Километры и метры</string>
+    <string name="units_imperial">Мили и футы</string>
+    <string name="offline_title">Офлайн-карты</string>
+    <string name="offline_manage">Управлять офлайн-картами</string>
+    <string name="offline_intro">Скачайте карту своей страны или региона, чтобы видеть карту без интернета. Сам будильник работает по GPS, ему не нужны ни карта, ни интернет.</string>
+    <string name="offline_suggest">Карта вашей страны: %1$s (%2$s)</string>
+    <string name="offline_suggest_regions">%1$s разбита на регионы — выберите свой</string>
+    <string name="offline_choose_region">Выбрать регион</string>
+    <string name="offline_download_btn">Скачать</string>
+    <string name="offline_downloaded">Скачанные</string>
+    <string name="offline_choose">Выбрать страну или регион</string>
+    <string name="offline_source">Карты: download.mapsforge.org, данные © участники OpenStreetMap</string>
+    <string name="offline_download_title">Офлайн-карта: %1$s</string>
+    <string name="offline_downloading_name">%1$s — скачивается %2$d%%</string>
+    <string name="offline_ready_name">%1$s · %2$d МБ</string>
+    <string name="offline_delete_confirm">Удалить карту «%1$s»?</string>
+    <string name="offline_none">Офлайн-карт пока нет</string>
+    <string name="offline_count">Скачано карт: %1$d</string>
+    <string name="offline_folder">📁 %1$s</string>
+    <string name="offline_file">🗺️ %1$s · %2$s</string>
+    <string name="offline_confirm">Размер файла — %1$s. Лучше скачивать по Wi-Fi.</string>
+</resources>

@@ -56,6 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <RadioButton android:id="@+id/langSystem" style="@style/Radio" android:text="@string/lang_system" />
+                    <RadioButton android:id="@+id/langEn" style="@style/Radio" android:text="English" />
                     <RadioButton android:id="@+id/langRu" style="@style/Radio" android:text="Русский" />
                     <RadioButton android:id="@+id/langKy" style="@style/Radio" android:text="Кыргызча" />
                 </RadioGroup>
@@ -71,6 +72,19 @@
                     <RadioButton android:id="@+id/themeSystem" style="@style/Radio" android:text="@string/theme_system" />
                     <RadioButton android:id="@+id/themeLight" style="@style/Radio" android:text="@string/theme_light" />
                     <RadioButton android:id="@+id/themeDark" style="@style/Radio" android:text="@string/theme_dark" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <!-- Единицы -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/CardTitle" android:text="@string/set_units" />
+                <RadioGroup
+                    android:id="@+id/unitsGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <RadioButton android:id="@+id/unitsAuto" style="@style/Radio" android:text="@string/units_auto" />
+                    <RadioButton android:id="@+id/unitsMetric" style="@style/Radio" android:text="@string/units_metric" />
+                    <RadioButton android:id="@+id/unitsImperial" style="@style/Radio" android:text="@string/units_imperial" />
                 </RadioGroup>
             </LinearLayout>
 
@@ -127,26 +141,17 @@
             <LinearLayout style="@style/Card">
                 <TextView style="@style/CardTitle" android:text="@string/set_offline" />
                 <TextView
-                    android:id="@+id/offlineStatus"
+                    android:id="@+id/offlineSummary"
                     style="@style/Muted"
                     android:textColor="@color/text"
                     android:textSize="15sp" />
                 <Button
-                    android:id="@+id/offlineDownload"
+                    android:id="@+id/offlineMapsBtn"
+                    style="@style/Widget.Material3.Button.TonalButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp" />
-                <Button
-                    android:id="@+id/offlineDelete"
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/offline_delete" />
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/offlineAlwaysSwitch"
-                    style="@style/Switch"
-                    android:text="@string/offline_always" />
-                <TextView style="@style/SwitchNote" android:text="@string/offline_always_desc" />
+                    android:layout_marginTop="8dp"
+                    android:text="@string/offline_manage" />
             </LinearLayout>
 
             <TextView
