@@ -1,176 +1,306 @@
 <resources>
+    <!-- Дизайн-система «Don't Oversleep Travel Companion»: скругления-«таблетки», Onest + Nunito Sans -->
     <style name="Theme.NeProspi" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/accent</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="android:colorBackground">@color/bg</item>
-        <item name="android:windowBackground">@color/bg</item>
-        <item name="android:windowLightStatusBar">@bool/light_bars</item>
-        <item name="android:windowLightNavigationBar">@bool/light_bars</item>
+        <item name="colorPrimaryContainer">@color/accent_container</item>
+        <item name="colorOnPrimaryContainer">@color/on_accent_container</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorSecondaryContainer">@color/secondary_container</item>
+        <item name="colorOnSecondaryContainer">@color/on_secondary_container</item>
+        <item name="colorTertiary">@color/amber</item>
+        <item name="colorError">@color/danger</item>
         <item name="colorSurface">@color/card</item>
         <item name="colorOnSurface">@color/text</item>
         <item name="colorOnSurfaceVariant">@color/muted</item>
         <item name="colorOutline">@color/line</item>
         <item name="colorOutlineVariant">@color/line</item>
-        <item name="colorSecondaryContainer">@color/accent_container</item>
-        <item name="colorOnSecondaryContainer">@color/text</item>
+        <item name="colorSurfaceContainerLowest">@color/card</item>
+        <item name="colorSurfaceContainerLow">@color/surface_low</item>
+        <item name="colorSurfaceContainer">@color/surface_mid</item>
         <item name="colorSurfaceContainerHigh">@color/card</item>
-        <item name="colorSurfaceContainerHighest">@color/accent_container</item>
-        <item name="colorPrimaryContainer">@color/accent_container</item>
-        <item name="colorOnPrimaryContainer">@color/text</item>
+        <item name="colorSurfaceContainerHighest">@color/surface_high</item>
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:windowLightStatusBar">@bool/light_bars</item>
+        <item name="android:windowLightNavigationBar">@bool/light_bars</item>
+        <item name="android:fontFamily">@font/nunito_sans_regular</item>
+        <item name="fontFamily">@font/nunito_sans_regular</item>
+        <item name="materialButtonStyle">@style/Button.Pill</item>
+        <item name="materialButtonOutlinedStyle">@style/Button.Pill.Outlined</item>
+        <item name="chipStyle">@style/Chip.Pill</item>
+        <item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
+        <item name="textAppearanceButton">@style/TextAppearance.Button</item>
     </style>
 
+    <!-- Текст -->
+    <style name="TextAppearance.Button" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/onest_bold</item>
+        <item name="android:fontFamily">@font/onest_bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <!-- крупные цифры: оставшееся расстояние -->
+    <style name="Text.Display">
+        <item name="android:fontFamily">@font/onest_extrabold</item>
+        <item name="android:textSize">56sp</item>
+        <item name="android:letterSpacing">-0.02</item>
+        <item name="android:fontFeatureSettings">tnum</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.Headline">
+        <item name="android:fontFamily">@font/onest_bold</item>
+        <item name="android:textSize">26sp</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:fontFamily">@font/onest_bold</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:fontFamily">@font/nunito_sans_regular</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.Body.Muted">
+        <item name="android:textColor">@color/muted</item>
+    </style>
+
+    <!-- подписи капсом: «РАССТОЯНИЕ ДО БУДИЛЬНИКА» -->
+    <style name="Text.Label">
+        <item name="android:fontFamily">@font/onest_bold</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.08</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/muted</item>
+    </style>
+
+    <!-- Кнопки -->
+    <style name="Button.Pill" parent="Widget.Material3.Button">
+        <item name="cornerRadius">28dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+
+    <style name="Button.Pill.Outlined" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="cornerRadius">28dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="iconGravity">textStart</item>
+    </style>
+
+    <!-- мягкая кнопка на цветной подложке: «Поделиться», «Исправить» -->
+    <style name="Button.Tonal" parent="Widget.Material3.Button.TonalButton">
+        <item name="cornerRadius">28dp</item>
+        <item name="android:minHeight">52dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">10dp</item>
+    </style>
+
+    <style name="Button.Text" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">8dp</item>
+    </style>
+
+    <!-- круглая кнопка со значком -->
+    <style name="Button.Icon" parent="Widget.Material3.Button.IconButton.Filled.Tonal">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">22dp</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <style name="Button.Icon.Plain" parent="Widget.Material3.Button.IconButton">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="iconTint">@color/muted</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <!-- переключатель «По расстоянию / По времени» -->
+    <style name="Button.Segment" parent="Widget.Material3.Button">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="backgroundTint">@color/segment_bg</item>
+        <item name="android:textColor">@color/segment_fg</item>
+        <item name="iconTint">@color/segment_fg</item>
+        <item name="android:textAppearance">@style/TextAppearance.Button</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconSize">20dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="Chip.Pill" parent="Widget.Material3.Chip.Assist">
+        <item name="chipCornerRadius">24dp</item>
+        <item name="chipMinHeight">44dp</item>
+        <item name="chipBackgroundColor">@color/surface_mid</item>
+        <item name="chipStrokeWidth">0dp</item>
+        <item name="chipIconTint">@color/accent</item>
+        <item name="chipIconSize">20dp</item>
+        <item name="android:textAppearance">@style/TextAppearance.Chip</item>
+    </style>
+
+    <style name="TextAppearance.Chip" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/onest_semibold</item>
+        <item name="android:fontFamily">@font/onest_semibold</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/text</item>
+    </style>
+
+    <!-- Карточки и панели -->
     <style name="FloatingCard" parent="Widget.Material3.CardView.Elevated">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardBackgroundColor">@color/card</item>
-        <item name="cardElevation">6dp</item>
+        <item name="cardElevation">8dp</item>
+        <item name="cardCornerRadius">28dp</item>
     </style>
 
     <style name="SurfaceCard" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="cardBackgroundColor">@color/card</item>
-        <item name="cardCornerRadius">20dp</item>
+        <item name="cardCornerRadius">24dp</item>
+        <item name="strokeColor">@color/surface_high</item>
+        <item name="strokeWidth">1dp</item>
     </style>
 
-    <style name="IconTextButton" parent="Widget.Material3.Button.TextButton">
-        <item name="android:layout_width">48dp</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:minWidth">48dp</item>
-        <item name="android:padding">0dp</item>
-        <item name="android:insetTop">0dp</item>
-        <item name="android:insetBottom">0dp</item>
-        <item name="android:textSize">20sp</item>
-    </style>
-
-    <style name="BigButton" parent="Widget.Material3.Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">60dp</item>
-        <item name="android:textSize">17sp</item>
-        <item name="cornerRadius">30dp</item>
-    </style>
-
-    <style name="SheetTitle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="SheetSubtitle">
+    <style name="TonalCard" parent="Widget.Material3.CardView.Filled">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">2dp</item>
-        <item name="android:textColor">@color/muted</item>
-        <item name="android:textSize">14sp</item>
+        <item name="cardBackgroundColor">@color/surface_low</item>
+        <item name="cardCornerRadius">24dp</item>
+        <item name="strokeWidth">0dp</item>
     </style>
 
-    <style name="SectionLabel">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">14dp</item>
-        <item name="android:layout_marginBottom">4dp</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.06</item>
-        <item name="android:textColor">@color/muted</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="WidgetChip">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">40dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:layout_margin">3dp</item>
-        <item name="android:background">@drawable/widget_chip_bg</item>
-        <item name="android:ellipsize">end</item>
-        <item name="android:gravity">center</item>
-        <item name="android:maxLines">1</item>
-        <item name="android:paddingHorizontal">8dp</item>
-        <item name="android:textColor">#FFFFFF</item>
-        <item name="android:textSize">13sp</item>
-    </style>
-
+    <!-- экраны настроек -->
     <style name="Card">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
         <item name="android:background">@drawable/card_bg</item>
-        <item name="android:padding">14dp</item>
+        <item name="android:padding">18dp</item>
         <item name="android:layout_marginBottom">12dp</item>
     </style>
 
-    <style name="CardTitle">
+    <style name="CardTitle" parent="Text.Label">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:letterSpacing">0.06</item>
-        <item name="android:textColor">@color/muted</item>
         <item name="android:layout_marginBottom">8dp</item>
     </style>
 
-    <style name="Muted">
+    <style name="Muted" parent="Text.Body.Muted">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">13sp</item>
-        <item name="android:textColor">@color/muted</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:layout_marginTop">6dp</item>
-    </style>
-
-    <style name="StatBox">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:background">@drawable/row_bg</item>
-        <item name="android:padding">10dp</item>
-        <item name="android:layout_margin">4dp</item>
-    </style>
-
-    <style name="StatLabel">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/muted</item>
-    </style>
-
-    <style name="StatValue">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">22sp</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:text">—</item>
-    </style>
-
-    <style name="SliderValue">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:gravity">end</item>
-        <item name="android:minWidth">72dp</item>
-        <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">18sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="Radio">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text</item>
     </style>
 
     <style name="Switch">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">6dp</item>
+        <item name="android:minHeight">48dp</item>
         <item name="android:textColor">@color/text</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="SwitchNote" parent="Muted">
         <item name="android:layout_marginTop">0dp</item>
         <item name="android:layout_marginBottom">4dp</item>
+    </style>
+
+    <!-- нижняя панель главного экрана -->
+    <style name="SheetTitle" parent="Text.Headline" />
+
+    <style name="SheetSubtitle" parent="Text.Body.Muted">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginTop">2dp</item>
+    </style>
+
+    <style name="SectionLabel" parent="Text.Label">
+        <item name="android:layout_marginTop">18dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+
+    <!-- цветная «таблетка» со статусом -->
+    <style name="StatusPill" parent="Text">
+        <item name="android:fontFamily">@font/onest_bold</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">14dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:drawablePadding">8dp</item>
+    </style>
+
+    <style name="WidgetChip">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">52dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:background">@drawable/widget_chip_bg</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingStart">14dp</item>
+        <item name="android:paddingEnd">10dp</item>
+        <item name="android:textColor">#191C1E</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/onest_semibold</item>
+    </style>
+
+    <style name="ShapeCircle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
 </resources>

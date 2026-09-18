@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Не проспи</string>
-    <string name="app_title">🚌  Не проспи</string>
     <string name="history">История</string>
     <string name="settings">Настройки</string>
     <string name="back">Назад</string>
@@ -45,12 +44,7 @@
 
     <!-- 3. Поездка -->
     <string name="phase_waiting">ищу GPS…</string>
-    <string name="phase_riding">в пути</string>
-    <string name="phase_warned">скоро выходить</string>
-    <string name="phase_alarm">будильник!</string>
-    <string name="phase_check">проверка</string>
-    <string name="phase_gps_lost">нет GPS</string>
-    <string name="start_trip">▶  Начать поездку</string>
+    <string name="start_trip">Начать поездку</string>
     <string name="backup_at">🛟 Страховка сработает в %1$s</string>
     <string name="simulation_note">🧪 Симуляция: SMS близким не отправляются</string>
 
@@ -124,7 +118,7 @@
     <string name="hold_to_dismiss">Удерживайте, чтобы выключить</string>
     <string name="check_big">Вы проснулись?</string>
     <string name="check_countdown">Будильник зазвонит снова через %1$d с</string>
-    <string name="im_awake">Да, я не сплю</string>
+    <string name="im_awake">Да, я не сплю!</string>
 
     <!-- SMS -->
     <string name="sms_start">Не проспи: еду до «%1$s». Я здесь: %2$s</string>
@@ -160,27 +154,23 @@
     <string name="where_to">Куда едем?</string>
     <string name="where_hint">Нажмите на остановку на карте или найдите адрес</string>
     <string name="where_hint_short">Выберите, когда разбудить, и начните поездку</string>
-    <string name="saved_title">Мои места</string>
-    <string name="recent_title">Недавние</string>
-    <string name="wake_label">Когда разбудить</string>
+    <string name="recent_title">Недавние поездки</string>
     <string name="mode_dist_short">По расстоянию</string>
     <string name="mode_time_short">По времени</string>
-    <string name="backup_label">Страховка — разбудить в любом случае через</string>
-    <string name="simulate_short">🧪 Проверить на симуляции</string>
+    <string name="backup_label">Страховочный таймер</string>
+    <string name="simulate_short">Проверить на симуляции</string>
     <string name="from_you">%1$s от вас</string>
-    <string name="eta_short">≈ %1$s</string>
     <string name="clear_dest">Убрать точку</string>
     <string name="my_location">Моё местоположение</string>
     <string name="setup_banner">⚠️ Настройки телефона могут помешать будильнику (%1$d). Нажмите, чтобы исправить</string>
-    <string name="share_short">📤 Близким</string>
-    <string name="stop_short">■ Завершить</string>
+    <string name="share_short">Поделиться</string>
+    <string name="stop_short">Завершить</string>
 
     <!-- проверка надёжности -->
     <string name="setup_title">Проверка надёжности</string>
     <string name="setup_open">🛡️ Проверка надёжности</string>
     <string name="setup_intro">Android может усыпить приложение в фоне, и тогда будильник не сработает. Проверьте, что всё отмечено зелёным.</string>
-    <string name="setup_all_ok">✅ Всё готово — будильник сработает</string>
-    <string name="setup_issues">⚠️ Нужно исправить: %1$d</string>
+    <string name="setup_all_ok">Всё готово!</string>
     <string name="setup_done">Готово</string>
     <string name="fix">Исправить</string>
     <string name="chk_location">Точное местоположение</string>
@@ -214,14 +204,12 @@
     <!-- виджет -->
     <string name="widget_description">Не проспи: поездка одним нажатием</string>
     <string name="widget_no_places">Сохраните место в приложении — оно появится здесь</string>
-    <string name="widget_trip">%1$s · осталось %2$s</string>
 
     <!-- для всего мира -->
     <string name="feet_value">%1$d фт</string>
     <string name="miles_value">%1$.1f ми</string>
     <string name="miles_value_int">%1$d ми</string>
     <string name="speed_mph">%1$d миль/ч</string>
-    <string name="gps_accuracy">GPS ±%1$s</string>
     <string name="set_units">Единицы расстояния</string>
     <string name="units_auto">Автоматически (по стране)</string>
     <string name="units_metric">Километры и метры</string>
@@ -245,4 +233,66 @@
     <string name="offline_folder">📁 %1$s</string>
     <string name="offline_file">🗺️ %1$s · %2$s</string>
     <string name="offline_confirm">Размер файла — %1$s. Лучше скачивать по Wi-Fi.</string>
+
+    <!-- дизайн 1.4 -->
+    <string name="app_tagline">Будильник на остановку</string>
+    <string name="where_subtitle">Спите спокойно — мы разбудим.</string>
+    <string name="tip_silent_mode">Будильник звонит даже в беззвучном режиме — звук и вибрация проходят через «Не беспокоить».</string>
+    <string name="recent_last">Последняя поездка: %1$s</string>
+    <string name="wake_before_stop">Разбудить до остановки за</string>
+    <string name="wake_before_arrival">Разбудить до прибытия за</string>
+    <string name="best">лучше</string>
+    <string name="backup_info_title">Страховочный таймер</string>
+    <string name="backup_info_text">Если GPS пропадёт или Android закроет приложение, будильник всё равно зазвонит через это время. Ставьте чуть больше, чем обычно длится поездка.</string>
+    <string name="mode_loud">Громко</string>
+    <string name="mode_vibration">Вибрация</string>
+    <string name="mode_headphones">Наушники</string>
+    <string name="distance_to_alarm">До будильника</string>
+    <string name="estimated">Примерно</string>
+    <string name="status_riding">В пути · можно спать</string>
+    <string name="status_waiting">Ищу GPS…</string>
+    <string name="status_warned">Готовьтесь · скоро выходить</string>
+    <string name="status_alarm">Будильник звонит</string>
+    <string name="status_check">Проверяю, что вы проснулись</string>
+    <string name="status_gps_lost">Нет GPS · работает страховка</string>
+    <string name="trip_start">Старт</string>
+    <string name="progress_percent">пройдено %1$d%%</string>
+    <string name="wake_zone">Зона будильника (%1$s)</string>
+    <string name="wake_zone_map">Зона будильника %1$s</string>
+    <string name="wake_zone_time">За %1$d мин до прибытия</string>
+    <string name="you_away">Вы · %1$s</string>
+    <string name="stat_accuracy">Точность</string>
+    <string name="stat_speed">Скорость</string>
+    <string name="eta_min">≈ %1$d мин</string>
+    <string name="eta_less_min">&lt; 1 мин</string>
+    <string name="alarm_top_pill">ПОДЪЁМ · ПОДЪЁМ · ПОДЪЁМ</string>
+    <string name="alarm_distance">%1$s до «%2$s»!</string>
+    <string name="alarm_mode_loud">Громкий звук + вибрация</string>
+    <string name="alarm_mode_vibration">Только вибрация</string>
+    <string name="alarm_mode_headphones">Звук в наушниках + вибрация</string>
+    <string name="hold_sub">2 секунды</string>
+    <string name="hold_note">Нажмите и держите 2 секунды — так будильник не выключится во сне случайно.</string>
+    <string name="check_top_pill">ПРОВЕРКА</string>
+    <string name="check_subtitle">Подтвердите, что проснулись, чтобы не проехать «%1$s».</string>
+    <string name="safety_check">Проверка</string>
+    <string name="distance_remaining">Осталось ехать</string>
+    <string name="setup_subtitle">Надёжность и разрешения</string>
+    <string name="high_priority">Важно</string>
+    <string name="setup_all_ok_desc">Будильник сработает даже с заблокированным экраном и телефоном в кармане.</string>
+    <string name="chk_volume_desc_short">Будильник слышно даже в беззвучном режиме</string>
+    <string name="test_alarm">Проверить звук и вибрацию</string>
+    <string name="test_alarm_stop">Остановить проверку</string>
+    <string name="setup_footer">Будильник работает по GPS — ему не нужны ни карта, ни интернет.</string>
+    <string name="widget_quick_title">Быстрый старт</string>
+    <string name="widget_quick_sub">Куда едем?</string>
+    <string name="widget_live">Поездка</string>
+    <string name="widget_approaching">Подъезжаем: %1$s</string>
+    <string name="unit_remaining">%1$s осталось</string>
+    <string name="notif_inbound">Едем к остановке</string>
+    <plurals name="setup_issues">
+        <item quantity="one">Исправить %1$d пункт</item>
+        <item quantity="few">Исправить %1$d пункта</item>
+        <item quantity="many">Исправить %1$d пунктов</item>
+        <item quantity="other">Исправить %1$d пункта</item>
+    </plurals>
 </resources>

@@ -49,10 +49,22 @@ object Geo {
         return if (s < 60) ctx.getString(R.string.sec_value, s) else "${s / 60}:${(s % 60).toString().padStart(2, '0')}"
     }
 
-    /** Варианты «когда будить» в метрах: круглые числа в метрах или в милях. */
+    /** Четыре варианта «когда будить» в метрах: круглые числа в метрах или в милях. Второй — рекомендуемый. */
     fun distanceOptions(ctx: Context): List<Int> =
-        if (Region.usesMiles(ctx)) listOf(0.1, 0.2, 0.3, 0.5, 1.0, 2.0).map { (it * METERS_PER_MILE).roundToInt() }
-        else listOf(200, 300, 500, 800, 1000, 2000)
+        if (Region.usesMiles(ctx)) listOf(0.2, 0.3, 0.5, 1.0).map { (it * METERS_PER_MILE).roundToInt() }
+        else listOf(300, 500, 1000, 2000)
+
+    /** Время до прибытия для людей: «≈ 3 мин» или «< 1 мин». */
+    fun formatEtaMinutes(ctx: Context, sec: Double): String {
+        val minutes = (sec / 60).roundToInt()
+        return if (minutes < 1) ctx.getString(R.string.eta_less_min) else ctx.getString(R.string.eta_min, minutes)
+    }
+
+    /** «850 м» → «850» и «м», чтобы число показать крупно. */
+    fun splitValueUnit(formatted: String): Pair<String, String> {
+        val i = formatted.lastIndexOf(' ')
+        return if (i > 0) formatted.substring(0, i) to formatted.substring(i + 1) else formatted to ""
+    }
 
     /** Ссылка на точку, которая откроется в любом телефоне. */
     fun mapLink(lat: Double, lon: Double) = String.format(Locale.US, "https://maps.google.com/?q=%.5f,%.5f", lat, lon)

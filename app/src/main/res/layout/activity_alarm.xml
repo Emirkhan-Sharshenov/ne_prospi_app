@@ -1,76 +1,376 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Экран будильника поверх блокировки (макеты 5 и 6). -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/alarmRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D10000"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:padding="28dp">
+    android:background="@drawable/alarm_bg">
 
-    <TextView
-        android:id="@+id/alarmEmoji"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="⏰"
-        android:textSize="80sp" />
-
-    <TextView
-        android:id="@+id/alarmBig"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:gravity="center"
-        android:text="@string/alarm_big"
-        android:textColor="#FFFFFF"
-        android:textSize="42sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/alarmText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:gravity="center"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp" />
-
-    <FrameLayout
-        android:id="@+id/holdBtn"
+    <!-- ===== Будильник ===== -->
+    <LinearLayout
+        android:id="@+id/alarmContainer"
         android:layout_width="match_parent"
-        android:layout_height="92dp"
-        android:layout_marginTop="48dp"
-        android:background="@drawable/hold_bg"
-        android:clickable="true"
-        android:focusable="true">
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="56dp"
+        android:paddingBottom="40dp">
 
-        <ProgressBar
-            android:id="@+id/holdProgress"
-            style="?android:attr/progressBarStyleHorizontal"
+        <TextView
+            android:id="@+id/alarmTopPill"
+            style="@style/StatusPill"
+            android:background="@drawable/pill"
+            android:backgroundTint="#33FFFFFF"
+            android:text="@string/alarm_top_pill"
+            android:textColor="#FFFFFF"
+            app:drawableStartCompat="@drawable/ic_warning"
+            app:drawableTint="#FFFFFF" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="220dp"
+            android:layout_height="220dp">
+
+            <View
+                android:id="@+id/ringOuter"
+                android:layout_width="220dp"
+                android:layout_height="220dp"
+                android:layout_gravity="center"
+                android:background="@drawable/alarm_ring" />
+
+            <View
+                android:id="@+id/ringInner"
+                android:layout_width="176dp"
+                android:layout_height="176dp"
+                android:layout_gravity="center"
+                android:background="@drawable/alarm_ring" />
+
+            <FrameLayout
+                android:id="@+id/bellCircle"
+                android:layout_width="136dp"
+                android:layout_height="136dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
+                android:elevation="8dp">
+
+                <ImageView
+                    android:id="@+id/alarmIcon"
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_bell"
+                    app:tint="@color/danger" />
+            </FrameLayout>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/alarmBig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:fontFamily="@font/onest_extrabold"
+            android:gravity="center"
+            android:shadowColor="#40000000"
+            android:shadowDy="3"
+            android:shadowRadius="8"
+            android:text="@string/alarm_big"
+            android:textColor="#FFFFFF"
+            android:textSize="44sp" />
+
+        <TextView
+            android:id="@+id/alarmText"
+            style="@style/StatusPill"
+            android:layout_marginTop="18dp"
+            android:background="@drawable/pill"
+            android:backgroundTint="#F2FFFFFF"
+            android:gravity="center"
+            android:paddingStart="20dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="22dp"
+            android:paddingBottom="14dp"
+            android:textColor="@color/navy"
+            android:textSize="19sp"
+            app:drawableStartCompat="@drawable/ic_near_me"
+            app:drawableTint="@color/navy" />
+
+        <TextView
+            android:id="@+id/alarmMode"
+            style="@style/StatusPill"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/pill"
+            android:backgroundTint="#33FFFFFF"
+            android:textColor="#FFFFFF"
+            app:drawableTint="#FFFFFF" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:id="@+id/holdBtn"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:max="1000"
-            android:progressDrawable="@drawable/hold_progress" />
+            android:layout_height="80dp"
+            android:background="@drawable/hold_bg"
+            android:clickable="true"
+            android:contentDescription="@string/hold_to_dismiss"
+            android:elevation="10dp"
+            android:focusable="true">
+
+            <ProgressBar
+                android:id="@+id/holdProgress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="1000"
+                android:progressDrawable="@drawable/hold_progress" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="@drawable/circle"
+                    android:backgroundTint="#26FFFFFF">
+
+                    <ImageView
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_power"
+                        app:tint="@color/amber" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="14dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/onest_bold"
+                        android:text="@string/hold_to_dismiss"
+                        android:textColor="#FFFFFF"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/hold_sub"
+                        android:textColor="#B3FFFFFF"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_marginTop="14dp"
             android:gravity="center"
-            android:text="@string/hold_to_dismiss"
-            android:textColor="#000000"
-            android:textSize="21sp"
-            android:textStyle="bold" />
-    </FrameLayout>
+            android:text="@string/hold_note"
+            android:textColor="#E6FFFFFF"
+            android:textSize="14sp" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/awakeBtn"
+    <!-- ===== «Вы проснулись?» ===== -->
+    <LinearLayout
+        android:id="@+id/checkContainer"
         android:layout_width="match_parent"
-        android:layout_height="92dp"
-        android:layout_marginTop="48dp"
-        android:backgroundTint="#FFFFFF"
-        android:text="@string/im_awake"
-        android:textColor="#000000"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="56dp"
+        android:paddingBottom="40dp"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/StatusPill"
+            android:background="@drawable/pill"
+            android:backgroundTint="#1FFFFFFF"
+            android:text="@string/check_top_pill"
+            android:textColor="#D9E2FF" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <FrameLayout
+            android:layout_width="220dp"
+            android:layout_height="200dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_marginStart="18dp"
+                android:layout_marginTop="10dp"
+                android:text="✦"
+                android:textColor="#FFDDB1"
+                android:textSize="22sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="24dp"
+                android:text="✦"
+                android:textColor="#B0C6FF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginEnd="34dp"
+                android:layout_marginBottom="26dp"
+                android:text="✦"
+                android:textColor="#FFDDB1"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/mascot"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_launcher_fg" />
+        </FrameLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/onest_extrabold"
+            android:gravity="center"
+            android:text="@string/check_big"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp" />
+
+        <TextView
+            android:id="@+id/checkSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:textColor="#D0D6E6"
+            android:textSize="17sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/check_banner_bg"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/circle"
+                android:backgroundTint="#33FFFFFF">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/ic_timer"
+                    app:tint="#FFFFFF" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/Text.Label"
+                    android:text="@string/safety_check"
+                    android:textColor="#FFDDB1" />
+
+                <TextView
+                    android:id="@+id/checkCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/onest_bold"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/checkDistanceRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/check_banner_bg"
+            android:backgroundTint="#1AFFFFFF"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="14dp">
+
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_near_me"
+                app:tint="#B0C6FF" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="@string/distance_remaining"
+                android:textColor="#D0D6E6"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/checkDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/onest_bold"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/awakeBtn"
+            style="@style/Button.Pill"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@drawable/btn_gradient"
+            android:text="@string/im_awake"
+            android:textSize="20sp"
+            app:backgroundTint="@null"
+            app:icon="@drawable/ic_check_circle"
+            app:iconSize="26dp" />
+    </LinearLayout>
+</FrameLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Главный экран в стиле Citymapper/Moovit: карта на весь экран, поиск сверху, панель снизу. -->
+<!-- Главный экран по макету Stitch: верхняя панель, карта с плавающим поиском, нижняя панель в три шага. -->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
@@ -7,119 +7,215 @@
     android:layout_height="match_parent"
     android:background="@color/bg">
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <!-- поиск и подсказки поверх карты -->
     <LinearLayout
-        android:id="@+id/topBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="12dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
-            style="@style/FloatingCard"
-            app:cardCornerRadius="28dp">
+        <!-- верхняя панель: значок, название, история, настройки -->
+        <LinearLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg"
+            android:gravity="center_vertical"
+            android:minHeight="72dp"
+            android:orientation="horizontal"
+            android:paddingStart="20dp"
+            android:paddingEnd="12dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                app:cardCornerRadius="13dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:scaleType="centerCrop"
+                    android:src="@mipmap/ic_launcher" />
+            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="18dp">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
-                    android:importantForAccessibility="no"
-                    android:text="🔍"
-                    android:textSize="18sp" />
+                    style="@style/Text.Label"
+                    android:text="@string/app_name"
+                    android:textColor="@color/accent_text" />
 
-                <EditText
-                    android:id="@+id/searchInput"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@null"
-                    android:hint="@string/search_hint"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
+                <TextView
+                    style="@style/Text.Title"
+                    android:ellipsize="end"
                     android:maxLines="1"
-                    android:textColor="@color/text"
-                    android:textColorHint="@color/muted"
-                    android:textSize="16sp" />
-
-                <Button
-                    android:id="@+id/historyBtn"
-                    style="@style/IconTextButton"
-                    android:contentDescription="@string/history"
-                    android:text="🕘" />
-
-                <Button
-                    android:id="@+id/settingsBtn"
-                    style="@style/IconTextButton"
-                    android:contentDescription="@string/settings"
-                    android:text="⚙️" />
+                    android:text="@string/app_tagline"
+                    android:textSize="20sp" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/resultsCard"
-            style="@style/FloatingCard"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:cardCornerRadius="20dp">
+            <Button
+                android:id="@+id/historyBtn"
+                style="@style/Button.Icon.Plain"
+                android:contentDescription="@string/history"
+                app:icon="@drawable/ic_history"
+                app:iconTint="@color/warn" />
 
+            <Button
+                android:id="@+id/settingsBtn"
+                style="@style/Widget.Material3.Button.IconButton.Filled"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="4dp"
+                android:contentDescription="@string/settings"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:icon="@drawable/ic_settings"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="22dp" />
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/map"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <!-- поиск и подсказки поверх карты -->
             <LinearLayout
-                android:id="@+id/results"
+                android:id="@+id/topBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingHorizontal="8dp"
-                android:paddingBottom="8dp" />
-        </com.google.android.material.card.MaterialCardView>
+                android:paddingHorizontal="16dp"
+                android:paddingTop="12dp">
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/setupBanner"
-            style="@style/FloatingCard"
-            android:layout_marginTop="8dp"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/warn_container"
-            app:cardCornerRadius="20dp">
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/FloatingCard"
+                    app:cardCornerRadius="30dp">
 
-            <TextView
-                android:id="@+id/setupBannerText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="14dp"
-                android:textColor="@color/on_warn_container"
-                android:textSize="14sp" />
-        </com.google.android.material.card.MaterialCardView>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_search"
+                            app:tint="@color/accent" />
+
+                        <EditText
+                            android:id="@+id/searchInput"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="14dp"
+                            android:layout_weight="1"
+                            android:background="@null"
+                            android:hint="@string/search_hint"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:textColor="@color/text"
+                            android:textColorHint="@color/muted"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/resultsCard"
+                    style="@style/FloatingCard"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="24dp">
+
+                    <LinearLayout
+                        android:id="@+id/results"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/setupBanner"
+                    style="@style/FloatingCard"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    app:cardBackgroundColor="@color/warn_container"
+                    app:cardCornerRadius="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="14dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_shield"
+                            app:tint="@color/on_warn_container" />
+
+                        <TextView
+                            android:id="@+id/setupBannerText"
+                            style="@style/Text.Body"
+                            android:layout_width="0dp"
+                            android:layout_marginStart="12dp"
+                            android:layout_weight="1"
+                            android:textColor="@color/on_warn_container"
+                            android:textSize="14sp" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:importantForAccessibility="no"
+                            android:src="@drawable/ic_chevron"
+                            app:tint="@color/on_warn_container" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/myLocationFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
         android:layout_margin="16dp"
         android:contentDescription="@string/my_location"
-        android:layout_gravity="top|end"
         android:src="@drawable/ic_my_location"
+        app:backgroundTint="@color/card"
         app:elevation="20dp"
-        app:fabSize="mini"
+        app:fabCustomSize="56dp"
         app:layout_anchor="@id/sheet"
-        app:layout_anchorGravity="top|end" />
+        app:layout_anchorGravity="top|end"
+        app:shapeAppearanceOverlay="@style/ShapeCircle"
+        app:tint="@color/accent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="6dp"
         android:layout_gravity="top|start"
+        android:layout_margin="6dp"
         android:background="#99FFFFFF"
         android:elevation="20dp"
         android:paddingHorizontal="6dp"
@@ -130,7 +226,7 @@
         app:layout_anchor="@id/sheet"
         app:layout_anchorGravity="top|start" />
 
-    <!-- нижняя панель: выбор места → настройка будильника → поездка -->
+    <!-- нижняя панель: куда едем → когда разбудить → поездка -->
     <LinearLayout
         android:id="@+id/sheet"
         android:layout_width="match_parent"
@@ -141,288 +237,32 @@
         android:paddingHorizontal="20dp"
         android:paddingBottom="16dp"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="120dp"
+        app:behavior_peekHeight="140dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
-            android:layout_width="36dp"
+            android:layout_width="40dp"
             android:layout_height="5dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/handle_bg" />
 
-        <!-- 1. Куда едем -->
-        <LinearLayout
-            android:id="@+id/idleSection"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:overScrollMode="never">
 
-            <TextView style="@style/SheetTitle" android:text="@string/where_to" />
-
-            <TextView
-                style="@style/SheetSubtitle"
-                android:text="@string/where_hint" />
-
-            <TextView
-                android:id="@+id/placesTitle"
-                style="@style/SectionLabel"
-                android:text="@string/saved_title" />
-
-            <HorizontalScrollView
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
+                android:layout_height="wrap_content">
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/placesChips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:singleLine="true" />
-            </HorizontalScrollView>
+                <include layout="@layout/sheet_idle" />
 
-            <TextView
-                android:id="@+id/recentTitle"
-                style="@style/SectionLabel"
-                android:text="@string/recent_title" />
+                <include layout="@layout/sheet_destination" />
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/recentChips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:singleLine="true" />
-            </HorizontalScrollView>
-        </LinearLayout>
-
-        <!-- 2. Настройка будильника -->
-        <LinearLayout
-            android:id="@+id/destSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/destTitle"
-                        style="@style/SheetTitle"
-                        android:ellipsize="end"
-                        android:maxLines="2" />
-
-                    <TextView
-                        android:id="@+id/destSubtitle"
-                        style="@style/SheetSubtitle" />
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/saveBtn"
-                    style="@style/IconTextButton"
-                    android:contentDescription="@string/save_place"
-                    android:text="☆"
-                    android:textSize="24sp" />
-
-                <Button
-                    android:id="@+id/clearDestBtn"
-                    style="@style/IconTextButton"
-                    android:contentDescription="@string/clear_dest"
-                    android:text="✕"
-                    android:textColor="@color/muted"
-                    android:textSize="18sp" />
-            </LinearLayout>
-
-            <TextView style="@style/SectionLabel" android:text="@string/wake_label" />
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/modeToggle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:selectionRequired="true"
-                app:singleSelection="true">
-
-                <Button
-                    android:id="@+id/modeDist"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mode_dist_short" />
-
-                <Button
-                    android:id="@+id/modeTime"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/mode_time_short" />
-            </com.google.android.material.button.MaterialButtonToggleGroup>
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/valueChips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:selectionRequired="true"
-                    app:singleLine="true"
-                    app:singleSelection="true" />
-            </HorizontalScrollView>
-
-            <TextView style="@style/SectionLabel" android:text="@string/backup_label" />
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="none">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/backupChips"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:selectionRequired="true"
-                    app:singleLine="true"
-                    app:singleSelection="true" />
-            </HorizontalScrollView>
-
-            <Button
-                android:id="@+id/startBtn"
-                style="@style/BigButton"
-                android:layout_marginTop="16dp"
-                android:text="@string/start_trip" />
-
-            <Button
-                android:id="@+id/simBtn"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/simulate_short" />
-        </LinearLayout>
-
-        <!-- 3. Поездка -->
-        <LinearLayout
-            android:id="@+id/tripSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tripDest"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/text"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/phaseText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/badge_bg"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="4dp"
-                    android:textColor="#FFFFFF"
-                    android:textSize="13sp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:baselineAligned="true"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/distText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="—"
-                    android:textColor="@color/text"
-                    android:textSize="46sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/etaText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:textColor="@color/muted"
-                    android:textSize="20sp" />
-            </LinearLayout>
-
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/tripProgress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:max="1000"
-                app:trackCornerRadius="6dp"
-                app:trackThickness="10dp" />
-
-            <TextView
-                android:id="@+id/tripDetails"
-                style="@style/SheetSubtitle"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:id="@+id/tripStatus"
-                style="@style/SheetSubtitle"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/shareBtn"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginEnd="6dp"
-                    android:layout_weight="1"
-                    android:text="@string/share_short" />
-
-                <Button
-                    android:id="@+id/stopBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_marginStart="6dp"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/danger"
-                    android:text="@string/stop_short"
-                    android:textColor="#FFFFFF" />
-            </LinearLayout>
-        </LinearLayout>
+                <include layout="@layout/sheet_trip" />
+            </FrameLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

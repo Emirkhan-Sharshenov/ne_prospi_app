@@ -153,14 +153,14 @@ class Prefs(context: Context) {
         history = (listOf(record) + history).take(100)
     }
 
-    /** Недавние поездки (без повторов и сохранённых мест) — для быстрого выбора. */
-    fun recentPlaces(limit: Int): List<Place> {
+    /** Недавние поездки (без повторов и сохранённых мест) с временем последней поездки. */
+    fun recentTrips(limit: Int): List<Pair<Place, Long>> {
         val saved = places.map { it.lat to it.lon }.toSet()
         return history.asSequence()
             .filter { !it.simulated && it.lat != null && it.lon != null }
-            .map { Place(it.dest, it.lat!!, it.lon!!) }
-            .filter { (it.lat to it.lon) !in saved }
-            .distinctBy { it.name }
+            .map { Place(it.dest, it.lat!!, it.lon!!) to it.startedAt }
+            .filter { (it.first.lat to it.first.lon) !in saved }
+            .distinctBy { it.first.name }
             .take(limit)
             .toList()
     }

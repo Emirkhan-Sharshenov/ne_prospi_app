@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Шаг 1: «Куда едем?» — сохранённые места, недавние поездки, подсказка. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/idleSection"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/secondary_container">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_bedtime"
+                app:tint="@color/secondary" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/Text.Headline"
+                android:text="@string/where_to" />
+
+            <TextView
+                style="@style/Text.Body.Muted"
+                android:text="@string/where_subtitle" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <HorizontalScrollView
+        android:id="@+id/placesScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:scrollbars="none">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/placesChips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="10dp"
+            app:singleLine="true" />
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/recentTitle"
+        style="@style/SectionLabel"
+        android:text="@string/recent_title" />
+
+    <LinearLayout
+        android:id="@+id/recentList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <TextView
+        android:id="@+id/idleHint"
+        style="@style/Text.Body.Muted"
+        android:layout_width="match_parent"
+        android:layout_marginTop="14dp"
+        android:drawablePadding="12dp"
+        android:text="@string/where_hint"
+        app:drawableStartCompat="@drawable/ic_location"
+        app:drawableTint="@color/accent" />
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/TonalCard"
+        android:layout_marginTop="16dp"
+        app:cardBackgroundColor="@color/accent_container">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_vibration"
+                app:tint="@color/accent_text" />
+
+            <TextView
+                style="@style/Text.Body"
+                android:layout_width="0dp"
+                android:layout_marginStart="14dp"
+                android:layout_weight="1"
+                android:text="@string/tip_silent_mode"
+                android:textColor="@color/on_accent_container"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

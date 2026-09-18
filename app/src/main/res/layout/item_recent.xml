@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Недавняя поездка: цветная плитка, название, когда ездили, кнопка «поехать сейчас». -->
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/TonalCard"
+    android:layout_marginBottom="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="28dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <FrameLayout
+            android:id="@+id/recentTile"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:background="@drawable/row_bg"
+            android:backgroundTint="@color/accent">
+
+            <ImageView
+                android:id="@+id/recentIcon"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_bus"
+                app:tint="#FFFFFF" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/recentName"
+                style="@style/Text.Title"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/recentSub"
+                style="@style/Text.Body.Muted"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/recentGo"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:backgroundTint="@color/card"
+            app:icon="@drawable/ic_bell"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="22dp"
+            app:iconTint="@color/accent" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

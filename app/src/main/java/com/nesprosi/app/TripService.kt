@@ -38,6 +38,7 @@ import android.os.Vibrator
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
 import android.telephony.SmsManager
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
@@ -750,7 +751,34 @@ class TripService : Service(), LocationListener {
             .setContentIntent(openAppIntent())
             .addAction(0, s(R.string.notif_finish), stopPendingIntent())
             .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-        if (progress != null) builder.setProgress(100, (progress * 100).roundToInt(), false)
+        if (progress != null) {
+            builder.setProgress(100, (progress * 100).roundToInt(), false)
+            // своя разметка как в макете: крупно расстояние, время, полоса и зона будильника
+            val st = state
+            if (st.distance != null) {
+                val (num, unit) = Geo.splitValueUnit(Geo.formatDistance(lctx, st.distance))
+                val eta = st.etaSec?.let { Geo.formatEtaMinutes(lctx, it) }.orEmpty()
+                val title = s(R.string.widget_approaching, dest?.name.orEmpty())
+                val pct = (progress * 100).roundToInt()
+                val small = RemoteViews(packageName, R.layout.notif_trip).apply {
+                    setTextViewText(R.id.notifDistance, "$num $unit")
+                    setTextViewText(R.id.notifTitle, title)
+                    setTextViewText(R.id.notifEta, eta)
+                    setProgressBar(R.id.notifProgress, 100, pct, false)
+                }
+                val big = RemoteViews(packageName, R.layout.notif_trip_big).apply {
+                    setTextViewText(R.id.notifTitle, title)
+                    setTextViewText(R.id.notifDistance, num)
+                    setTextViewText(R.id.notifUnit, s(R.string.unit_remaining, unit))
+                    setTextViewText(R.id.notifEta, eta)
+                    setProgressBar(R.id.notifProgress, 100, pct, false)
+                    setTextViewText(R.id.notifZone, st.wakeDistance?.let { s(R.string.wake_zone, Geo.formatDistance(lctx, it)) }.orEmpty())
+                }
+                builder.setStyle(NotificationCompat.DecoratedCustomViewStyle())
+                    .setCustomContentView(small)
+                    .setCustomBigContentView(big)
+            }
+        }
         if (arriveAt != null) {
             builder.setWhen(arriveAt).setShowWhen(true).setUsesChronometer(true).setChronometerCountDown(true)
         } else {

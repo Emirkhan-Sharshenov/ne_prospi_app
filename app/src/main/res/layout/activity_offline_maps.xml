@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/offlineRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,26 +9,25 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="72dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/backBtn"
-            style="@style/Widget.Material3.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/Button.Icon"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="14dp"
             android:contentDescription="@string/back"
-            android:text="←"
-            android:textSize="22sp" />
+            app:icon="@drawable/ic_arrow_back" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/offline_title"
             android:textColor="@color/text"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:fontFamily="@font/onest_bold"
+            android:textSize="22sp" />
     </LinearLayout>
 
     <ScrollView
@@ -89,7 +89,7 @@
 
             <Button
                 android:id="@+id/browseBtn"
-                style="@style/Widget.Material3.Button.TonalButton"
+                style="@style/Button.Tonal"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="12dp"

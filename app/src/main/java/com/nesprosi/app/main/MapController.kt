@@ -4,13 +4,19 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Configuration as UiConfiguration
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
+import android.graphics.DashPathEffect
+import android.graphics.Paint
 import android.location.LocationManager
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.nesprosi.app.Geo
 import com.nesprosi.app.Net
 import com.nesprosi.app.OfflineMap
 import com.nesprosi.app.Place
@@ -35,6 +41,7 @@ import org.osmdroid.views.overlay.FolderOverlay
 import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Polygon
+import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.TilesOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
@@ -76,6 +83,12 @@ class MapController(
     private var destMarker: Marker? = null
     private var destCircle: Polygon? = null
     private var meMarker: Marker? = null
+    private var zoneLabel: Marker? = null
+    private var youLabel: Marker? = null
+    private var guideLine: Polyline? = null
+    private var track: Polyline? = null
+    private var destPlace: Place? = null
+    private var tripMode = false
     private var myLocationOverlay: MyLocationNewOverlay? = null
     private var usingOffline: Boolean? = null
     var interactive = true
@@ -159,10 +172,24 @@ class MapController(
             }
             usingOffline = offline
         }
-        // в тёмной теме затемняем онлайн-карту, чтобы она не слепила ночью
+        // приглушённая карта, как в макете: метки заметнее; ночью — тёмная, чтобы не слепила
         val night = (activity.resources.configuration.uiMode and UiConfiguration.UI_MODE_NIGHT_MASK) ==
             UiConfiguration.UI_MODE_NIGHT_YES
-        map.overlayManager.tilesOverlay.setColorFilter(if (night && !offline) TilesOverlay.INVERT_COLORS else null)
+        val matrix = ColorMatrix().apply { setSaturation(if (night) 0.25f else 0.45f) }
+        if (night) {
+            // инверсия яркости + лёгкий синий оттенок под тёмно-синюю тему
+            matrix.postConcat(
+                ColorMatrix(
+                    floatArrayOf(
+                        -0.85f, 0f, 0f, 0f, 225f,
+                        0f, -0.85f, 0f, 0f, 230f,
+                        0f, 0f, -0.8f, 0f, 245f,
+                        0f, 0f, 0f, 1f, 0f,
+                    )
+                )
+            )
+        }
+        map.overlayManager.tilesOverlay.setColorFilter(ColorMatrixColorFilter(matrix))
         map.invalidate()
     }
 
@@ -170,6 +197,11 @@ class MapController(
         if (myLocationOverlay != null) return
         val provider = GpsMyLocationProvider(activity).apply { addLocationSource(LocationManager.NETWORK_PROVIDER) }
         val overlay = MyLocationNewOverlay(provider, map)
+        val me = meBitmap()
+        overlay.setPersonIcon(me)
+        overlay.setDirectionIcon(me)
+        overlay.setPersonAnchor(0.5f, 0.5f)
+        overlay.setDirectionAnchor(0.5f, 0.5f)
         overlay.enableMyLocation()
         overlay.runOnFirstFix { activity.runOnUiThread { listener.onFirstFix() } }
         map.overlays.add(overlay)
@@ -183,39 +215,127 @@ class MapController(
 
     // ---------- Пункт назначения ----------
 
-    fun showDestination(place: Place?, radiusMeters: Double, moveMap: Boolean) {
+    private fun meBitmap(): Bitmap {
+        val d = ContextCompat.getDrawable(activity, R.drawable.marker_me)!!
+        val size = (40 * activity.resources.displayMetrics.density).toInt()
+        val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        d.setBounds(0, 0, size, size)
+        d.draw(Canvas(bitmap))
+        return bitmap
+    }
+
+    /** Остановка: красная метка, пунктирный круг зоны будильника и подпись «Зона будильника 500 м». */
+    fun showDestination(place: Place?, radiusMeters: Double, label: String, moveMap: Boolean) {
+        destPlace = place
         if (place == null) {
-            destMarker?.let { map.overlays.remove(it) }
-            destCircle?.let { map.overlays.remove(it) }
+            listOfNotNull(destMarker, destCircle, zoneLabel, youLabel, guideLine).forEach { map.overlays.remove(it) }
             destMarker = null
             destCircle = null
+            zoneLabel = null
+            youLabel = null
+            guideLine = null
             map.invalidate()
             return
         }
         val point = GeoPoint(place.lat, place.lon)
         val marker = destMarker ?: Marker(map).also {
-            it.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            it.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
             it.infoWindow = null
             map.overlays.add(it)
             destMarker = it
         }
+        marker.icon = ContextCompat.getDrawable(activity, if (tripMode) R.drawable.marker_dest_alarm else R.drawable.marker_dest)
         marker.position = point
-        setRadius(place, radiusMeters)
+        setRadius(place, radiusMeters, label)
+        updateGuide(myLocation)
         if (moveMap) centerOn(point, 14.0)
         map.invalidate()
     }
 
-    fun setRadius(place: Place, radiusMeters: Double) {
+    fun setRadius(place: Place, radiusMeters: Double, label: String) {
         val circle = destCircle ?: Polygon(map).also {
-            it.fillPaint.color = Color.argb(40, 255, 59, 59)
-            it.outlinePaint.color = Color.rgb(255, 59, 59)
-            it.outlinePaint.strokeWidth = 4f
+            it.fillPaint.color = Color.argb(34, 239, 68, 68)
+            it.outlinePaint.color = Color.rgb(239, 68, 68)
+            it.outlinePaint.strokeWidth = 5f
+            it.outlinePaint.pathEffect = DashPathEffect(floatArrayOf(18f, 12f), 0f)
             it.infoWindow = null
             it.setOnClickListener { _, _, _ -> false }
             map.overlays.add(1, it) // над обработчиком нажатий, под остановками и метками
             destCircle = it
         }
         circle.points = Polygon.pointsAsCircle(GeoPoint(place.lat, place.lon), radiusMeters)
+
+        val zone = zoneLabel ?: Marker(map).also {
+            it.infoWindow = null
+            it.setOnMarkerClickListener { _, _ -> true }
+            map.overlays.add(it)
+            zoneLabel = it
+        }
+        zone.icon = MapPills.make(activity, label, dark = false, dotColor = ContextCompat.getColor(activity, R.color.warn))
+        zone.position = GeoPoint(place.lat, place.lon)
+        zone.setAnchor(Marker.ANCHOR_CENTER, -0.9f) // под меткой остановки
+        map.invalidate()
+    }
+
+    /** Пунктир от «меня» до остановки и подпись «Вы · 1,2 км» — пока поездка не начата. */
+    fun updateGuide(me: GeoPoint?) {
+        val dest = destPlace
+        if (dest == null || me == null || tripMode) {
+            listOfNotNull(youLabel, guideLine).forEach { map.overlays.remove(it) }
+            youLabel = null
+            guideLine = null
+            map.invalidate()
+            return
+        }
+        val line = guideLine ?: Polyline(map).also {
+            it.outlinePaint.color = ContextCompat.getColor(activity, R.color.accent)
+            it.outlinePaint.strokeWidth = 8f
+            it.outlinePaint.pathEffect = DashPathEffect(floatArrayOf(20f, 16f), 0f)
+            it.infoWindow = null
+            map.overlays.add(1, it)
+            guideLine = it
+        }
+        line.setPoints(listOf(me, GeoPoint(dest.lat, dest.lon)))
+
+        val you = youLabel ?: Marker(map).also {
+            it.infoWindow = null
+            it.setOnMarkerClickListener { _, _ -> true }
+            map.overlays.add(it)
+            youLabel = it
+        }
+        val km = Geo.formatDistance(activity, Geo.distance(me.latitude, me.longitude, dest.lat, dest.lon))
+        you.icon = MapPills.make(activity, activity.getString(R.string.you_away, km), dark = true)
+        you.position = me
+        you.setAnchor(0.5f, 1.6f) // над синей точкой
+        map.invalidate()
+    }
+
+    /** Во время поездки метка превращается в будильник, а пройденный путь рисуется линией. */
+    fun setTripMode(active: Boolean) {
+        if (tripMode == active) return
+        tripMode = active
+        destMarker?.icon = ContextCompat.getDrawable(activity, if (active) R.drawable.marker_dest_alarm else R.drawable.marker_dest)
+        if (active) {
+            updateGuide(null)
+        } else {
+            track?.let { map.overlays.remove(it) }
+            track = null
+            updateGuide(myLocation)
+        }
+        map.invalidate()
+    }
+
+    fun addTrackPoint(lat: Double, lon: Double) {
+        val line = track ?: Polyline(map).also {
+            it.outlinePaint.color = ContextCompat.getColor(activity, R.color.secondary)
+            it.outlinePaint.strokeWidth = 12f
+            it.outlinePaint.strokeCap = Paint.Cap.ROUND
+            it.infoWindow = null
+            map.overlays.add(1, it)
+            track = it
+        }
+        val last = line.actualPoints.lastOrNull()
+        if (last == null || Geo.distance(last.latitude, last.longitude, lat, lon) > 5) line.addPoint(GeoPoint(lat, lon))
         map.invalidate()
     }
 
@@ -230,12 +350,7 @@ class MapController(
             meMarker = null
         } else {
             val marker = meMarker ?: Marker(map).also {
-                it.icon = GradientDrawable().apply {
-                    shape = GradientDrawable.OVAL
-                    setColor(Color.rgb(79, 140, 255))
-                    setStroke(5, Color.WHITE)
-                    setSize(44, 44)
-                }
+                it.icon = ContextCompat.getDrawable(activity, R.drawable.marker_me)
                 it.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
                 it.infoWindow = null
                 map.overlays.add(it)

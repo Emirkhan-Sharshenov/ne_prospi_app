@@ -1,15 +1,35 @@
 <resources>
-    <!-- тёмная тема -->
+    <!-- Тёмная тема: глубокий тёмно-синий фон, те же акценты -->
     <color name="bg">#0F1420</color>
-    <color name="card">#182033</color>
-    <color name="line">#2A3550</color>
+    <color name="card">#172035</color>
+    <color name="surface_low">#131A2B</color>
+    <color name="surface_mid">#1C2640</color>
+    <color name="surface_high">#253050</color>
+    <color name="line">#2F3A55</color>
     <color name="text">#E8ECF5</color>
-    <color name="muted">#8D99B3</color>
+    <color name="muted">#A3ADC4</color>
+
     <color name="accent">#4F8CFF</color>
-    <color name="danger">#E53935</color>
-    <color name="warn">#C98A00</color>
-    <color name="ok">#1F7A4D</color>
-    <color name="accent_container">#26375E</color>
+    <color name="accent_text">#B0C6FF</color>
+    <color name="accent_container">#1F3366</color>
+    <color name="on_accent_container">#D9E2FF</color>
+    <color name="secondary">#9691FE</color>
+    <color name="secondary_container">#2B2A5E</color>
+    <color name="on_secondary_container">#E3DFFF</color>
+
+    <color name="amber">#FFBA4B</color>
+    <color name="warn">#FFBA4B</color>
     <color name="warn_container">#4A3610</color>
-    <color name="on_warn_container">#FFE2A8</color>
+    <color name="on_warn_container">#FFDDB1</color>
+
+    <color name="danger">#FF6B6B</color>
+    <color name="danger_container">#4A1C22</color>
+    <color name="on_danger_container">#FFDAD6</color>
+
+    <color name="ok">#34D399</color>
+    <color name="ok_container">#12382A</color>
+    <color name="on_ok_container">#C4F5DD</color>
+
+    <color name="navy">#0F1420</color>
+    <color name="map_pill">#E6172035</color>
 </resources>

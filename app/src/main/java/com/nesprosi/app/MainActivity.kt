@@ -79,15 +79,20 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         search = SearchPanel(this, { mapController.boundingBox }) { setDest(it) }
         sheet = Sheet(this)
         places = PlaceActions(this, prefs) { renamed -> onPlacesChanged(renamed) }
-        idle = IdlePanel(this, prefs, onPlace = { setDest(it) }, onSavedLongPress = places::showActions)
+        idle = IdlePanel(
+            this, prefs,
+            onPlace = { setDest(it) },
+            onQuickStart = { place -> setDest(place); launcher.start(place, simulate = false) },
+            onSavedLongPress = places::showActions,
+        )
         destination = DestinationPanel(
             this, prefs,
-            onWakeChanged = { dest?.let { mapController.setRadius(it, destination.wakeRadiusMeters()) } },
+            onWakeChanged = { dest?.let { mapController.setRadius(it, destination.wakeRadiusMeters(), zoneLabel()) } },
             onSave = { dest?.let(places::toggleSave) },
             onClear = { clearDest() },
             onStart = { simulate -> dest?.let { launcher.start(it, simulate) } },
         )
-        trip = TripPanel(this, onShare = places::shareTrip, onStop = { TripService.stop(this) })
+        trip = TripPanel(this, prefs, onShare = places::shareTrip, onStop = { TripService.stop(this) })
         setupBanner = findViewById(R.id.setupBanner)
 
         applyInsets()
@@ -120,14 +125,14 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
 
     /** Карта уходит под строку состояния, а поиск и панель отодвигаются от системных полос. */
     private fun applyInsets() {
-        val topBar = findViewById<View>(R.id.topBar)
+        val appBar = findViewById<View>(R.id.appBar)
         val sheetView = findViewById<View>(R.id.sheet)
         val dp = resources.displayMetrics.density
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.root)) { _, insets ->
             val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            topBar.updatePadding(
-                top = bars.top + (8 * dp).toInt(),
-                left = bars.left + (12 * dp).toInt(),
+            appBar.updatePadding(
+                top = bars.top + (4 * dp).toInt(),
+                left = bars.left + (20 * dp).toInt(),
                 right = bars.right + (12 * dp).toInt(),
             )
             sheetView.updatePadding(bottom = bars.bottom + (16 * dp).toInt())
@@ -231,6 +236,7 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         val me = mapController.myLocation ?: return
         if (dest == null && prefs.mapPosition == null) mapController.centerOn(me, 14.0)
         dest?.let { if (!TripService.state.active) showDestination(it) }
+        mapController.updateGuide(me)
     }
 
     /** Узнаёт название точки в фоне и подписывает её, если пользователь не выбрал другую. */
@@ -250,13 +256,13 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
     private fun setDest(place: Place, moveMap: Boolean = true) {
         dest = place
         search.hide()
-        mapController.showDestination(place, destination.wakeRadiusMeters(), moveMap)
+        mapController.showDestination(place, destination.wakeRadiusMeters(), zoneLabel(), moveMap)
         if (!TripService.state.active) showDestination(place)
     }
 
     private fun clearDest() {
         dest = null
-        mapController.showDestination(null, 0.0, false)
+        mapController.showDestination(null, 0.0, "", false)
         showIdle()
     }
 
@@ -266,7 +272,13 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         sheet.show(idle.view)
     }
 
+    /** Подпись под остановкой на карте: «Зона будильника 500 м» или «За 3 мин». */
+    private fun zoneLabel(): String =
+        if (prefs.mode == Prefs.MODE_DIST) getString(R.string.wake_zone_map, Geo.formatDistance(this, prefs.distMeters.toDouble()))
+        else getString(R.string.wake_zone_time, prefs.minutes)
+
     private fun showDestination(place: Place) {
+        mapController.updateGuide(mapController.myLocation)
         val me = mapController.myLocation
         val fromMe = me?.let { Geo.distance(it.latitude, it.longitude, place.lat, place.lon) }
         destination.show(place, fromMe, places.savedIndex(place) >= 0)
@@ -284,6 +296,7 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
 
     private fun render(s: TripService.State) {
         mapController.interactive = !s.active
+        mapController.setTripMode(s.active)
         if (!s.active) {
             mapController.showMe(null, null)
             if (sheet.isShowing(trip.view)) {
@@ -300,5 +313,6 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         }
         trip.render(s)
         mapController.showMe(s.lat, s.lon)
+        if (s.lat != null && s.lon != null) mapController.addTrackPoint(s.lat, s.lon)
     }
 }

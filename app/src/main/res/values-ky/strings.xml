@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Уктап калба</string>
-    <string name="app_title">🚌  Уктап калба</string>
     <string name="history">Тарых</string>
     <string name="settings">Жөндөөлөр</string>
     <string name="back">Артка</string>
@@ -45,12 +44,7 @@
 
     <!-- 3. Сапар -->
     <string name="phase_waiting">GPS изделүүдө…</string>
-    <string name="phase_riding">жолдо</string>
-    <string name="phase_warned">жакында түшөсүз</string>
-    <string name="phase_alarm">ойготкуч!</string>
-    <string name="phase_check">текшерүү</string>
-    <string name="phase_gps_lost">GPS жок</string>
-    <string name="start_trip">▶  Сапарды баштоо</string>
+    <string name="start_trip">Сапарды баштоо</string>
     <string name="backup_at">🛟 Камсыздандыруу %1$s иштейт</string>
     <string name="simulation_note">🧪 Сыноо: жакындарга SMS жөнөтүлбөйт</string>
 
@@ -124,7 +118,7 @@
     <string name="hold_to_dismiss">Өчүрүү үчүн басып туруңуз</string>
     <string name="check_big">Ойгондуңузбу?</string>
     <string name="check_countdown">Ойготкуч %1$d сек кийин кайра шыңгырайт</string>
-    <string name="im_awake">Ооба, уктаган жокмун</string>
+    <string name="im_awake">Ооба, уктаган жокмун!</string>
 
     <!-- SMS -->
     <string name="sms_start">Уктап калба: «%1$s» бара жатам. Мен бул жердемин: %2$s</string>
@@ -160,27 +154,23 @@
     <string name="where_to">Кайда барасыз?</string>
     <string name="where_hint">Картадан аялдаманы басыңыз же даректи издеңиз</string>
     <string name="where_hint_short">Качан ойготууну тандап, сапарды баштаңыз</string>
-    <string name="saved_title">Менин жерлерим</string>
-    <string name="recent_title">Акыркылар</string>
-    <string name="wake_label">Качан ойготуу</string>
+    <string name="recent_title">Акыркы сапарлар</string>
     <string name="mode_dist_short">Аралык боюнча</string>
     <string name="mode_time_short">Убакыт боюнча</string>
-    <string name="backup_label">Камсыздандыруу — баары бир ойготуу</string>
-    <string name="simulate_short">🧪 Сыноо менен текшерүү</string>
+    <string name="backup_label">Камсыздандыруу таймери</string>
+    <string name="simulate_short">Сыноо менен текшерүү</string>
     <string name="from_you">Сизден %1$s</string>
-    <string name="eta_short">≈ %1$s</string>
     <string name="clear_dest">Чекитти алып салуу</string>
     <string name="my_location">Менин жайгашкан жерим</string>
     <string name="setup_banner">⚠️ Телефондун жөндөөлөрү ойготкучка тоскоол болушу мүмкүн (%1$d). Оңдоо үчүн басыңыз</string>
-    <string name="share_short">📤 Жакындарга</string>
-    <string name="stop_short">■ Бүтүрүү</string>
+    <string name="share_short">Бөлүшүү</string>
+    <string name="stop_short">Бүтүрүү</string>
 
     <!-- ишенимдүүлүк текшерүүсү -->
     <string name="setup_title">Ишенимдүүлүктү текшерүү</string>
     <string name="setup_open">🛡️ Ишенимдүүлүктү текшерүү</string>
     <string name="setup_intro">Android тиркемени фондо уктатып коюшу мүмкүн, анда ойготкуч иштебейт. Баары жашыл белгиленгенин текшериңиз.</string>
-    <string name="setup_all_ok">✅ Баары даяр — ойготкуч иштейт</string>
-    <string name="setup_issues">⚠️ Оңдоо керек: %1$d</string>
+    <string name="setup_all_ok">Баары даяр!</string>
     <string name="setup_done">Даяр</string>
     <string name="fix">Оңдоо</string>
     <string name="chk_location">Так жайгашкан жер</string>
@@ -214,14 +204,12 @@
     <!-- виджет -->
     <string name="widget_description">Уктап калба: бир басуу менен сапар</string>
     <string name="widget_no_places">Тиркемеде жерди сактаңыз — ал бул жерде пайда болот</string>
-    <string name="widget_trip">%1$s · калды %2$s</string>
 
     <!-- для всего мира -->
     <string name="feet_value">%1$d фт</string>
     <string name="miles_value">%1$.1f ми</string>
     <string name="miles_value_int">%1$d ми</string>
     <string name="speed_mph">%1$d миль/саат</string>
-    <string name="gps_accuracy">GPS ±%1$s</string>
     <string name="set_units">Аралык бирдиги</string>
     <string name="units_auto">Автоматтык (өлкө боюнча)</string>
     <string name="units_metric">Километр жана метр</string>
@@ -245,4 +233,64 @@
     <string name="offline_folder">📁 %1$s</string>
     <string name="offline_file">🗺️ %1$s · %2$s</string>
     <string name="offline_confirm">Файлдын көлөмү — %1$s. Wi-Fi аркылуу жүктөгөн жакшы.</string>
+
+    <!-- дизайн 1.4 -->
+    <string name="app_tagline">Аялдама ойготкучу</string>
+    <string name="where_subtitle">Тынч уктаңыз — биз ойготобуз.</string>
+    <string name="tip_silent_mode">Ойготкуч үнсүз режимде да шыңгырайт — үн жана титирөө «Тынчымды албагыла» режиминен өтөт.</string>
+    <string name="recent_last">Акыркы сапар: %1$s</string>
+    <string name="wake_before_stop">Аялдамага чейин ойготуу</string>
+    <string name="wake_before_arrival">Жетерден мурун ойготуу</string>
+    <string name="best">мыкты</string>
+    <string name="backup_info_title">Камсыздандыруу таймери</string>
+    <string name="backup_info_text">GPS жоголсо же Android тиркемени жапса, ойготкуч бул убакыттан кийин баары бир шыңгырайт. Адаттагы сапардан бир аз көбүрөөк коюңуз.</string>
+    <string name="mode_loud">Катуу</string>
+    <string name="mode_vibration">Титирөө</string>
+    <string name="mode_headphones">Кулакчын</string>
+    <string name="distance_to_alarm">Ойготкучка чейин</string>
+    <string name="estimated">Болжол менен</string>
+    <string name="status_riding">Жолдо · уктасаңыз болот</string>
+    <string name="status_waiting">GPS изделүүдө…</string>
+    <string name="status_warned">Даярданыңыз · жакында түшөсүз</string>
+    <string name="status_alarm">Ойготкуч шыңгырап жатат</string>
+    <string name="status_check">Ойгонгонуңузду текшерип жатам</string>
+    <string name="status_gps_lost">GPS жок · камсыздандыруу иштейт</string>
+    <string name="trip_start">Башталышы</string>
+    <string name="progress_percent">%1$d%% өттү</string>
+    <string name="wake_zone">Ойготкуч аймагы (%1$s)</string>
+    <string name="wake_zone_map">Ойготкуч аймагы %1$s</string>
+    <string name="wake_zone_time">Жетерден %1$d мүн мурун</string>
+    <string name="you_away">Сиз · %1$s</string>
+    <string name="stat_accuracy">Тактык</string>
+    <string name="stat_speed">Ылдамдык</string>
+    <string name="eta_min">≈ %1$d мүн</string>
+    <string name="eta_less_min">&lt; 1 мүн</string>
+    <string name="alarm_top_pill">ТУРУҢУЗ · ТУРУҢУЗ · ТУРУҢУЗ</string>
+    <string name="alarm_distance">«%2$s» чейин %1$s!</string>
+    <string name="alarm_mode_loud">Катуу үн + титирөө</string>
+    <string name="alarm_mode_vibration">Титирөө гана</string>
+    <string name="alarm_mode_headphones">Кулакчында үн + титирөө</string>
+    <string name="hold_sub">2 секунд</string>
+    <string name="hold_note">2 секунд басып туруңуз — ойготкуч уйкуда кокусунан өчпөйт.</string>
+    <string name="check_top_pill">ТЕКШЕРҮҮ</string>
+    <string name="check_subtitle">«%1$s» өтүп кетпеш үчүн ойгонгонуңузду ырастаңыз.</string>
+    <string name="safety_check">Текшерүү</string>
+    <string name="distance_remaining">Калган аралык</string>
+    <string name="setup_subtitle">Ишенимдүүлүк жана уруксаттар</string>
+    <string name="high_priority">Маанилүү</string>
+    <string name="setup_all_ok_desc">Ойготкуч экран бекитилсе жана телефон чөнтөктө болсо да иштейт.</string>
+    <string name="chk_volume_desc_short">Ойготкуч үнсүз режимде да угулат</string>
+    <string name="test_alarm">Үндү жана титирөөнү текшерүү</string>
+    <string name="test_alarm_stop">Текшерүүнү токтотуу</string>
+    <string name="setup_footer">Ойготкуч GPS менен иштейт — ага карта да, интернет да керек эмес.</string>
+    <string name="widget_quick_title">Тез баштоо</string>
+    <string name="widget_quick_sub">Кайда барасыз?</string>
+    <string name="widget_live">Сапар</string>
+    <string name="widget_approaching">Жакындап жатабыз: %1$s</string>
+    <string name="unit_remaining">%1$s калды</string>
+    <string name="notif_inbound">Аялдамага бара жатабыз</string>
+    <plurals name="setup_issues">
+        <item quantity="one">Оңдоо керек: %1$d</item>
+        <item quantity="other">Оңдоо керек: %1$d</item>
+    </plurals>
 </resources>

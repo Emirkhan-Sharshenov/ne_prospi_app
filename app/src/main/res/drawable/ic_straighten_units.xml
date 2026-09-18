@@ -1,0 +1,8 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="960" android:viewportHeight="960">
+    <!-- Material Symbols Rounded (Apache 2.0) -->
+    <group android:translateY="960">
+        <path android:fillColor="#FFFFFFFF" android:pathData="M200-120q-33 0-56.5-23.5T120-200v-539q0-37 34.5-51t61.5 13l45 45-42 42 27 27 42-42 117 117-42 42 27 27 42-42 118 118-42 42 27 27 42-42 117 117-42 42 27 27 42-42 45 45q30 30 15 68.5T726-120H200Zm0-80h463L200-663v463Z" />
+    </group>
+</vector>

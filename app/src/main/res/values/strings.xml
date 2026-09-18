@@ -1,7 +1,6 @@
 <resources>
     <!-- English is the default language for every country without its own translation. -->
     <string name="app_name">Don\'t Oversleep</string>
-    <string name="app_title">🚌  Don\'t Oversleep</string>
     <string name="history">History</string>
     <string name="settings">Settings</string>
     <string name="back">Back</string>
@@ -24,7 +23,6 @@
     <string name="minutes_value">%1$d min</string>
     <string name="speed_value">%1$d km/h</string>
     <string name="speed_mph">%1$d mph</string>
-    <string name="gps_accuracy">GPS ±%1$s</string>
 
     <!-- destination -->
     <string name="search_hint">Street, stop, station…</string>
@@ -49,12 +47,7 @@
 
     <!-- trip -->
     <string name="phase_waiting">finding GPS…</string>
-    <string name="phase_riding">on the way</string>
-    <string name="phase_warned">get ready</string>
-    <string name="phase_alarm">alarm!</string>
-    <string name="phase_check">checking</string>
-    <string name="phase_gps_lost">no GPS</string>
-    <string name="start_trip">▶  Start trip</string>
+    <string name="start_trip">Start trip</string>
     <string name="backup_at">🛟 Backup alarm at %1$s</string>
     <string name="simulation_note">🧪 Simulation: no SMS will be sent</string>
 
@@ -127,8 +120,8 @@
     <string name="alarm_arriving">You\'re arriving at:\n%1$s</string>
     <string name="hold_to_dismiss">Hold to turn off</string>
     <string name="check_big">Are you awake?</string>
-    <string name="check_countdown">The alarm will ring again in %1$d s</string>
-    <string name="im_awake">Yes, I\'m awake</string>
+    <string name="check_countdown">Alarm rings again in %1$d s unless you confirm</string>
+    <string name="im_awake">Yes, I\'m awake!</string>
 
     <!-- SMS -->
     <string name="sms_start">Don\'t Oversleep: heading to “%1$s”. I\'m here: %2$s</string>
@@ -189,27 +182,23 @@
     <string name="where_to">Where to?</string>
     <string name="where_hint">Tap a stop on the map or search for an address</string>
     <string name="where_hint_short">Choose when to wake you and start the trip</string>
-    <string name="saved_title">My places</string>
-    <string name="recent_title">Recent</string>
-    <string name="wake_label">Wake me</string>
+    <string name="recent_title">Recent trips</string>
     <string name="mode_dist_short">By distance</string>
     <string name="mode_time_short">By time</string>
-    <string name="backup_label">Backup — wake me anyway after</string>
-    <string name="simulate_short">🧪 Test with a simulation</string>
+    <string name="backup_label">Safety backup timer</string>
+    <string name="simulate_short">Test with a simulation</string>
     <string name="from_you">%1$s from you</string>
-    <string name="eta_short">≈ %1$s</string>
     <string name="clear_dest">Remove point</string>
     <string name="my_location">My location</string>
     <string name="setup_banner">⚠️ Phone settings may block the alarm (%1$d). Tap to fix</string>
-    <string name="share_short">📤 Share</string>
-    <string name="stop_short">■ End</string>
+    <string name="share_short">Share trip</string>
+    <string name="stop_short">End trip</string>
 
     <!-- reliability check -->
     <string name="setup_title">Reliability check</string>
     <string name="setup_open">🛡️ Reliability check</string>
     <string name="setup_intro">Android can put apps to sleep in the background, and then the alarm won\'t ring. Make sure everything is green.</string>
-    <string name="setup_all_ok">✅ All set — the alarm will ring</string>
-    <string name="setup_issues">⚠️ Needs fixing: %1$d</string>
+    <string name="setup_all_ok">All set!</string>
     <string name="setup_done">Done</string>
     <string name="fix">Fix</string>
     <string name="chk_location">Precise location</string>
@@ -243,5 +232,64 @@
     <!-- widget -->
     <string name="widget_description">Don\'t Oversleep: one-tap trip</string>
     <string name="widget_no_places">Save a place in the app — it will show up here</string>
-    <string name="widget_trip">%1$s · %2$s to go</string>
+
+    <!-- дизайн 1.4 -->
+    <string name="app_tagline">Stop alarm</string>
+    <string name="where_subtitle">Sleep peacefully, we\'ll wake you.</string>
+    <string name="tip_silent_mode">The alarm rings even in silent mode — sound and vibration go through Do Not Disturb.</string>
+    <string name="recent_last">Last trip: %1$s</string>
+    <string name="wake_before_stop">Wake up before the stop</string>
+    <string name="wake_before_arrival">Wake up before arrival</string>
+    <string name="best">best</string>
+    <string name="backup_info_title">Safety backup timer</string>
+    <string name="backup_info_text">If GPS is lost or Android closes the app, the alarm rings anyway after this time. Set it a little longer than your usual trip.</string>
+    <string name="mode_loud">Loud</string>
+    <string name="mode_vibration">Vibration</string>
+    <string name="mode_headphones">Headphones</string>
+    <string name="distance_to_alarm">Distance to alarm</string>
+    <string name="estimated">Estimated</string>
+    <string name="status_riding">On the way · sleep mode on</string>
+    <string name="status_waiting">Finding GPS…</string>
+    <string name="status_warned">Get ready · stop is close</string>
+    <string name="status_alarm">Alarm is ringing</string>
+    <string name="status_check">Checking you\'re awake</string>
+    <string name="status_gps_lost">GPS lost · backup is on</string>
+    <string name="trip_start">Start</string>
+    <string name="progress_percent">%1$d%% done</string>
+    <string name="wake_zone">Wake zone (%1$s)</string>
+    <string name="wake_zone_map">%1$s wake zone</string>
+    <string name="wake_zone_time">Wake %1$d min before</string>
+    <string name="you_away">You · %1$s away</string>
+    <string name="stat_accuracy">Accuracy</string>
+    <string name="stat_speed">Speed</string>
+    <string name="eta_min">≈ %1$d min</string>
+    <string name="eta_less_min">&lt; 1 min</string>
+    <string name="alarm_top_pill">WAKE UP · WAKE UP · WAKE UP</string>
+    <string name="alarm_distance">%1$s from %2$s!</string>
+    <string name="alarm_mode_loud">Loud tone + vibration</string>
+    <string name="alarm_mode_vibration">Vibration only</string>
+    <string name="alarm_mode_headphones">Sound in headphones + vibration</string>
+    <string name="hold_sub">2 second hold</string>
+    <string name="hold_note">Press and hold for 2 seconds so you can\'t turn it off in your sleep.</string>
+    <string name="check_top_pill">SAFETY CHECK</string>
+    <string name="check_subtitle">Confirm you\'re awake so you don\'t miss getting off at %1$s.</string>
+    <string name="safety_check">Safety check</string>
+    <string name="distance_remaining">Distance remaining</string>
+    <string name="setup_subtitle">Reliability &amp; permissions</string>
+    <string name="high_priority">Important</string>
+    <string name="setup_all_ok_desc">The alarm will ring even with the screen locked and the phone in your pocket.</string>
+    <string name="chk_volume_desc_short">Alarms ring through silent mode</string>
+    <string name="test_alarm">Test alarm sound &amp; vibration</string>
+    <string name="test_alarm_stop">Stop the test</string>
+    <string name="setup_footer">The alarm works by GPS — it needs neither a map nor the internet.</string>
+    <string name="widget_quick_title">Quick trips</string>
+    <string name="widget_quick_sub">Where are you heading?</string>
+    <string name="widget_live">Live trip</string>
+    <string name="widget_approaching">Approaching %1$s</string>
+    <string name="unit_remaining">%1$s remaining</string>
+    <string name="notif_inbound">Destination inbound</string>
+    <plurals name="setup_issues">
+        <item quantity="one">%1$d thing to fix</item>
+        <item quantity="other">%1$d things to fix</item>
+    </plurals>
 </resources>
