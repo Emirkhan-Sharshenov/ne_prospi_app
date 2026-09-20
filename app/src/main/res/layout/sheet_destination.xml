@@ -27,8 +27,11 @@
             android:layout_width="0dp"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
+            android:breakStrategy="simple"
             android:ellipsize="end"
-            android:maxLines="2" />
+            android:hyphenationFrequency="none"
+            android:maxLines="2"
+            android:textSize="21sp" />
 
         <Button
             android:id="@+id/saveBtn"
@@ -69,12 +72,16 @@
             <Button
                 android:id="@+id/modeDist"
                 style="@style/Button.Segment"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/mode_dist_short"
                 app:icon="@drawable/ic_ruler" />
 
             <Button
                 android:id="@+id/modeTime"
                 style="@style/Button.Segment"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@string/mode_time_short"
                 app:icon="@drawable/ic_schedule" />
         </com.google.android.material.button.MaterialButtonToggleGroup>

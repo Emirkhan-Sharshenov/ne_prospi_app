@@ -155,9 +155,9 @@
     <string name="where_hint">Картадан аялдаманы басыңыз же даректи издеңиз</string>
     <string name="where_hint_short">Качан ойготууну тандап, сапарды баштаңыз</string>
     <string name="recent_title">Акыркы сапарлар</string>
-    <string name="mode_dist_short">Аралык боюнча</string>
-    <string name="mode_time_short">Убакыт боюнча</string>
-    <string name="backup_label">Камсыздандыруу таймери</string>
+    <string name="mode_dist_short">Аралык</string>
+    <string name="mode_time_short">Убакыт</string>
+    <string name="backup_label">Камсыздандыруу</string>
     <string name="simulate_short">Сыноо менен текшерүү</string>
     <string name="from_you">Сизден %1$s</string>
     <string name="clear_dest">Чекитти алып салуу</string>
@@ -239,8 +239,8 @@
     <string name="where_subtitle">Тынч уктаңыз — биз ойготобуз.</string>
     <string name="tip_silent_mode">Ойготкуч үнсүз режимде да шыңгырайт — үн жана титирөө «Тынчымды албагыла» режиминен өтөт.</string>
     <string name="recent_last">Акыркы сапар: %1$s</string>
-    <string name="wake_before_stop">Аялдамага чейин ойготуу</string>
-    <string name="wake_before_arrival">Жетерден мурун ойготуу</string>
+    <string name="wake_before_stop">Мурун ойготуу</string>
+    <string name="wake_before_arrival">Жетерден мурун</string>
     <string name="best">мыкты</string>
     <string name="backup_info_title">Камсыздандыруу таймери</string>
     <string name="backup_info_text">GPS жоголсо же Android тиркемени жапса, ойготкуч бул убакыттан кийин баары бир шыңгырайт. Адаттагы сапардан бир аз көбүрөөк коюңуз.</string>
@@ -270,7 +270,7 @@
     <string name="alarm_mode_loud">Катуу үн + титирөө</string>
     <string name="alarm_mode_vibration">Титирөө гана</string>
     <string name="alarm_mode_headphones">Кулакчында үн + титирөө</string>
-    <string name="hold_sub">2 секунд</string>
+    <string name="hold_sub">2 секунд басыңыз</string>
     <string name="hold_note">2 секунд басып туруңуз — ойготкуч уйкуда кокусунан өчпөйт.</string>
     <string name="check_top_pill">ТЕКШЕРҮҮ</string>
     <string name="check_subtitle">«%1$s» өтүп кетпеш үчүн ойгонгонуңузду ырастаңыз.</string>

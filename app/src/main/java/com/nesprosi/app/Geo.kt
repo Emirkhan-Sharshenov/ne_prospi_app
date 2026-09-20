@@ -28,13 +28,13 @@ object Geo {
             val miles = m / METERS_PER_MILE
             return when {
                 miles < 0.1 -> ctx.getString(R.string.feet_value, ((m * FEET_PER_METER) / 10).roundToInt() * 10)
-                miles < 10 -> ctx.getString(R.string.miles_value, miles)
+                miles < 10 && miles % 1.0 > 0.05 -> ctx.getString(R.string.miles_value, miles)
                 else -> ctx.getString(R.string.miles_value_int, miles.roundToInt())
             }
         }
         return when {
             m < 1000 -> ctx.getString(R.string.meters_value, m.roundToInt())
-            m < 10_000 -> ctx.getString(R.string.km_value, m / 1000)
+            m < 10_000 && (m / 1000) % 1.0 > 0.05 -> ctx.getString(R.string.km_value, m / 1000)
             else -> ctx.getString(R.string.km_value_int, (m / 1000).roundToInt())
         }
     }

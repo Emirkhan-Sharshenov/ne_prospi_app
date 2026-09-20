@@ -155,9 +155,9 @@
     <string name="where_hint">Нажмите на остановку на карте или найдите адрес</string>
     <string name="where_hint_short">Выберите, когда разбудить, и начните поездку</string>
     <string name="recent_title">Недавние поездки</string>
-    <string name="mode_dist_short">По расстоянию</string>
-    <string name="mode_time_short">По времени</string>
-    <string name="backup_label">Страховочный таймер</string>
+    <string name="mode_dist_short">Расстояние</string>
+    <string name="mode_time_short">Время</string>
+    <string name="backup_label">Страховка</string>
     <string name="simulate_short">Проверить на симуляции</string>
     <string name="from_you">%1$s от вас</string>
     <string name="clear_dest">Убрать точку</string>
@@ -239,7 +239,7 @@
     <string name="where_subtitle">Спите спокойно — мы разбудим.</string>
     <string name="tip_silent_mode">Будильник звонит даже в беззвучном режиме — звук и вибрация проходят через «Не беспокоить».</string>
     <string name="recent_last">Последняя поездка: %1$s</string>
-    <string name="wake_before_stop">Разбудить до остановки за</string>
+    <string name="wake_before_stop">Разбудить за</string>
     <string name="wake_before_arrival">Разбудить до прибытия за</string>
     <string name="best">лучше</string>
     <string name="backup_info_title">Страховочный таймер</string>
@@ -270,7 +270,7 @@
     <string name="alarm_mode_loud">Громкий звук + вибрация</string>
     <string name="alarm_mode_vibration">Только вибрация</string>
     <string name="alarm_mode_headphones">Звук в наушниках + вибрация</string>
-    <string name="hold_sub">2 секунды</string>
+    <string name="hold_sub">держите 2 секунды</string>
     <string name="hold_note">Нажмите и держите 2 секунды — так будильник не выключится во сне случайно.</string>
     <string name="check_top_pill">ПРОВЕРКА</string>
     <string name="check_subtitle">Подтвердите, что проснулись, чтобы не проехать «%1$s».</string>

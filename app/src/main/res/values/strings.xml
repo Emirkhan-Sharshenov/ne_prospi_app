@@ -183,9 +183,9 @@
     <string name="where_hint">Tap a stop on the map or search for an address</string>
     <string name="where_hint_short">Choose when to wake you and start the trip</string>
     <string name="recent_title">Recent trips</string>
-    <string name="mode_dist_short">By distance</string>
-    <string name="mode_time_short">By time</string>
-    <string name="backup_label">Safety backup timer</string>
+    <string name="mode_dist_short">Distance</string>
+    <string name="mode_time_short">Time</string>
+    <string name="backup_label">Backup timer</string>
     <string name="simulate_short">Test with a simulation</string>
     <string name="from_you">%1$s from you</string>
     <string name="clear_dest">Remove point</string>
@@ -234,12 +234,12 @@
     <string name="widget_no_places">Save a place in the app — it will show up here</string>
 
     <!-- дизайн 1.4 -->
-    <string name="app_tagline">Stop alarm</string>
+    <string name="app_tagline">GPS stop alarm</string>
     <string name="where_subtitle">Sleep peacefully, we\'ll wake you.</string>
     <string name="tip_silent_mode">The alarm rings even in silent mode — sound and vibration go through Do Not Disturb.</string>
     <string name="recent_last">Last trip: %1$s</string>
-    <string name="wake_before_stop">Wake up before the stop</string>
-    <string name="wake_before_arrival">Wake up before arrival</string>
+    <string name="wake_before_stop">Wake me before</string>
+    <string name="wake_before_arrival">Wake me before arrival</string>
     <string name="best">best</string>
     <string name="backup_info_title">Safety backup timer</string>
     <string name="backup_info_text">If GPS is lost or Android closes the app, the alarm rings anyway after this time. Set it a little longer than your usual trip.</string>
@@ -269,7 +269,7 @@
     <string name="alarm_mode_loud">Loud tone + vibration</string>
     <string name="alarm_mode_vibration">Vibration only</string>
     <string name="alarm_mode_headphones">Sound in headphones + vibration</string>
-    <string name="hold_sub">2 second hold</string>
+    <string name="hold_sub">hold 2 seconds</string>
     <string name="hold_note">Press and hold for 2 seconds so you can\'t turn it off in your sleep.</string>
     <string name="check_top_pill">SAFETY CHECK</string>
     <string name="check_subtitle">Confirm you\'re awake so you don\'t miss getting off at %1$s.</string>

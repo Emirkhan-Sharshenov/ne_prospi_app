@@ -137,9 +137,8 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
             )
             sheetView.updatePadding(bottom = bars.bottom + (16 * dp).toInt())
             // панель не должна заходить под верхнюю панель приложения
-            val available = resources.displayMetrics.heightPixels - bars.top - bars.bottom -
-                appBar.height - (32 * dp).toInt()
-            sheet.setMaxHeight(available.coerceAtLeast((resources.displayMetrics.heightPixels * 0.5).toInt()))
+            // панель занимает максимум 62% экрана, чтобы карту было видно
+            sheet.setMaxHeight((resources.displayMetrics.heightPixels * 0.62).toInt())
             insets
         }
     }

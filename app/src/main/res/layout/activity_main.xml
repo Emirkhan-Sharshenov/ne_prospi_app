@@ -47,16 +47,18 @@
                 android:orientation="vertical">
 
                 <TextView
-                    style="@style/Text.Label"
-                    android:text="@string/app_name"
-                    android:textColor="@color/accent_text" />
-
-                <TextView
                     style="@style/Text.Title"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@string/app_tagline"
+                    android:text="@string/app_name"
                     android:textSize="20sp" />
+
+                <TextView
+                    style="@style/Text.Body.Muted"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/app_tagline"
+                    android:textSize="13sp" />
             </LinearLayout>
 
             <Button
@@ -215,14 +217,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|start"
-        android:layout_margin="6dp"
-        android:background="#99FFFFFF"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="2dp"
+        android:background="#66FFFFFF"
         android:elevation="20dp"
-        android:paddingHorizontal="6dp"
-        android:paddingVertical="1dp"
+        android:paddingHorizontal="5dp"
         android:text="© OpenStreetMap"
-        android:textColor="#333333"
-        android:textSize="10sp"
+        android:textColor="#444444"
+        android:textSize="9sp"
         app:layout_anchor="@id/sheet"
         app:layout_anchorGravity="top|start" />
 
