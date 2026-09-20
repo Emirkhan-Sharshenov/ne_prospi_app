@@ -248,10 +248,12 @@
             android:layout_marginBottom="16dp"
             android:background="@drawable/handle_bg" />
 
-        <androidx.core.widget.NestedScrollView
+        <com.nesprosi.app.main.MaxHeightScrollView
+            android:id="@+id/sheetScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:overScrollMode="never">
+            android:overScrollMode="never"
+            android:scrollbars="none">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -263,6 +265,6 @@
 
                 <include layout="@layout/sheet_trip" />
             </FrameLayout>
-        </androidx.core.widget.NestedScrollView>
+        </com.nesprosi.app.main.MaxHeightScrollView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

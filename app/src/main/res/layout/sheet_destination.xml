@@ -141,19 +141,41 @@
         android:layout_marginTop="6dp"
         android:orientation="horizontal" />
 
-    <Button
+    <FrameLayout
         android:id="@+id/startBtn"
-        style="@style/Button.Pill"
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/btn_gradient"
+        android:clickable="true"
         android:elevation="6dp"
-        android:text="@string/start_trip"
-        android:textSize="18sp"
-        app:backgroundTint="@null"
-        app:icon="@drawable/ic_alarm_on"
-        app:iconSize="26dp" />
+        android:focusable="true"
+        android:foreground="@drawable/ripple_pill">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_alarm_on"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:fontFamily="@font/onest_bold"
+                android:text="@string/start_trip"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </FrameLayout>
 
     <Button
         android:id="@+id/simBtn"

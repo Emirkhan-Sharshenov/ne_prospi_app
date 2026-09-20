@@ -190,13 +190,24 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <FrameLayout
         android:id="@+id/setupDone"
-        style="@style/Button.Pill"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_margin="16dp"
         android:background="@drawable/btn_gradient"
-        android:text="@string/setup_done"
-        app:backgroundTint="@null" />
+        android:clickable="true"
+        android:elevation="6dp"
+        android:focusable="true"
+        android:foreground="@drawable/ripple_pill">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/onest_bold"
+            android:text="@string/setup_done"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp" />
+    </FrameLayout>
 </LinearLayout>

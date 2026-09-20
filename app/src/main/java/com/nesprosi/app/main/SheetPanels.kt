@@ -28,18 +28,23 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /** Нижняя панель: переключает три шага и держит панель раскрытой. */
-class Sheet(activity: AppCompatActivity) {
+class Sheet(private val activity: AppCompatActivity) {
     private val behavior = BottomSheetBehavior.from(activity.findViewById<View>(R.id.sheet)).apply {
         isFitToContents = true
         state = BottomSheetBehavior.STATE_EXPANDED
     }
+    private val scroll: MaxHeightScrollView = activity.findViewById(R.id.sheetScroll)
     private val sections = listOf<View>(
         activity.findViewById(R.id.idleSection),
         activity.findViewById(R.id.destSection),
         activity.findViewById(R.id.tripSection),
     )
 
-    fun setMaxHeight(px: Int) { behavior.maxHeight = px }
+    /** Панель не выше [px]; всё, что не помещается, прокручивается внутри. */
+    fun setMaxHeight(px: Int) {
+        behavior.maxHeight = px
+        scroll.maxHeightPx = px - (72 * activity.resources.displayMetrics.density).toInt()
+    }
 
     fun show(section: View) {
         sections.forEach { it.visibility = if (it == section) View.VISIBLE else View.GONE }

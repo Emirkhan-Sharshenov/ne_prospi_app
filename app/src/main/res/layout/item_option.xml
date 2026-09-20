@@ -7,6 +7,7 @@
     android:layout_weight="1"
     android:background="@drawable/option_bg"
     android:clickable="true"
+    android:foreground="@drawable/ripple_pill"
     android:focusable="true"
     android:gravity="center"
     android:orientation="vertical">

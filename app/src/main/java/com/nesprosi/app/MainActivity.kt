@@ -136,7 +136,10 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
                 right = bars.right + (12 * dp).toInt(),
             )
             sheetView.updatePadding(bottom = bars.bottom + (16 * dp).toInt())
-            sheet.setMaxHeight((resources.displayMetrics.heightPixels * 0.72).toInt())
+            // панель не должна заходить под верхнюю панель приложения
+            val available = resources.displayMetrics.heightPixels - bars.top - bars.bottom -
+                appBar.height - (32 * dp).toInt()
+            sheet.setMaxHeight(available.coerceAtLeast((resources.displayMetrics.heightPixels * 0.5).toInt()))
             insets
         }
     }
