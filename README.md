@@ -18,7 +18,7 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 
 **Reliability**
 - 🛟 Backup timer — rings after a set time even if GPS is lost or Android closes the app
-- ✋ Hold-to-dismiss, then “Are you awake?” one minute later; no answer — the alarm rings again
+- ✋ Hold-to-dismiss; an optional “Are you awake?” check a minute later (switch it on in settings) — no answer, the alarm rings again
 - ⚠️ Wakes you again if you passed your stop
 - 🛡️ Reliability check with fixes and tips for Samsung, Xiaomi, Huawei, OPPO
 - 🔋 Battery saving: GPS is polled less often while your stop is far away; GPS-lost and low-battery warnings
@@ -28,7 +28,7 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 - Lock screen progress bar and arrival countdown, voice announcements
 - Home screen widget, shortcuts, recent trips, history
 - Vibration-only, headphones-only, flashlight, custom sound
-- Share your trip with family via any messenger, or automatic SMS
+- Share your trip with family via any messenger, or a ready-made SMS you send in one tap
 
 ## Project structure
 - `MainActivity.kt` — wires the main screen parts together
@@ -37,7 +37,7 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 - `main/SheetPanels.kt` — bottom panel: `IdlePanel`, `DestinationPanel`, `TripPanel`
 - `main/TripLauncher.kt` — permission checks and starting a trip
 - `main/PlaceActions.kt` — saved places, shortcuts, sharing, history
-- `TripService.kt` — background trip: GPS, alarms, backup timer, voice, SMS
+- `TripService.kt` — background trip: GPS, alarms, backup timer, voice, family message
 - `AlarmActivity.kt` — alarm screen over the lock screen
 - `Stops.kt` — stops worldwide (built-in Kyrgyzstan + OpenStreetMap by area, cached for 30 days)
 - `OfflineMap.kt` + `OfflineMapsActivity.kt` — offline maps catalogue and downloads
@@ -45,7 +45,15 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 - `SettingsActivity.kt`, `SetupActivity.kt` + `Reliability.kt`, `TripWidget.kt`, `Prefs.kt`
 
 ## Build
-`build.bat` → `NeProspi.apk` (JDK 17, Android SDK 35)
+- `build.bat` → `NeProspi.apk` — debug build for quick testing
+- `build-release.bat` → `NeProspi-release.aab` for Google Play and a signed `NeProspi.apk`
+  (needs `keystore.properties` with your signing key; it is never committed)
+
+JDK 17, Android SDK 36, targetSdk 36.
+
+## Google Play
+- Privacy policy: <https://emirkhan-sharshenov.github.io/ne_prospi_app/>
+- Store listing texts, feature graphics and the publishing checklist: [`store/`](store/)
 
 ## Limitations
 - Stops, search and maps use free public OpenStreetMap services. They are fine for personal use and small groups; for thousands of users the app would need its own servers or a paid provider.

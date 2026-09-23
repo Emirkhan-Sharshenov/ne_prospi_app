@@ -68,6 +68,11 @@ class Prefs(context: Context) {
         get() = sp.getBoolean("voice", false)
         set(v) = putBool("voice", v)
 
+    /** Через минуту после будильника спросить, не уснул ли человек. По умолчанию выключено. */
+    var wakeCheck: Boolean
+        get() = sp.getBoolean("wakeCheck", false)
+        set(v) = putBool("wakeCheck", v)
+
     /** Проверку надёжности показываем сами один раз, при первом запуске. */
     var setupShown: Boolean
         get() = sp.getBoolean("setupShown", false)

@@ -141,9 +141,8 @@
     <string name="headphones_only_desc">Кулакчын туташпаса — титирөө гана</string>
     <string name="set_family">Жакындар</string>
     <string name="contact_phone_hint">Өлкө коду менен телефон номери</string>
-    <string name="sms_enabled">SMS жөнөтүү: жолго чыкканда жана жакындаганда</string>
-    <string name="sms_note">SMS сиздин номериңизден кетет жана тариф боюнча төлөнөт. Сыноодо жөнөтүлбөйт. Сапар учурундагы «Жакындарга» баскычы шилтемени каалаган мессенджер аркылуу жөнөтөт.</string>
-    <string name="sms_perm_denied">SMS уруксаты болбосо, билдирүүлөр жөнөтүлбөйт</string>
+    <string name="sms_enabled">Кабар даярдоо: жолго чыкканда жана жакындаганда</string>
+    <string name="sms_note">Колдонмо эч нерсени өзү жөнөтпөйт. Ал даяр текст менен билдирме көрсөтөт: бир басуу менен кадимки SMS колдонмоңуз ачылат, жөнөтүүнү өзүңүз басасыз. Сыноодо эч нерсе даярдалбайт.</string>
     <string name="set_offline">Офлайн карталар</string>
     <string name="offline_failed">Картаны жүктөө мүмкүн болбоду. Интернетти текшерип, кайра аракет кылыңыз.</string>
     <string name="offline_always">Дайыма офлайн картаны колдонуу</string>
@@ -293,4 +292,7 @@
         <item quantity="one">Оңдоо керек: %1$d</item>
         <item quantity="other">Оңдоо керек: %1$d</item>
     </plurals>
+    <string name="wake_check_title">Ойгонгонумду текшерүү</string>
+    <string name="wake_check_desc">Ойготкучту өчүргөндөн бир мүнөт өткөндө колдонмо уктап калган жоксузбу деп сурайт. 30 секунда жооп болбосо — ойготкуч кайра шыңгырайт. Демейде өчүк.</string>
+    <string name="sms_ready_title">Жакындарга кабар даяр</string>
 </resources>

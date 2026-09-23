@@ -141,9 +141,8 @@
     <string name="headphones_only_desc">Если наушники не подключены — только вибрация</string>
     <string name="set_family">Близкие</string>
     <string name="contact_phone_hint">Номер телефона с кодом страны</string>
-    <string name="sms_enabled">Отправлять SMS: когда выехал и когда подъезжаю</string>
-    <string name="sms_note">SMS уходят с вашего номера и оплачиваются по тарифу. В симуляции не отправляются. Кнопка «Близким» во время поездки отправляет ссылку через любой мессенджер.</string>
-    <string name="sms_perm_denied">Без разрешения на SMS сообщения не отправятся</string>
+    <string name="sms_enabled">Готовить сообщение: когда выехал и когда подъезжаю</string>
+    <string name="sms_note">Приложение ничего не отправляет само. Оно покажет уведомление с готовым текстом: одно нажатие открывает ваше обычное SMS-приложение, отправляете вы. В симуляции ничего не готовится.</string>
     <string name="set_offline">Офлайн-карты</string>
     <string name="offline_failed">Не удалось скачать карту. Проверьте интернет и попробуйте снова.</string>
     <string name="offline_always">Всегда использовать офлайн-карту</string>
@@ -295,4 +294,7 @@
         <item quantity="many">Исправить %1$d пунктов</item>
         <item quantity="other">Исправить %1$d пункта</item>
     </plurals>
+    <string name="wake_check_title">Проверять, что я проснулся</string>
+    <string name="wake_check_desc">Через минуту после выключения будильника приложение спросит, не спите ли вы. Не ответите за 30 секунд — будильник зазвонит снова. По умолчанию выключено.</string>
+    <string name="sms_ready_title">Сообщение близким готово</string>
 </resources>

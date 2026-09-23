@@ -21,11 +21,15 @@
     <uses-permission
         android:name="android.permission.SCHEDULE_EXACT_ALARM"
         android:maxSdkVersion="32" />
-    <!-- SMS близким (включается в настройках) -->
-    <uses-permission android:name="android.permission.SEND_SMS" />
-
-    <uses-feature android:name="android.hardware.telephony" android:required="false" />
     <uses-feature android:name="android.hardware.camera.flash" android:required="false" />
+
+    <!-- сообщение близким открывается в обычном SMS-приложении, своё разрешение не нужно -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto" />
+        </intent>
+    </queries>
 
     <application
         android:name=".App"

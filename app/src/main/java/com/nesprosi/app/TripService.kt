@@ -37,7 +37,6 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 import android.speech.tts.TextToSpeech
-import android.telephony.SmsManager
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
@@ -114,6 +113,7 @@ class TripService : Service(), LocationListener {
         private const val ID_ALARM = 3
         private const val ID_GPS = 4
         private const val ID_BATTERY = 5
+        private const val ID_SMS = 6
 
         private const val CHECK_DELAY_MS = 60_000L
         private const val CHECK_ANSWER_MS = 30_000L
@@ -354,7 +354,7 @@ class TripService : Service(), LocationListener {
         handler.removeCallbacks(watchdog)
         handler.removeCallbacks(checkPromptRunnable)
         handler.removeCallbacks(repeatRunnable)
-        listOf(ID_WARN, ID_ALARM, ID_GPS, ID_BATTERY).forEach { nm.cancel(it) }
+        listOf(ID_WARN, ID_ALARM, ID_GPS, ID_BATTERY, ID_SMS).forEach { nm.cancel(it) }
         wakeLock?.let { if (it.isHeld) it.release() }
         wakeLock = null
     }
@@ -897,11 +897,15 @@ class TripService : Service(), LocationListener {
         publishState()
     }
 
-    /** Будильник выключен удержанием: через минуту спросим, проснулся ли человек. */
+    /** Будильник выключен удержанием. Если включена проверка — через минуту спросим, проснулся ли человек. */
     private fun onDismiss() {
         if (phase != Phase.ALARM) return
         stopAlarmEffects()
         nm.cancel(ID_ALARM)
+        if (!prefs.wakeCheck) {
+            finishTrip(null)
+            return
+        }
         phase = Phase.CHECK
         checkDeadline = null
         handler.postDelayed(checkPromptRunnable, CHECK_DELAY_MS)
@@ -1034,12 +1038,25 @@ class TripService : Service(), LocationListener {
     private fun sendSms(text: String) {
         val phone = prefs.contactPhone.trim()
         if (simulated || !prefs.smsEnabled || phone.isEmpty()) return
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) return
-        runCatching {
-            val sms = if (Build.VERSION.SDK_INT >= 31) getSystemService(SmsManager::class.java)
-            else @Suppress("DEPRECATION") SmsManager.getDefault()
-            sms.sendMultipartTextMessage(phone, null, sms.divideMessage(text), null, null)
-        }
+        // Приложение не отправляет SMS само: готовим текст и открываем обычное SMS-приложение по нажатию.
+        val sms = Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:" + Uri.encode(phone)))
+            .putExtra("sms_body", text)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        if (sms.resolveActivity(packageManager) == null) return
+        val open = PendingIntent.getActivity(
+            this, 7, sms, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        nm.notify(
+            ID_SMS,
+            NotificationCompat.Builder(this, CH_INFO)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle(s(R.string.sms_ready_title))
+                .setContentText(text)
+                .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+                .setContentIntent(open)
+                .setAutoCancel(true)
+                .build()
+        )
     }
 }
 

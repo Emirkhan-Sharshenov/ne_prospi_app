@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Не проспи — политика конфиденциальности</title>
+<style>
+  :root { --bg:#F6F7FB; --card:#FFFFFF; --text:#16181D; --muted:#5B6270; --accent:#2F6FE4; --line:#E4E7EE; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#12141A; --card:#1B1E26; --text:#F2F4F8; --muted:#9AA2B1; --accent:#7AA5F0; --line:#2A2E39; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.6; }
+  .wrap { max-width:780px; margin:0 auto; padding:32px 16px 64px; }
+  header { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
+  header img { width:56px; height:56px; border-radius:14px; }
+  h1 { font-size:26px; margin:0; }
+  .sub { color:var(--muted); margin:0 0 24px; }
+  nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+  nav button { border:1px solid var(--line); background:var(--card); color:var(--text);
+               padding:8px 16px; border-radius:999px; font-size:15px; cursor:pointer; }
+  nav button[aria-selected="true"] { background:var(--accent); border-color:var(--accent); color:#fff; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:24px; }
+  section[hidden] { display:none; }
+  h2 { font-size:19px; margin:26px 0 8px; }
+  h2:first-of-type { margin-top:0; }
+  ul { padding-left:22px; }
+  li { margin:6px 0; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:14px; margin-top:24px; text-align:center; }
+  code { background:rgba(127,127,127,.14); padding:2px 6px; border-radius:6px; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="icon.png" alt="">
+    <div>
+      <h1>Не проспи</h1>
+      <p class="sub">Политика конфиденциальности · Privacy Policy · Купуялык саясаты</p>
+    </div>
+  </header>
+
+  <nav>
+    <button data-lang="ru" aria-selected="true">Русский</button>
+    <button data-lang="en" aria-selected="false">English</button>
+    <button data-lang="ky" aria-selected="false">Кыргызча</button>
+  </nav>
+
+  <section id="ru">
+    <p><strong>Обновлено: 23 сентября 2026 года.</strong></p>
+    <p>«Не проспи» — будильник, который звонит, когда вы подъезжаете к нужной остановке.
+       Приложение работает без регистрации и не создаёт учётных записей.</p>
+
+    <h2>Что приложение НЕ делает</h2>
+    <ul>
+      <li>Не передаёт ваше местоположение разработчику или третьим лицам.</li>
+      <li>Не показывает рекламу и не использует рекламные идентификаторы.</li>
+      <li>Не собирает статистику поведения и не следит за вами между сеансами.</li>
+      <li>Не запрашивает доступ к контактам, звонкам, фотографиям и файлам.</li>
+      <li>Не отправляет сообщения и не совершает звонков самостоятельно.</li>
+    </ul>
+
+    <h2>Местоположение</h2>
+    <p>Во время поездки приложение получает координаты GPS, чтобы посчитать расстояние
+       до выбранной точки и вовремя зазвонить. Координаты обрабатываются на самом телефоне.
+       Они не сохраняются на сервере и никуда не отправляются, кроме одного случая,
+       описанного ниже.</p>
+
+    <h2>Карты и поиск адресов (OpenStreetMap)</h2>
+    <p>Чтобы показать карту, найти адрес и отметить остановки, приложение обращается
+       к открытым сервисам OpenStreetMap: тайловым серверам карты,
+       <a href="https://nominatim.org/">Nominatim</a> (поиск и название точки) и
+       <a href="https://overpass-api.de/">Overpass</a> (остановки транспорта).
+       При этом им передаётся то, что вы ищете, и участок карты, который вы смотрите.
+       Эти сервисы принадлежат сторонним организациям и действуют по своим правилам:
+       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
+       Если скачать офлайн-карту своей страны, обращений к карте в интернете не будет.</p>
+
+    <h2>Что хранится на телефоне</h2>
+    <ul>
+      <li>Сохранённые точки назначения и история поездок.</li>
+      <li>Настройки: звук будильника, язык, тема, единицы измерения.</li>
+      <li>Номер близкого человека, если вы его ввели.</li>
+    </ul>
+    <p>Всё это лежит только в памяти приложения на вашем телефоне. Удаление приложения
+       удаляет эти данные полностью.</p>
+
+    <h2>Сообщение близким</h2>
+    <p>Если вы включили эту возможность и ввели номер, приложение готовит текст
+       и показывает уведомление. Сообщение отправляете вы сами: нажатие открывает
+       ваше обычное SMS-приложение с готовым текстом. Приложение не имеет разрешения
+       на отправку SMS и не отправляет их без вас. Стоимость сообщения — по тарифу
+       вашего оператора.</p>
+
+    <h2>Зачем нужны разрешения</h2>
+    <ul>
+      <li><strong>Местоположение</strong> — считать расстояние до остановки.</li>
+      <li><strong>Уведомления</strong> — показывать ход поездки и экран будильника.</li>
+      <li><strong>Работа в фоне и отключение экономии батареи</strong> — чтобы будильник
+          сработал при выключенном экране.</li>
+      <li><strong>Точные будильники</strong> — для страховочного таймера.</li>
+      <li><strong>Фонарик и вибрация</strong> — способы разбудить, если звук выключен.</li>
+    </ul>
+
+    <h2>Дети</h2>
+    <p>Приложение не предназначено специально для детей и не собирает данные о них.</p>
+
+    <h2>Изменения</h2>
+    <p>Если политика изменится, новая версия появится на этой странице с новой датой.</p>
+
+    <h2>Связь</h2>
+    <p>Вопросы и жалобы: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
+       Исходный код открыт:
+       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
+  </section>
+
+  <section id="en" hidden>
+    <p><strong>Last updated: 23 September 2026.</strong></p>
+    <p>Don’t Oversleep is an alarm that rings when you are approaching your stop.
+       It works without registration and creates no accounts.</p>
+
+    <h2>What the app does NOT do</h2>
+    <ul>
+      <li>It does not send your location to the developer or to any third party.</li>
+      <li>It shows no ads and uses no advertising identifiers.</li>
+      <li>It collects no analytics and does not track you between sessions.</li>
+      <li>It does not ask for contacts, calls, photos or files.</li>
+      <li>It never sends messages or makes calls on its own.</li>
+    </ul>
+
+    <h2>Location</h2>
+    <p>During a trip the app reads GPS coordinates to measure the distance to your
+       destination and ring in time. Coordinates are processed on the phone itself.
+       They are not stored on any server and are not sent anywhere, except for the
+       one case described below.</p>
+
+    <h2>Maps and address search (OpenStreetMap)</h2>
+    <p>To draw the map, find an address and show transit stops, the app contacts the open
+       OpenStreetMap services: map tile servers,
+       <a href="https://nominatim.org/">Nominatim</a> (search and place names) and
+       <a href="https://overpass-api.de/">Overpass</a> (transit stops).
+       Your search text and the map area you are viewing are sent to them.
+       These services belong to third parties and follow their own rules:
+       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
+       Downloading an offline map of your country removes these requests.</p>
+
+    <h2>What is stored on your phone</h2>
+    <ul>
+      <li>Saved destinations and trip history.</li>
+      <li>Settings: alarm sound, language, theme, units.</li>
+      <li>A family member’s phone number, if you entered one.</li>
+    </ul>
+    <p>All of it stays in the app’s own storage on your phone. Uninstalling the app
+       deletes it completely.</p>
+
+    <h2>Message to family</h2>
+    <p>If you enable this and enter a number, the app prepares the text and shows a
+       notification. You send the message yourself: tapping it opens your usual SMS app
+       with the text ready. The app holds no SMS permission and never sends anything
+       without you. Your carrier’s rates apply.</p>
+
+    <h2>Why the permissions are needed</h2>
+    <ul>
+      <li><strong>Location</strong> — to measure the distance to your stop.</li>
+      <li><strong>Notifications</strong> — to show trip progress and the alarm screen.</li>
+      <li><strong>Background work and battery optimisation exemption</strong> — so the alarm
+          fires with the screen off.</li>
+      <li><strong>Exact alarms</strong> — for the backup timer.</li>
+      <li><strong>Flashlight and vibration</strong> — ways to wake you when sound is off.</li>
+    </ul>
+
+    <h2>Children</h2>
+    <p>The app is not directed at children and collects no data about them.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the new version will appear on this page with a new date.</p>
+
+    <h2>Contact</h2>
+    <p>Questions and complaints: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
+       The source code is open:
+       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
+  </section>
+
+  <section id="ky" hidden>
+    <p><strong>Жаңыланды: 2026-жылдын 23-сентябры.</strong></p>
+    <p>«Уктап калба» — керектүү аялдамага жакындаганда шыңгыраган ойготкуч.
+       Колдонмо катталуусуз иштейт жана эч кандай эсеп түзбөйт.</p>
+
+    <h2>Колдонмо эмне кылбайт</h2>
+    <ul>
+      <li>Сиздин жайгашкан жериңизди иштеп чыгуучуга же башкаларга жөнөтпөйт.</li>
+      <li>Жарнак көрсөтпөйт жана жарнак идентификаторлорун колдонбойт.</li>
+      <li>Жүрүм-турум статистикасын чогултпайт, сизди көзөмөлдөбөйт.</li>
+      <li>Байланыштарга, чалууларга, сүрөттөргө жана файлдарга уруксат сурабайт.</li>
+      <li>Кабарларды өзү жөнөтпөйт жана чалбайт.</li>
+    </ul>
+
+    <h2>Жайгашкан жер</h2>
+    <p>Сапар учурунда колдонмо GPS координаттарын алат: тандалган чекитке чейинки
+       аралыкты эсептеп, өз убагында шыңгыратуу үчүн. Координаттар телефондун өзүндө
+       иштетилет. Алар серверде сакталбайт жана эч жакка жөнөтүлбөйт — төмөндө
+       айтылган бир учурдан тышкары.</p>
+
+    <h2>Карта жана даректерди издөө (OpenStreetMap)</h2>
+    <p>Картаны көрсөтүү, даректи табуу жана аялдамаларды белгилөө үчүн колдонмо ачык
+       OpenStreetMap кызматтарына кайрылат: карта серверлерине,
+       <a href="https://nominatim.org/">Nominatim</a> (издөө жана чекиттин аты) жана
+       <a href="https://overpass-api.de/">Overpass</a> (коомдук транспорт аялдамалары).
+       Аларга сиз издеген текст жана кароодогу карта аймагы жөнөтүлөт.
+       Бул кызматтар башка уюмдарга таандык жана өз эрежелери боюнча иштейт:
+       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
+       Өлкөңүздүн офлайн картасын жүктөп алсаңыз, картага интернет аркылуу кайрылуу болбойт.</p>
+
+    <h2>Телефондо эмне сакталат</h2>
+    <ul>
+      <li>Сакталган чекиттер жана сапарлардын тарыхы.</li>
+      <li>Жөндөөлөр: ойготкучтун үнү, тил, тема, өлчөө бирдиктери.</li>
+      <li>Жакын адамдын номери, эгер киргизген болсоңуз.</li>
+    </ul>
+    <p>Мунун баары телефонуңуздагы колдонмонун эстутумунда гана турат. Колдонмону
+       өчүрүү бул маалыматты толугу менен жок кылат.</p>
+
+    <h2>Жакындарга кабар</h2>
+    <p>Бул мүмкүнчүлүктү күйгүзүп, номер киргизсеңиз, колдонмо текстти даярдап,
+       билдирме көрсөтөт. Кабарды өзүңүз жөнөтөсүз: басканда кадимки SMS колдонмоңуз
+       даяр текст менен ачылат. Колдонмодо SMS жөнөтүүгө уруксат жок, ал сизсиз эч нерсе
+       жөнөтпөйт. Кабардын баасы операторуңуздун тарифи боюнча.</p>
+
+    <h2>Уруксаттар эмне үчүн керек</h2>
+    <ul>
+      <li><strong>Жайгашкан жер</strong> — аялдамага чейинки аралыкты эсептөө.</li>
+      <li><strong>Билдирмелер</strong> — сапардын жүрүшүн жана ойготкуч экранын көрсөтүү.</li>
+      <li><strong>Фондо иштөө жана батареяны үнөмдөөнү өчүрүү</strong> — экран өчүк турганда
+          ойготкуч иштеши үчүн.</li>
+      <li><strong>Так ойготкучтар</strong> — камсыздандыруу таймери үчүн.</li>
+      <li><strong>Колчырак жана дирилдөө</strong> — үн өчүк болгондо ойготуунун жолдору.</li>
+    </ul>
+
+    <h2>Балдар</h2>
+    <p>Колдонмо атайын балдарга арналган эмес жана алар жөнүндө маалымат чогултпайт.</p>
+
+    <h2>Өзгөрүүлөр</h2>
+    <p>Саясат өзгөрсө, жаңы нускасы ушул бетте жаңы дата менен чыгат.</p>
+
+    <h2>Байланыш</h2>
+    <p>Суроолор жана арыздар: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
+       Баштапкы код ачык:
+       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
+  </section>
+
+  <footer>© 2026 Не проспи · Don’t Oversleep · Уктап калба</footer>
+</div>
+
+<script>
+  var buttons = document.querySelectorAll('nav button');
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () {
+      buttons.forEach(function (o) {
+        o.setAttribute('aria-selected', String(o === b));
+        document.getElementById(o.dataset.lang).hidden = o !== b;
+      });
+      document.documentElement.lang = b.dataset.lang;
+    });
+  });
+</script>
+</body>
+</html>

@@ -5,3 +5,8 @@ local.properties
 *.iml
 NeProspi.apk
 .kotlin/
+# подпись релиза — только на вашем компьютере
+keystore.properties
+*.jks
+*.keystore
+*.aab

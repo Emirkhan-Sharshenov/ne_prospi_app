@@ -27,7 +27,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private lateinit var prefs: Prefs
     private lateinit var soundBtn: Button
-    private lateinit var smsSwitch: MaterialSwitch
 
     private val ringtonePicker = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != RESULT_OK) return@registerForActivityResult
@@ -40,14 +39,6 @@ class SettingsActivity : AppCompatActivity() {
         // «По умолчанию» в списке — это стандартная мелодия будильника
         prefs.alarmSound = uri?.takeIf { it != RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM) }?.toString()
         renderSound()
-    }
-
-    private val smsPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-        if (!granted) {
-            prefs.smsEnabled = false
-            smsSwitch.isChecked = false
-            Toast.makeText(this, R.string.sms_perm_denied, Toast.LENGTH_LONG).show()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -152,6 +143,7 @@ class SettingsActivity : AppCompatActivity() {
         bindSwitch(R.id.flashlightSwitch, prefs.flashlight) { prefs.flashlight = it }
         bindSwitch(R.id.headphonesSwitch, prefs.headphonesOnly) { prefs.headphonesOnly = it }
         bindSwitch(R.id.voiceSwitch, prefs.voice) { prefs.voice = it }
+        bindSwitch(R.id.wakeCheckSwitch, prefs.wakeCheck) { prefs.wakeCheck = it }
     }
 
     private fun renderSound() {
@@ -163,12 +155,7 @@ class SettingsActivity : AppCompatActivity() {
         val phone = findViewById<EditText>(R.id.phoneInput)
         phone.setText(prefs.contactPhone)
         phone.doAfterTextChanged { prefs.contactPhone = it?.toString().orEmpty() }
-        smsSwitch = bindSwitch(R.id.smsSwitch, prefs.smsEnabled) { on ->
-            prefs.smsEnabled = on
-            if (on && ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                smsPermission.launch(Manifest.permission.SEND_SMS)
-            }
-        }
+        bindSwitch(R.id.smsSwitch, prefs.smsEnabled) { prefs.smsEnabled = it }
     }
 
     private fun bindSwitch(id: Int, value: Boolean, onChange: (Boolean) -> Unit): MaterialSwitch {

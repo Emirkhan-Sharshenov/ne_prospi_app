@@ -148,9 +148,8 @@
     <string name="headphones_only_desc">If no headphones are connected — vibration only</string>
     <string name="set_family">Family</string>
     <string name="contact_phone_hint">Phone number with country code</string>
-    <string name="sms_enabled">Send SMS when I leave and when I\'m close</string>
-    <string name="sms_note">SMS are sent from your number and charged by your carrier. Not sent in simulation. The “Share” button during a trip sends a link through any messenger.</string>
-    <string name="sms_perm_denied">Without SMS permission no messages will be sent</string>
+    <string name="sms_enabled">Prepare a message when I leave and when I\'m close</string>
+    <string name="sms_note">The app never sends messages by itself. It shows a notification with the text ready — one tap opens your usual SMS app, you press send. Nothing is prepared in simulation.</string>
     <string name="set_offline">Offline maps</string>
     <string name="offline_failed">Couldn\'t download the map. Check your internet connection and try again.</string>
     <string name="offline_always">Always use offline maps</string>
@@ -292,4 +291,7 @@
         <item quantity="one">%1$d thing to fix</item>
         <item quantity="other">%1$d things to fix</item>
     </plurals>
+    <string name="wake_check_title">Check that I\'m awake</string>
+    <string name="wake_check_desc">A minute after you turn the alarm off the app asks if you\'re awake. No answer in 30 seconds — the alarm rings again. Off by default.</string>
+    <string name="sms_ready_title">Message for family is ready</string>
 </resources>
