@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
 
     /** Выбранный пункт назначения. */
     private var dest: Place? = null
+    private var lastRouteAt = 0L
     private val stateListener: (TripService.State) -> Unit = { render(it) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -236,6 +237,7 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
 
     override fun onFirstFix() {
         val me = mapController.myLocation ?: return
+        dest?.let { if (!TripService.state.active) requestRoute(it) }
         if (dest == null && prefs.mapPosition == null) mapController.centerOn(me, 14.0)
         dest?.let { if (!TripService.state.active) showDestination(it) }
         mapController.updateGuide(me)
@@ -256,6 +258,12 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
     // ---------- Пункт назначения ----------
 
     private fun setDest(place: Place, moveMap: Boolean = true) {
+        if (dest?.lat != place.lat || dest?.lon != place.lon) {
+            Routing.forget()
+            lastRouteAt = 0L
+            mapController.showRoute(null)
+            destination.setRoute(null)
+        }
         dest = place
         search.hide()
         mapController.showDestination(place, destination.wakeRadiusMeters(), zoneLabel(), moveMap)
@@ -264,6 +272,10 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
 
     private fun clearDest() {
         dest = null
+        Routing.forget()
+        lastRouteAt = 0L
+        mapController.showRoute(null)
+        destination.setRoute(null)
         mapController.showDestination(null, 0.0, "", false)
         showIdle()
     }
@@ -285,6 +297,28 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         val fromMe = me?.let { Geo.distance(it.latitude, it.longitude, place.lat, place.lon) }
         destination.show(place, fromMe, places.savedIndex(place) >= 0)
         sheet.show(destination.view)
+        requestRoute(place)
+    }
+
+    /**
+     * Маршрут по дорогам — только для наглядности. Считается на сервере OpenStreetMap,
+     * поэтому спрашиваем в фоне и молча забываем, если сети нет: на будильник это не влияет.
+     */
+    private fun requestRoute(place: Place, from: GeoPoint? = mapController.myLocation) {
+        val me = from ?: return
+        if (!Net.isOnline(this) || prefs.offlineAlways) return
+        val now = System.currentTimeMillis()
+        if (now - lastRouteAt < 20_000) return
+        lastRouteAt = now
+        Thread {
+            val route = Routing.route(me.latitude, me.longitude, place.lat, place.lon)
+            runOnUiThread {
+                if (isDestroyed || dest?.lat != place.lat || dest?.lon != place.lon) return@runOnUiThread
+                mapController.showRoute(route)
+                destination.setRoute(route)
+                mapController.updateGuide(mapController.myLocation)
+            }
+        }.start()
     }
 
     private fun onPlacesChanged(renamed: Place?) {
@@ -315,6 +349,8 @@ class MainActivity : AppCompatActivity(), MapController.Listener {
         }
         trip.render(s)
         mapController.showMe(s.lat, s.lon)
+        // линия маршрута подтягивается за вами, пока экран открыт
+        if (s.lat != null && s.lon != null) s.dest?.let { requestRoute(it, GeoPoint(s.lat, s.lon)) }
         if (s.lat != null && s.lon != null) mapController.addTrackPoint(s.lat, s.lon)
     }
 }

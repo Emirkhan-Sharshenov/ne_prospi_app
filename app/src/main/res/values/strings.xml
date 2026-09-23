@@ -294,4 +294,6 @@
     <string name="wake_check_title">Check that I\'m awake</string>
     <string name="wake_check_desc">A minute after you turn the alarm off the app asks if you\'re awake. No answer in 30 seconds — the alarm rings again. Off by default.</string>
     <string name="sms_ready_title">Message for family is ready</string>
+    <string name="you_away_road">You · %1$s by road</string>
+    <string name="by_road">%1$s by road</string>
 </resources>

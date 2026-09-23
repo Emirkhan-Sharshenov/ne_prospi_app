@@ -295,4 +295,6 @@
     <string name="wake_check_title">Ойгонгонумду текшерүү</string>
     <string name="wake_check_desc">Ойготкучту өчүргөндөн бир мүнөт өткөндө колдонмо уктап калган жоксузбу деп сурайт. 30 секунда жооп болбосо — ойготкуч кайра шыңгырайт. Демейде өчүк.</string>
     <string name="sms_ready_title">Жакындарга кабар даяр</string>
+    <string name="you_away_road">Сиз · жол менен %1$s</string>
+    <string name="by_road">жол менен %1$s</string>
 </resources>

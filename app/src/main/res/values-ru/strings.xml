@@ -297,4 +297,6 @@
     <string name="wake_check_title">Проверять, что я проснулся</string>
     <string name="wake_check_desc">Через минуту после выключения будильника приложение спросит, не спите ли вы. Не ответите за 30 секунд — будильник зазвонит снова. По умолчанию выключено.</string>
     <string name="sms_ready_title">Сообщение близким готово</string>
+    <string name="you_away_road">Вы · %1$s по дороге</string>
+    <string name="by_road">по дороге %1$s</string>
 </resources>

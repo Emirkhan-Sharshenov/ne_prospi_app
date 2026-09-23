@@ -23,6 +23,7 @@ import com.nesprosi.app.Place
 import com.nesprosi.app.Prefs
 import com.nesprosi.app.R
 import com.nesprosi.app.Region
+import com.nesprosi.app.Routing
 import com.nesprosi.app.Stop
 import com.nesprosi.app.StopKind
 import com.nesprosi.app.Stops
@@ -86,6 +87,8 @@ class MapController(
     private var zoneLabel: Marker? = null
     private var youLabel: Marker? = null
     private var guideLine: Polyline? = null
+    private var routeLine: Polyline? = null
+    private var routeMeters: Double? = null
     private var track: Polyline? = null
     private var destPlace: Place? = null
     private var tripMode = false
@@ -277,6 +280,33 @@ class MapController(
         map.invalidate()
     }
 
+    /** Линия маршрута по дорогам. null — убрать линию (нет сети, нет маршрута, нет точки). */
+    fun showRoute(route: Routing.Route?) {
+        if (route == null) {
+            routeLine?.let { map.overlays.remove(it) }
+            routeLine = null
+            routeMeters = null
+            map.invalidate()
+            return
+        }
+        routeMeters = route.meters
+        val line = routeLine ?: Polyline(map).also {
+            it.outlinePaint.color = ContextCompat.getColor(activity, R.color.accent)
+            it.outlinePaint.alpha = 190
+            it.outlinePaint.strokeWidth = 14f
+            it.outlinePaint.strokeCap = Paint.Cap.ROUND
+            it.outlinePaint.strokeJoin = Paint.Join.ROUND
+            it.infoWindow = null
+            map.overlays.add(1, it)
+            routeLine = it
+        }
+        line.setPoints(route.points)
+        // пунктир по прямой рядом с маршрутом не нужен
+        guideLine?.let { map.overlays.remove(it) }
+        guideLine = null
+        map.invalidate()
+    }
+
     /** Пунктир от «меня» до остановки и подпись «Вы · 1,2 км» — пока поездка не начата. */
     fun updateGuide(me: GeoPoint?) {
         val dest = destPlace
@@ -284,18 +314,21 @@ class MapController(
             listOfNotNull(youLabel, guideLine).forEach { map.overlays.remove(it) }
             youLabel = null
             guideLine = null
+            if (dest == null) showRoute(null)
             map.invalidate()
             return
         }
-        val line = guideLine ?: Polyline(map).also {
-            it.outlinePaint.color = ContextCompat.getColor(activity, R.color.accent)
-            it.outlinePaint.strokeWidth = 8f
-            it.outlinePaint.pathEffect = DashPathEffect(floatArrayOf(20f, 16f), 0f)
-            it.infoWindow = null
-            map.overlays.add(1, it)
-            guideLine = it
+        if (routeLine == null) {
+            val line = guideLine ?: Polyline(map).also {
+                it.outlinePaint.color = ContextCompat.getColor(activity, R.color.accent)
+                it.outlinePaint.strokeWidth = 8f
+                it.outlinePaint.pathEffect = DashPathEffect(floatArrayOf(20f, 16f), 0f)
+                it.infoWindow = null
+                map.overlays.add(1, it)
+                guideLine = it
+            }
+            line.setPoints(listOf(me, GeoPoint(dest.lat, dest.lon)))
         }
-        line.setPoints(listOf(me, GeoPoint(dest.lat, dest.lon)))
 
         val you = youLabel ?: Marker(map).also {
             it.infoWindow = null
@@ -303,8 +336,14 @@ class MapController(
             map.overlays.add(it)
             youLabel = it
         }
-        val km = Geo.formatDistance(activity, Geo.distance(me.latitude, me.longitude, dest.lat, dest.lon))
-        you.icon = MapPills.make(activity, activity.getString(R.string.you_away, km), dark = true)
+        val road = routeMeters?.let { Geo.formatDistance(activity, it) }
+        val label = if (road != null) {
+            activity.getString(R.string.you_away_road, road)
+        } else {
+            val km = Geo.formatDistance(activity, Geo.distance(me.latitude, me.longitude, dest.lat, dest.lon))
+            activity.getString(R.string.you_away, km)
+        }
+        you.icon = MapPills.make(activity, label, dark = true)
         you.position = me
         you.setAnchor(0.5f, 1.6f) // над синей точкой
         map.invalidate()

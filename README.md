@@ -25,6 +25,7 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 
 **Comfort**
 - Full-screen map with a three-step bottom panel: where to → when to wake → trip progress
+- Road route drawn on the map with distance and driving time (OSRM); the alarm itself stays on straight-line distance, so it keeps working offline
 - Lock screen progress bar and arrival countdown, voice announcements
 - Home screen widget, shortcuts, recent trips, history
 - Vibration-only, headphones-only, flashlight, custom sound
@@ -41,7 +42,7 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 - `AlarmActivity.kt` — alarm screen over the lock screen
 - `Stops.kt` — stops worldwide (built-in Kyrgyzstan + OpenStreetMap by area, cached for 30 days)
 - `OfflineMap.kt` + `OfflineMapsActivity.kt` — offline maps catalogue and downloads
-- `Net.kt` — address search (Nominatim); `Geo.kt` — distances and units; `Lang.kt` — language and country
+- `Net.kt` — address search (Nominatim); `Routing.kt` — road route for the map (OSRM); `Geo.kt` — distances and units; `Lang.kt` — language and country
 - `SettingsActivity.kt`, `SetupActivity.kt` + `Reliability.kt`, `TripWidget.kt`, `Prefs.kt`
 
 ## Build
@@ -58,6 +59,7 @@ JDK 17, Android SDK 36, targetSdk 36.
 ## Limitations
 - Stops, search and maps use free public OpenStreetMap services. They are fine for personal use and small groups; for thousands of users the app would need its own servers or a paid provider.
 - Stop data depends on how well your city is mapped in OpenStreetMap. You can always tap any point on the map — the alarm works by GPS.
+- The road route is decoration and navigation help only. It comes from the public OSRM demo server, uses the driving profile, and is requested at most once a minute; without internet the map falls back to a straight dashed line and nothing else changes.
 - The alarm can't work if the phone is switched off or in airplane mode.
 - Translations (Kyrgyz and English) were not reviewed by native speakers — corrections are welcome.
 

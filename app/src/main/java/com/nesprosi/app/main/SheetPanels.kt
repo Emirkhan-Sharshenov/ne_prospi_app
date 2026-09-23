@@ -20,6 +20,7 @@ import com.nesprosi.app.Geo
 import com.nesprosi.app.Place
 import com.nesprosi.app.Prefs
 import com.nesprosi.app.R
+import com.nesprosi.app.Routing
 import com.nesprosi.app.SettingsActivity
 import com.nesprosi.app.TripService
 import java.text.DateFormat
@@ -145,6 +146,8 @@ class DestinationPanel(
     private val saveBtn: MaterialButton = activity.findViewById(R.id.saveBtn)
     private val modeToggle: MaterialButtonToggleGroup = activity.findViewById(R.id.modeToggle)
     private val wakeLabel: TextView = activity.findViewById(R.id.wakeLabel)
+    private var straightFromMe: Double? = null
+    private var roadText: String? = null
     private val soundLink: TextView = activity.findViewById(R.id.soundModeLink)
     private val wakeOptions: LinearLayout = activity.findViewById(R.id.wakeOptions)
     private val backupOptions: LinearLayout = activity.findViewById(R.id.backupOptions)
@@ -176,8 +179,8 @@ class DestinationPanel(
 
     fun show(place: Place, distanceFromMe: Double?, saved: Boolean) {
         title.text = place.name
-        subtitle.text = distanceFromMe?.let { activity.getString(R.string.from_you, Geo.formatDistance(activity, it)) }
-            ?: activity.getString(R.string.where_hint_short)
+        straightFromMe = distanceFromMe
+        renderSubtitle()
         saveBtn.setIconResource(if (saved) R.drawable.ic_bookmark_filled else R.drawable.ic_bookmark)
         val (modeText, modeIcon) = soundMode(prefs)
         soundLink.setText(modeText)
@@ -188,6 +191,21 @@ class DestinationPanel(
     }
 
     fun setTitle(text: String) { title.text = text }
+
+    /** Маршрут по дорогам: показываем рядом с расстоянием по прямой. null — убрать. */
+    fun setRoute(route: Routing.Route?) {
+        // только расстояние: время у маршрутизатора автомобильное, для автобуса оно обманывает
+        roadText = route?.let { activity.getString(R.string.by_road, Geo.formatDistance(activity, it.meters)) }
+        renderSubtitle()
+    }
+
+    private fun renderSubtitle() {
+        val parts = listOfNotNull(
+            straightFromMe?.let { activity.getString(R.string.from_you, Geo.formatDistance(activity, it)) },
+            roadText,
+        )
+        subtitle.text = if (parts.isEmpty()) activity.getString(R.string.where_hint_short) else parts.joinToString(" · ")
+    }
 
     private fun renderWakeOptions() {
         val dist = prefs.mode == Prefs.MODE_DIST
