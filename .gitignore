@@ -10,3 +10,4 @@ keystore.properties
 *.jks
 *.keystore
 *.aab
+NeProspi-*.apk
