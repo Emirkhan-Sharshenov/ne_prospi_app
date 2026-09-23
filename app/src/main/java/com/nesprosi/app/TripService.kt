@@ -354,7 +354,8 @@ class TripService : Service(), LocationListener {
         handler.removeCallbacks(watchdog)
         handler.removeCallbacks(checkPromptRunnable)
         handler.removeCallbacks(repeatRunnable)
-        listOf(ID_WARN, ID_ALARM, ID_GPS, ID_BATTERY, ID_SMS).forEach { nm.cancel(it) }
+        // ID_SMS не трогаем: готовое сообщение близким должно дождаться, пока человек его отправит
+        listOf(ID_WARN, ID_ALARM, ID_GPS, ID_BATTERY).forEach { nm.cancel(it) }
         wakeLock?.let { if (it.isHeld) it.release() }
         wakeLock = null
     }
