@@ -11,10 +11,11 @@
 """
 import math
 import os
+import subprocess
 import sys
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FONTS = os.path.join(ROOT, "app", "src", "main", "res", "font")
@@ -597,7 +598,7 @@ def scene_steps(t, layer):
     local = t
     ph_in = out_back(seg(local, 0.0, 0.85))
     ph_out = seg(local, 10.0, 10.4)
-    cy = H * 0.545 + (1 - ph_in) * 900
+    cy = H * 0.545 + (1 - ph_in) * 900 + math.sin(local * 1.15) * 7
     screen_box = phone_frame(layer, W / 2, cy, alpha=1 - ph_out)
 
     step = 0 if local < 3.4 else (1 if local < 6.8 else 2)
@@ -642,7 +643,7 @@ def scene_steps(t, layer):
 
 def scene_alarm(t, layer):
     """20,6–26,2 с: момент, ради которого всё сделано."""
-    cy = H * 0.545
+    cy = H * 0.545 + math.sin((t + 3) * 1.4) * 5
     screen_box = phone_frame(layer, W / 2, cy, alpha=1 - seg(t, 5.2, 5.6))
     hold = clamp01(seg(t, 3.9, 5.0))
     paste_screen(layer, alarm_screen(t, hold), screen_box, alpha=1 - seg(t, 5.2, 5.6))
@@ -716,6 +717,96 @@ def scene_cta(t, layer):
               52, 34, a4, gap=64, ru_color=AMBER)
 
 
+# =====================================================================
+#                       ЭФФЕКТЫ ПОВЕРХ КАДРА
+# =====================================================================
+BEAT = 0.6                      # тот же темп, что у музыки
+IMPACTS = (T2, T4, T6)          # знакомство, будильник, финал
+SWEEPS = (T2, T3, T4, T5, T6)   # где проходит световой всполох
+
+
+def shake_amount(t):
+    a = 0.0
+    for i, imp in enumerate(IMPACTS):
+        k = 1 - seg(t, imp, imp + (0.55 if imp == T4 else 0.4))
+        if t >= imp and k > 0:
+            a = max(a, k ** 2 * (16 if imp == T4 else 9))
+    return a
+
+
+def beat_pulse(t):
+    """Лёгкое дыхание кадра в такт музыке — только там, где играет бит."""
+    if t < T2 or t > DURATION - 1.0:
+        return 0.0
+    phase = ((t - T2) % BEAT) / BEAT
+    return math.exp(-phase * 7) * 0.004
+
+
+_vignette = None
+_grain = None
+
+
+def vignette_img():
+    """Затемнение к краям, готовой картинкой — умножение в PIL идёт в разы быстрее numpy."""
+    global _vignette
+    if _vignette is None:
+        y, x = np.mgrid[0:H, 0:W].astype(np.float32)
+        d = np.sqrt(((x - W / 2) / (W / 2)) ** 2 + ((y - H / 2) / (H / 2)) ** 2) / 1.42
+        m = np.clip(1.0 - 0.3 * d ** 2.4, 0, 1) * 255
+        _vignette = Image.fromarray(m.astype(np.uint8), "L").convert("RGB")
+    return _vignette
+
+
+def grain_img():
+    """Мелкое зерно: убирает банды на градиентах и делает картинку живее."""
+    global _grain
+    if _grain is None:
+        n = rng.integers(0, 9, (H, W), dtype=np.uint8)
+        _grain = Image.fromarray(n, "L").convert("RGB")
+    return _grain
+
+
+_sweep = None
+
+
+def sweep_sprite():
+    """Наклонная световая полоса для переходов."""
+    global _sweep
+    if _sweep is None:
+        bw = int(W * 0.5)
+        prof = np.exp(-((np.linspace(-1, 1, bw)) ** 2) * 7.0)
+        a = (prof * 255).astype(np.uint8)[None, :].repeat(int(H * 1.5), axis=0)
+        im = Image.new("RGBA", (bw, int(H * 1.5)), (255, 255, 255, 0))
+        im.putalpha(Image.fromarray(a, "L"))
+        _sweep = im.rotate(16, expand=True, resample=Image.BICUBIC)
+    return _sweep
+
+
+def add_sweep(frame, t):
+    for start in SWEEPS:
+        p = seg(t, start - 0.12, start + 0.4)
+        if 0 < p < 1:
+            sp = sweep_sprite().copy()
+            sp.putalpha(sp.getchannel("A").point(lambda v: int(v * 0.34 * math.sin(math.pi * p))))
+            x = int(lerp(-sp.width, W, p))
+            frame.alpha_composite(sp, (x, int(-H * 0.25)))
+
+
+def camera(img, scale, dx, dy):
+    if scale <= 1.0005 and dx == 0 and dy == 0:
+        return img
+    sw, sh = int(W * scale), int(H * scale)
+    im = img.resize((sw, sh), Image.BILINEAR)
+    x = max(0, min(sw - W, (sw - W) // 2 + dx))
+    y = max(0, min(sh - H, (sh - H) // 2 + dy))
+    return im.crop((x, y, x + W, y + H))
+
+
+def post(frame, t):
+    frame = ImageChops.multiply(frame, vignette_img())
+    return ImageChops.add(frame, grain_img(), 1.0, -4)
+
+
 def background(t):
     """Фон общий для всех сцен, с переходом на бренд-градиент."""
     if t < T2 - 0.45:
@@ -745,11 +836,19 @@ def render(t):
             fn(t - a, layer)
             break
     frame = Image.alpha_composite(frame.convert("RGBA"), layer)
-    f = (1 - seg(t - T4, 0.0, 0.5)) if T4 <= t < T4 + 0.5 else 0.0
+    f = (1 - seg(t - T4, 0.0, 0.28)) if T4 <= t < T4 + 0.28 else 0.0
     if f > 0.01:
-        frame = Image.blend(frame, Image.new("RGBA", frame.size, (255, 255, 255, 255)), f * 0.8)
-    # мягкое затемнение к краям — взгляд держится в центре
-    return frame.convert("RGB").resize((W, H), Image.LANCZOS)
+        frame = Image.blend(frame, Image.new("RGBA", frame.size, (255, 255, 255, 255)), f * 0.72)
+    frame = frame.resize((W, H), Image.LANCZOS)
+    add_sweep(frame, t)
+    frame = frame.convert("RGB")
+
+    amp = shake_amount(t)
+    scale = 1.0 + beat_pulse(t) + (0.016 if amp > 0.2 else 0.0)
+    dx = int(math.sin(t * 61.0) * amp + math.sin(t * 37.0) * amp * 0.6)
+    dy = int(math.cos(t * 53.0) * amp + math.sin(t * 29.0) * amp * 0.5)
+    frame = camera(frame, scale, dx, dy)
+    return post(frame, t)
 
 
 def main():
@@ -774,6 +873,22 @@ def main():
         if i % 30 == 0:
             print("%d/%d кадров" % (i, total), flush=True)
     writer.close()
+
+    audio = os.path.join(ROOT, "promo", "reel-audio.wav")
+    if os.path.exists(audio):
+        # сведение со звуком и сжатие: зерно съедает битрейт, поэтому пережимаем
+        final = OUT.replace(".mp4", "-final.mp4")
+        subprocess.run([
+            imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error",
+            "-i", OUT, "-i", audio,
+            "-c:v", "libx264", "-crf", "23", "-preset", "medium",
+            "-pix_fmt", "yuv420p", "-profile:v", "high",
+            "-c:a", "aac", "-b:a", "192k", "-shortest", "-movflags", "+faststart", final,
+        ], check=True)
+        os.replace(final, OUT)
+        print("музыка добавлена")
+    else:
+        print("звука нет: запустите сначала promo/make_audio.py")
     print("готово:", OUT, os.path.getsize(OUT) // 1024, "КБ")
 
 

@@ -14,3 +14,4 @@ NeProspi-*.apk
 # ролик собирается скриптом, в репозитории хранить незачем
 promo/*.mp4
 promo/preview/
+promo/*.wav
