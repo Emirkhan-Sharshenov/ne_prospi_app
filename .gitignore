@@ -15,3 +15,4 @@ NeProspi-*.apk
 promo/*.mp4
 promo/preview/
 promo/*.wav
+.claude/

@@ -18,7 +18,7 @@
 | Иконка 512×512 | `app/src/main/ic_launcher-playstore.png` |
 | Баннер 1024×500 | `store/feature-ru.png`, `store/feature-en.png`, `store/feature-ky.png` |
 | Тексты карточки | `store/listing-ru.md`, `-en`, `-ky` |
-| Политика конфиденциальности | https://emirkhan-sharshenov.github.io/ne_prospi_app/ |
+| Политика конфиденциальности | https://emirkhan-sharshenov.github.io/ne_prospi_app/privacy.html |
 | Скриншоты | снять с телефона, см. шаг 6 |
 | Банковская карта | 25 $ разово за аккаунт |
 | Документ | паспорт или ID для проверки личности |
@@ -69,7 +69,7 @@
 - **App category** — `Maps & Navigation`. Теги: alarm, transit, navigation.
 - **Contact details** — почта. Она видна всем в карточке, так что имеет смысл завести
   отдельный ящик вида `neprospi.app@gmail.com`.
-- **Privacy policy** — https://emirkhan-sharshenov.github.io/ne_prospi_app/
+- **Privacy policy** — https://emirkhan-sharshenov.github.io/ne_prospi_app/privacy.html
 
 Затем **Custom store listings** (или переключатель языков сверху) — добавить English
 и Кыргызча из `listing-en.md` и `listing-ky.md` с соответствующими баннерами.

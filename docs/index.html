@@ -1,269 +1,1132 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Не проспи — политика конфиденциальности</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Не проспи — будильник на вашу остановку</title>
+<meta name="description" content="Будильник, который звонит не по времени, а по расстоянию: когда автобус подъезжает к вашей остановке. Экран можно выключить. Бесплатно, без рекламы, для Android.">
+<meta name="theme-color" content="#0B0E16">
+<link rel="icon" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Не проспи — будильник на вашу остановку">
+<meta property="og:description" content="GPS-будильник разбудит перед вашей остановкой. Экран можно выключить. Бесплатно и без рекламы.">
+<meta property="og:image" content="og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@500;700;800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#F6F7FB; --card:#FFFFFF; --text:#16181D; --muted:#5B6270; --accent:#2F6FE4; --line:#E4E7EE; }
-  @media (prefers-color-scheme: dark) {
-    :root { --bg:#12141A; --card:#1B1E26; --text:#F2F4F8; --muted:#9AA2B1; --accent:#7AA5F0; --line:#2A2E39; }
-  }
-  * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--text);
-         font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif; line-height:1.6; }
-  .wrap { max-width:780px; margin:0 auto; padding:32px 16px 64px; }
-  header { display:flex; align-items:center; gap:14px; margin-bottom:8px; }
-  header img { width:56px; height:56px; border-radius:14px; }
-  h1 { font-size:26px; margin:0; }
-  .sub { color:var(--muted); margin:0 0 24px; }
-  nav { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
-  nav button { border:1px solid var(--line); background:var(--card); color:var(--text);
-               padding:8px 16px; border-radius:999px; font-size:15px; cursor:pointer; }
-  nav button[aria-selected="true"] { background:var(--accent); border-color:var(--accent); color:#fff; }
-  section { background:var(--card); border:1px solid var(--line); border-radius:18px; padding:24px; }
-  section[hidden] { display:none; }
-  h2 { font-size:19px; margin:26px 0 8px; }
-  h2:first-of-type { margin-top:0; }
-  ul { padding-left:22px; }
-  li { margin:6px 0; }
-  a { color:var(--accent); }
-  footer { color:var(--muted); font-size:14px; margin-top:24px; text-align:center; }
-  code { background:rgba(127,127,127,.14); padding:2px 6px; border-radius:6px; font-size:14px; }
+:root {
+  --accent: #4D8BFF;
+  --accent-2: #7C6CFF;
+  --amber: #FFB020;
+  --danger: #EF4444;
+  --bg: #0B0E16;
+  --bg-soft: #10141F;
+  --surface: rgba(255, 255, 255, .045);
+  --surface-solid: #161C2A;
+  --line: rgba(255, 255, 255, .10);
+  --text: #EEF2FA;
+  --muted: #97A3BA;
+  --shadow: 0 30px 80px rgba(0, 0, 0, .55);
+  --radius: 26px;
+  --maxw: 1140px;
+}
+:root[data-theme="light"] {
+  --accent: #2F6FE4;
+  --accent-2: #5B4BD6;
+  --bg: #F5F7FC;
+  --bg-soft: #FFFFFF;
+  --surface: rgba(16, 24, 46, .035);
+  --surface-solid: #FFFFFF;
+  --line: rgba(16, 24, 46, .10);
+  --text: #131722;
+  --muted: #5C6679;
+  --shadow: 0 24px 60px rgba(28, 42, 82, .14);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: "Nunito Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 17px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+h1, h2, h3, .num { font-family: Onest, "Nunito Sans", sans-serif; font-weight: 800; line-height: 1.12; margin: 0; letter-spacing: -.02em; }
+h1 { font-size: clamp(38px, 7.2vw, 68px); }
+h2 { font-size: clamp(28px, 4.6vw, 44px); }
+h3 { font-size: 21px; font-weight: 700; }
+p { margin: 0; }
+a { color: inherit; }
+img, svg, video { display: block; max-width: 100%; }
+button { font: inherit; color: inherit; }
+
+.wrap { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 20px; }
+section { position: relative; padding: clamp(64px, 9vw, 120px) 0; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: Onest, sans-serif; font-weight: 700; font-size: 13px;
+  letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  padding: 7px 14px; border-radius: 999px; margin-bottom: 18px;
+}
+.lead { color: var(--muted); font-size: clamp(17px, 2.1vw, 20px); max-width: 60ch; }
+.center { text-align: center; }
+.center .lead { margin-inline: auto; }
+
+/* ---------- фон ---------- */
+.aurora { position: fixed; inset: -20% -10% auto -10%; height: 130vh; z-index: -2; pointer-events: none; filter: blur(70px); opacity: .75; }
+.aurora i {
+  position: absolute; display: block; border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, var(--accent), transparent 62%);
+  animation: drift 26s ease-in-out infinite;
+}
+.aurora i:nth-child(1) { width: 60vw; height: 60vw; left: -12vw; top: -8vw; }
+.aurora i:nth-child(2) { width: 46vw; height: 46vw; right: -8vw; top: 6vw; background: radial-gradient(circle at 40% 40%, var(--accent-2), transparent 62%); animation-delay: -9s; }
+.aurora i:nth-child(3) { width: 38vw; height: 38vw; left: 34vw; top: 46vw; background: radial-gradient(circle at 50% 50%, var(--amber), transparent 64%); opacity: .4; animation-delay: -16s; }
+:root[data-theme="light"] .aurora { opacity: .32; }
+@keyframes drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33% { transform: translate3d(4vw, 3vw, 0) scale(1.09); }
+  66% { transform: translate3d(-3vw, 5vw, 0) scale(.95); }
+}
+.grid-lines {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 75%);
+}
+
+/* ---------- шапка ---------- */
+header {
+  position: sticky; top: 0; z-index: 50;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  border-bottom: 1px solid transparent; transition: border-color .3s, background .3s;
+}
+header.stuck { border-bottom-color: var(--line); }
+.nav { display: flex; align-items: center; gap: 18px; height: 68px; }
+.brand { display: flex; align-items: center; gap: 11px; font-family: Onest, sans-serif; font-weight: 800; font-size: 18px; text-decoration: none; }
+.brand img { width: 34px; height: 34px; border-radius: 10px; }
+.nav-links { display: flex; gap: 6px; margin-left: auto; }
+.nav-links a {
+  text-decoration: none; color: var(--muted); font-size: 15px; font-weight: 600;
+  padding: 8px 13px; border-radius: 999px; transition: .2s;
+}
+.nav-links a:hover { color: var(--text); background: var(--surface); }
+.icon-btn {
+  display: grid; place-items: center; width: 40px; height: 40px; flex: none;
+  border-radius: 12px; border: 1px solid var(--line); background: var(--surface);
+  cursor: pointer; transition: .2s;
+}
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+.lang { display: flex; gap: 2px; padding: 3px; border: 1px solid var(--line); background: var(--surface); border-radius: 12px; }
+.lang button {
+  border: 0; background: none; cursor: pointer; padding: 5px 9px; border-radius: 9px;
+  font-family: Onest, sans-serif; font-weight: 700; font-size: 12.5px; color: var(--muted); transition: .18s;
+}
+.lang button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+/* ---------- кнопки ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 28px; border-radius: 999px; border: 0; cursor: pointer;
+  font-family: Onest, sans-serif; font-weight: 700; font-size: 16.5px;
+  text-decoration: none; white-space: nowrap; transition: transform .18s, box-shadow .25s, background .2s;
+}
+.btn-primary {
+  color: #fff; background: linear-gradient(115deg, var(--accent), var(--accent-2));
+  box-shadow: 0 12px 34px color-mix(in srgb, var(--accent) 42%, transparent);
+  position: relative; overflow: hidden;
+}
+.btn-primary::after {
+  content: ""; position: absolute; inset: 0 -60%;
+  background: linear-gradient(100deg, transparent 38%, rgba(255, 255, 255, .42) 50%, transparent 62%);
+  transform: translateX(-100%); animation: shine 4.5s ease-in-out infinite;
+}
+@keyframes shine { 0%, 62% { transform: translateX(-100%); } 84%, 100% { transform: translateX(100%); } }
+.btn:hover { transform: translateY(-2px); }
+.btn-ghost { background: var(--surface); border: 1px solid var(--line); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sub { display: block; font-family: "Nunito Sans", sans-serif; font-weight: 600; font-size: 12.5px; opacity: .85; margin-top: 1px; }
+
+/* ---------- первый экран ---------- */
+.hero { padding-top: clamp(40px, 6vw, 76px); }
+.hero-grid { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(28px, 5vw, 64px); align-items: center; }
+.hero h1 span { background: linear-gradient(100deg, var(--accent), var(--amber)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.hero .lead { margin-top: 20px; }
+.hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 32px; }
+.hero-note { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 22px; color: var(--muted); font-size: 14.5px; }
+.hero-note b { color: var(--text); font-weight: 700; }
+
+/* ---------- телефон ---------- */
+.phone-stage { display: grid; place-items: center; perspective: 1400px; }
+.phone {
+  position: relative; width: 288px; height: 592px; flex: none;
+  border-radius: 44px; padding: 9px;
+  background: linear-gradient(160deg, #2C3547, #0D1119);
+  box-shadow: var(--shadow), 0 0 0 1px rgba(255, 255, 255, .10) inset;
+  transform-style: preserve-3d; transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+}
+.phone::before {
+  content: ""; position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+  width: 76px; height: 7px; border-radius: 99px; background: #0A0D14; z-index: 4;
+}
+.screen { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background: #EAEFF6; }
+.screen svg { width: 100%; height: 100%; }
+.float { animation: float 7s ease-in-out infinite; }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+
+.sheet {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 3;
+  background: #fff; color: #16181D; border-radius: 22px 22px 0 0;
+  padding: 14px 16px 16px; box-shadow: 0 -12px 30px rgba(10, 20, 40, .16);
+  transform: translateY(0); transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+}
+.sheet .grab { width: 40px; height: 4px; border-radius: 4px; background: #D3DAE6; margin: 0 auto 10px; }
+.sheet h4 { margin: 0; font-family: Onest, sans-serif; font-size: 16px; font-weight: 700; }
+.sheet .sub { font-size: 12.5px; color: #6C778C; margin-top: 2px; line-height: 1.4; }
+.chips { display: flex; gap: 6px; margin: 11px 0; }
+.chips button {
+  flex: 1; border: 0; cursor: pointer; padding: 9px 0; border-radius: 12px;
+  background: #EEF2F8; color: #16181D; font-family: Onest, sans-serif; font-weight: 700; font-size: 13px; transition: .15s;
+}
+.chips button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.go {
+  width: 100%; border: 0; cursor: pointer; padding: 13px; border-radius: 999px; color: #fff;
+  background: linear-gradient(115deg, var(--accent), var(--accent-2));
+  font-family: Onest, sans-serif; font-weight: 700; font-size: 15px;
+}
+.go[disabled] { opacity: .5; cursor: default; }
+.trip-line { display: flex; justify-content: space-between; font-size: 12.5px; color: #6C778C; margin-top: 8px; }
+.bar { height: 6px; border-radius: 99px; background: #E7EBF3; overflow: hidden; margin-top: 7px; }
+.bar i { display: block; height: 100%; width: 0; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--amber)); transition: width .25s linear; }
+
+.alarm {
+  position: absolute; inset: 0; z-index: 5; display: grid; align-content: center; justify-items: center;
+  gap: 6px; padding: 24px 18px; text-align: center; color: #fff;
+  background: linear-gradient(170deg, #FFB020, #F0621E);
+  opacity: 0; pointer-events: none; transition: opacity .25s;
+}
+.alarm.on { opacity: 1; pointer-events: auto; }
+.alarm.passed { background: linear-gradient(170deg, #FF6B6B, #C0262B); }
+.alarm .bell { font-size: 64px; line-height: 1; animation: ring .9s ease-in-out infinite; }
+@keyframes ring { 0%, 100% { transform: rotate(-13deg); } 50% { transform: rotate(13deg); } }
+.alarm h4 { font-family: Onest, sans-serif; font-size: 25px; font-weight: 800; margin: 6px 0 0; }
+.alarm .en { font-size: 14px; opacity: .9; }
+.alarm .where { font-family: Onest, sans-serif; font-weight: 700; margin-top: 4px; }
+.hold {
+  position: relative; overflow: hidden; margin-top: 18px; width: 100%; border: 0; cursor: pointer;
+  padding: 15px; border-radius: 999px; background: rgba(255, 255, 255, .26); color: #fff;
+  font-family: Onest, sans-serif; font-weight: 700; font-size: 14.5px; touch-action: none;
+}
+.hold i { position: absolute; inset: 0; width: 0; background: rgba(255, 255, 255, .45); transition: width .05s linear; }
+.hold span { position: relative; text-shadow: 0 1px 6px rgba(120, 60, 0, .45); }
+.rings { position: absolute; inset: 0; pointer-events: none; }
+.rings i { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; margin: -60px 0 0 -60px; border: 2px solid rgba(255, 255, 255, .55); border-radius: 50%; animation: ripple 2.2s ease-out infinite; }
+.rings i:nth-child(2) { animation-delay: .73s; }
+.rings i:nth-child(3) { animation-delay: 1.46s; }
+@keyframes ripple { from { transform: scale(.5); opacity: .9; } to { transform: scale(2.6); opacity: 0; } }
+
+.done { position: absolute; inset: 0; z-index: 6; display: grid; place-content: center; justify-items: center; gap: 10px; text-align: center; padding: 30px; background: linear-gradient(170deg, #1BC47D, #0E9C68); color: #fff; opacity: 0; pointer-events: none; transition: opacity .3s; }
+.done.on { opacity: 1; }
+.done h4 { font-family: Onest, sans-serif; font-size: 24px; margin: 0; }
+
+/* ---------- полоса доверия ---------- */
+.trust { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.trust div { text-align: center; padding: 22px 12px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
+.trust .num { font-size: clamp(26px, 3.4vw, 38px); background: linear-gradient(100deg, var(--accent), var(--amber)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.trust p { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+
+/* ---------- демо ---------- */
+.demo-grid { display: grid; grid-template-columns: 1fr 340px; gap: clamp(28px, 5vw, 60px); align-items: center; }
+.demo-steps { display: grid; gap: 14px; margin-top: 26px; }
+.demo-steps li { display: flex; gap: 14px; align-items: flex-start; padding: 15px 17px; border: 1px solid var(--line); border-radius: 18px; background: var(--surface); transition: .25s; }
+.demo-steps li.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); }
+.demo-steps b { flex: none; display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; background: var(--amber); color: #3A2600; font-family: Onest, sans-serif; font-size: 14px; }
+.demo-steps p { font-size: 15px; }
+.demo-steps small { color: var(--muted); display: block; font-size: 13px; }
+.demo-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; align-items: center; }
+.tag { font-size: 12.5px; color: var(--muted); border: 1px dashed var(--line); padding: 6px 12px; border-radius: 999px; }
+
+/* ---------- карточки ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 16px; margin-top: 44px; }
+.card {
+  position: relative; padding: 26px 24px 28px; border-radius: var(--radius);
+  border: 1px solid var(--line); background: var(--surface); overflow: hidden; transition: .3s;
+}
+.card::before {
+  content: ""; position: absolute; inset: 0; opacity: 0; transition: .3s;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), color-mix(in srgb, var(--accent) 16%, transparent), transparent 62%);
+}
+.card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.card:hover::before { opacity: 1; }
+.card .ico { position: relative; width: 46px; height: 46px; display: grid; place-items: center; border-radius: 14px; font-size: 22px; background: color-mix(in srgb, var(--accent) 16%, transparent); margin-bottom: 14px; }
+.card h3 { position: relative; }
+.card p { position: relative; color: var(--muted); font-size: 15px; margin-top: 7px; }
+
+/* ---------- как это работает ---------- */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 46px; counter-reset: s; }
+.step { position: relative; padding: 30px 26px; border-radius: var(--radius); border: 1px solid var(--line); background: var(--surface); }
+.step .n { font-family: Onest, sans-serif; font-weight: 800; font-size: 46px; line-height: 1; color: transparent; -webkit-text-stroke: 1.6px color-mix(in srgb, var(--accent) 70%, transparent); }
+.step h3 { margin: 12px 0 8px; }
+.step p { color: var(--muted); font-size: 15px; }
+
+/* ---------- видео ---------- */
+.video-box { position: relative; max-width: 330px; margin: 40px auto 0; border-radius: 34px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+.video-box video { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: #000; }
+.play {
+  position: absolute; inset: 0; display: grid; place-items: center; border: 0; cursor: pointer;
+  background: rgba(8, 12, 22, .35); color: #fff; transition: opacity .3s;
+}
+.play span { display: grid; place-items: center; width: 74px; height: 74px; border-radius: 50%; background: rgba(255, 255, 255, .2); backdrop-filter: blur(6px); font-size: 26px; padding-left: 5px; }
+.play.hidden { opacity: 0; pointer-events: none; }
+
+/* ---------- скачать ---------- */
+.download-card {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 26px; align-items: center;
+  padding: clamp(24px, 4vw, 40px); border-radius: 34px; border: 1px solid var(--line);
+  background: linear-gradient(140deg, color-mix(in srgb, var(--accent) 18%, var(--surface-solid)), var(--surface-solid));
+  box-shadow: var(--shadow);
+}
+.download-card img { width: 92px; height: 92px; border-radius: 26px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; color: var(--muted); font-size: 14px; margin-top: 8px; }
+.meta b { color: var(--text); font-weight: 700; }
+.install { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+.install div { padding: 18px 20px; border-radius: 20px; border: 1px solid var(--line); background: var(--surface); font-size: 14.5px; color: var(--muted); }
+.install b { display: block; color: var(--text); font-family: Onest, sans-serif; margin-bottom: 4px; }
+
+/* ---------- вопросы ---------- */
+.faq { max-width: 820px; margin: 40px auto 0; display: grid; gap: 12px; }
+.faq details { border: 1px solid var(--line); border-radius: 20px; background: var(--surface); overflow: hidden; }
+.faq summary { cursor: pointer; padding: 19px 22px; font-family: Onest, sans-serif; font-weight: 700; font-size: 17px; list-style: none; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-size: 24px; color: var(--accent); transition: transform .25s; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq p { padding: 0 22px 20px; color: var(--muted); font-size: 15.5px; }
+
+footer { border-top: 1px solid var(--line); padding: 40px 0 56px; color: var(--muted); font-size: 14.5px; }
+.foot { display: flex; flex-wrap: wrap; gap: 16px 28px; align-items: center; }
+.foot a { color: var(--muted); text-decoration: none; }
+.foot a:hover { color: var(--accent); }
+.foot .sp { margin-left: auto; }
+
+/* ---------- появление при прокрутке ---------- */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity .7s cubic-bezier(.2, .8, .2, 1), transform .7s cubic-bezier(.2, .8, .2, 1); }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (max-width: 900px) {
+  .hero-grid, .demo-grid { grid-template-columns: 1fr; }
+  .demo-grid { justify-items: center; }
+  .hero .phone-stage { margin-top: 12px; }
+  .steps, .install { grid-template-columns: 1fr; }
+  .trust { grid-template-columns: repeat(2, 1fr); }
+  .nav-links { display: none; }
+  .download-card { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  .download-card .meta { justify-content: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001s !important; transition-duration: .05s !important; }
+  html { scroll-behavior: auto; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <img src="icon.png" alt="">
-    <div>
-      <h1>Не проспи</h1>
-      <p class="sub">Политика конфиденциальности · Privacy Policy · Купуялык саясаты</p>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div class="grid-lines" aria-hidden="true"></div>
+
+<header id="top">
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="icon.png" alt=""><span>Не проспи</span></a>
+    <nav class="nav-links">
+      <a href="#how" data-i18n="nav_how">Как работает</a>
+      <a href="#demo" data-i18n="nav_demo">Демо</a>
+      <a href="#features" data-i18n="nav_features">Возможности</a>
+      <a href="#download" data-i18n="nav_download">Скачать</a>
+    </nav>
+    <div class="lang" role="group" aria-label="Язык">
+      <button data-lang="ru" aria-pressed="true">RU</button>
+      <button data-lang="en" aria-pressed="false">EN</button>
+      <button data-lang="ky" aria-pressed="false">KG</button>
     </div>
-  </header>
+    <button class="icon-btn" id="themeBtn" title="Тема" aria-label="Сменить тему">☾</button>
+  </div>
+</header>
 
-  <nav>
-    <button data-lang="ru" aria-selected="true">Русский</button>
-    <button data-lang="en" aria-selected="false">English</button>
-    <button data-lang="ky" aria-selected="false">Кыргызча</button>
-  </nav>
+<main>
+<!-- ================= первый экран ================= -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow" data-i18n="hero_badge">Android · бесплатно · без рекламы</span>
+      <h1 data-i18n-html="hero_title">Не проспи<br><span>свою остановку</span></h1>
+      <p class="lead" data-i18n="hero_lead">Будильник, который звонит не по времени, а по расстоянию: когда автобус, маршрутка или поезд подъезжает к нужному месту. Экран можно выключить и спокойно спать.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" id="dlTop" href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app/releases/latest">
+          <span>↓</span><span><span data-i18n="cta_download">Скачать APK</span><span class="btn-sub" id="dlMeta">Android 8.0+</span></span>
+        </a>
+        <a class="btn btn-ghost" href="#demo" data-i18n="cta_try">Попробовать прямо здесь</a>
+      </div>
+      <div class="hero-note">
+        <span>✔ <b data-i18n="note_1">Работает при выключенном экране</b></span>
+        <span>✔ <b data-i18n="note_2">Любая страна мира</b></span>
+        <span>✔ <b data-i18n="note_3">Открытый код</b></span>
+      </div>
+    </div>
+    <div class="phone-stage">
+      <div class="phone float" id="heroPhone"><div class="screen"></div></div>
+    </div>
+  </div>
+</section>
 
-  <section id="ru">
-    <p><strong>Обновлено: 23 сентября 2026 года.</strong></p>
-    <p>«Не проспи» — будильник, который звонит, когда вы подъезжаете к нужной остановке.
-       Приложение работает без регистрации и не создаёт учётных записей.</p>
+<!-- ================= цифры ================= -->
+<section style="padding-top:0">
+  <div class="wrap trust reveal">
+    <div><div class="num" data-count="1557">0</div><p data-i18n="stat_1">остановок Кыргызстана внутри, работают без интернета</p></div>
+    <div><div class="num" data-count="3">0</div><p data-i18n="stat_2">языка: русский, кыргызский, английский</p></div>
+    <div><div class="num" data-count="0">0</div><p data-i18n="stat_3">рекламы, регистрации и слежки</p></div>
+    <div><div class="num" data-count="500" data-suffix=" м">0</div><p data-i18n="stat_4">запас по умолчанию, чтобы успеть собраться</p></div>
+  </div>
+</section>
 
-    <h2>Что приложение НЕ делает</h2>
-    <ul>
-      <li>Не передаёт ваше местоположение разработчику или третьим лицам.</li>
-      <li>Не показывает рекламу и не использует рекламные идентификаторы.</li>
-      <li>Не собирает статистику поведения и не следит за вами между сеансами.</li>
-      <li>Не запрашивает доступ к контактам, звонкам, фотографиям и файлам.</li>
-      <li>Не отправляет сообщения и не совершает звонков самостоятельно.</li>
-    </ul>
+<!-- ================= как работает ================= -->
+<section id="how">
+  <div class="wrap center reveal">
+    <span class="eyebrow" data-i18n="how_badge">Три шага</span>
+    <h2 data-i18n="how_title">Отметил, поехал, проснулся вовремя</h2>
+    <p class="lead" data-i18n="how_lead">Ничего настраивать не нужно: приложение открывается на карте вашего города и сразу готово к поездке.</p>
+  </div>
+  <div class="wrap steps">
+    <div class="step reveal"><div class="n">01</div><h3 data-i18n="how_1_t">Отметьте остановку</h3><p data-i18n="how_1_d">Ткните в точку на карте, найдите её по названию или выберите готовую остановку транспорта.</p></div>
+    <div class="step reveal"><div class="n">02</div><h3 data-i18n="how_2_t">Выберите, когда будить</h3><p data-i18n="how_2_d">За 300, 500, 1000 метров — или за 3, 5, 10 минут до прибытия. Плюс страховочный таймер.</p></div>
+    <div class="step reveal"><div class="n">03</div><h3 data-i18n="how_3_t">Заблокируйте телефон</h3><p data-i18n="how_3_d">Приложение следит за дорогой в фоне и звонит поверх экрана блокировки. Выключается удержанием.</p></div>
+  </div>
+</section>
 
-    <h2>Местоположение</h2>
-    <p>Во время поездки приложение получает координаты GPS, чтобы посчитать расстояние
-       до выбранной точки и вовремя зазвонить. Координаты обрабатываются на самом телефоне.
-       Они не сохраняются на сервере и никуда не отправляются, кроме одного случая,
-       описанного ниже.</p>
+<!-- ================= интерактивное демо ================= -->
+<section id="demo">
+  <div class="wrap demo-grid">
+    <div>
+      <span class="eyebrow reveal" data-i18n="demo_badge">Попробуйте</span>
+      <h2 class="reveal" data-i18n="demo_title">Проедьте маршрут прямо здесь</h2>
+      <p class="lead reveal" data-i18n="demo_lead">Это настоящая логика приложения, только время ускорено в сорок раз. Выберите точку на карте, задайте расстояние и отправляйтесь.</p>
+      <ol class="demo-steps reveal" id="demoSteps">
+        <li data-step="1"><b>1</b><p><span data-i18n="demo_s1">Нажмите на карту</span><small data-i18n="demo_s1d">Куда вам нужно выйти</small></p></li>
+        <li data-step="2"><b>2</b><p><span data-i18n="demo_s2">Выберите расстояние</span><small data-i18n="demo_s2d">За сколько метров разбудить</small></p></li>
+        <li data-step="3"><b>3</b><p><span data-i18n="demo_s3">Нажмите «В путь»</span><small data-i18n="demo_s3d">И дождитесь будильника</small></p></li>
+      </ol>
+      <div class="demo-toolbar reveal">
+        <button class="btn btn-ghost" id="soundBtn">🔇 <span data-i18n="demo_sound">Включить звук</span></button>
+        <button class="btn btn-ghost" id="resetBtn" data-i18n="demo_reset">Сбросить</button>
+        <span class="tag" data-i18n="demo_tag">Симуляция · ускорено ×40</span>
+      </div>
+    </div>
+    <div class="phone-stage reveal">
+      <div class="phone" id="demoPhone"><div class="screen"></div></div>
+    </div>
+  </div>
+</section>
 
-    <h2>Карты и поиск адресов (OpenStreetMap)</h2>
-    <p>Чтобы показать карту, найти адрес и отметить остановки, приложение обращается
-       к открытым сервисам OpenStreetMap: тайловым серверам карты,
-       <a href="https://nominatim.org/">Nominatim</a> (поиск и название точки) и
-       <a href="https://overpass-api.de/">Overpass</a> (остановки транспорта).
-       При этом им передаётся то, что вы ищете, и участок карты, который вы смотрите.
-       Эти сервисы принадлежат сторонним организациям и действуют по своим правилам:
-       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
-       Если скачать офлайн-карту своей страны, обращений к карте в интернете не будет.</p>
+<!-- ================= возможности ================= -->
+<section id="features">
+  <div class="wrap center reveal">
+    <span class="eyebrow" data-i18n="feat_badge">Возможности</span>
+    <h2 data-i18n="feat_title">Сделано, чтобы не подвести</h2>
+    <p class="lead" data-i18n="feat_lead">Будильник бесполезен, если сработает через раз. Поэтому у каждой мелочи здесь есть запасной путь.</p>
+  </div>
+  <div class="wrap cards">
+    <div class="card reveal"><div class="ico">🛟</div><h3 data-i18n="f1_t">Страховочный таймер</h3><p data-i18n="f1_d">Разбудит через заданное время, даже если спутники пропали совсем или система закрыла приложение.</p></div>
+    <div class="card reveal"><div class="ico">✋</div><h3 data-i18n="f2_t">Выключается удержанием</h3><p data-i18n="f2_d">Спросонья не смахнёте случайно. А если захотите — приложение переспросит через минуту, не уснули ли вы снова.</p></div>
+    <div class="card reveal"><div class="ico">🌍</div><h3 data-i18n="f3_t">Любая страна</h3><p data-i18n="f3_d">Карта и остановки из OpenStreetMap работают везде. Метры или мили выбираются по стране сами.</p></div>
+    <div class="card reveal"><div class="ico">🗺️</div><h3 data-i18n="f4_t">Офлайн-карта</h3><p data-i18n="f4_d">Скачайте свою страну — и поездка не зависит ни от интернета, ни от роуминга.</p></div>
+    <div class="card reveal"><div class="ico">🔦</div><h3 data-i18n="f5_t">Фонарик и вибрация</h3><p data-i18n="f5_d">Если звук нужно держать выключенным: вибрация, вспышки фонарика, голос или звук только в наушниках.</p></div>
+    <div class="card reveal"><div class="ico">⚠️</div><h3 data-i18n="f6_t">Предупредит заранее</h3><p data-i18n="f6_d">Скажет, если потерялись спутники или садится батарея. А если остановку всё-таки проехали — зазвонит снова.</p></div>
+    <div class="card reveal"><div class="ico">🧭</div><h3 data-i18n="f7_t">Маршрут на карте</h3><p data-i18n="f7_d">Видно, как ехать: линия по улицам и расстояние по дороге. Сам будильник считает по прямой и без интернета.</p></div>
+    <div class="card reveal"><div class="ico">🔒</div><h3 data-i18n="f8_t">Ничего о вас не знает</h3><p data-i18n="f8_d">Ни аккаунта, ни аналитики, ни рекламы. Координаты остаются в телефоне, код открыт и его можно проверить.</p></div>
+  </div>
+</section>
 
-    <h2>Что хранится на телефоне</h2>
-    <ul>
-      <li>Сохранённые точки назначения и история поездок.</li>
-      <li>Настройки: звук будильника, язык, тема, единицы измерения.</li>
-      <li>Номер близкого человека, если вы его ввели.</li>
-    </ul>
-    <p>Всё это лежит только в памяти приложения на вашем телефоне. Удаление приложения
-       удаляет эти данные полностью.</p>
+<!-- ================= видео ================= -->
+<section>
+  <div class="wrap center reveal">
+    <span class="eyebrow" data-i18n="video_badge">За 37 секунд</span>
+    <h2 data-i18n="video_title">Как это выглядит</h2>
+    <div class="video-box">
+      <video id="reel" src="reel.mp4" poster="poster.jpg" playsinline preload="none"></video>
+      <button class="play" id="playBtn" aria-label="Смотреть"><span>▶</span></button>
+    </div>
+  </div>
+</section>
 
-    <h2>Сообщение близким</h2>
-    <p>Если вы включили эту возможность и ввели номер, приложение готовит текст
-       и показывает уведомление. Сообщение отправляете вы сами: нажатие открывает
-       ваше обычное SMS-приложение с готовым текстом. Приложение не имеет разрешения
-       на отправку SMS и не отправляет их без вас. Стоимость сообщения — по тарифу
-       вашего оператора.</p>
+<!-- ================= скачать ================= -->
+<section id="download">
+  <div class="wrap reveal">
+    <div class="download-card">
+      <img src="icon.png" alt="">
+      <div>
+        <h2 style="font-size:clamp(24px,3.4vw,34px)" data-i18n="dl_title">Скачайте и проверьте сами</h2>
+        <p style="color:var(--muted);margin-top:8px" data-i18n="dl_lead">Файл лежит на GitHub: без магазинов, регистрации и лишних разрешений.</p>
+        <div class="meta">
+          <span><b id="verText">—</b> <span data-i18n="dl_version">версия</span></span>
+          <span><b id="sizeText">—</b></span>
+          <span><b id="dateText">—</b></span>
+          <span><b>Android 8.0+</b></span>
+        </div>
+      </div>
+      <a class="btn btn-primary" id="dlMain" href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app/releases/latest">
+        <span>↓</span><span data-i18n="cta_download">Скачать APK</span>
+      </a>
+    </div>
+    <div class="install">
+      <div><b data-i18n="ins_1_t">1. Откройте файл</b><span data-i18n="ins_1_d">Скачайте APK на телефон и нажмите на него в списке загрузок.</span></div>
+      <div><b data-i18n="ins_2_t">2. Разрешите установку</b><span data-i18n="ins_2_d">Android спросит про установку из этого источника — это обычное дело для файлов вне магазина.</span></div>
+      <div><b data-i18n="ins_3_t">3. Пройдите проверку</b><span data-i18n="ins_3_d">При первом запуске приложение само покажет, что включить, и предложит проверить будильник.</span></div>
+    </div>
+  </div>
+</section>
 
-    <h2>Зачем нужны разрешения</h2>
-    <ul>
-      <li><strong>Местоположение</strong> — считать расстояние до остановки.</li>
-      <li><strong>Уведомления</strong> — показывать ход поездки и экран будильника.</li>
-      <li><strong>Работа в фоне и отключение экономии батареи</strong> — чтобы будильник
-          сработал при выключенном экране.</li>
-      <li><strong>Точные будильники</strong> — для страховочного таймера.</li>
-      <li><strong>Фонарик и вибрация</strong> — способы разбудить, если звук выключен.</li>
-    </ul>
+<!-- ================= вопросы ================= -->
+<section>
+  <div class="wrap center reveal">
+    <span class="eyebrow" data-i18n="faq_badge">Вопросы</span>
+    <h2 data-i18n="faq_title">Коротко о главном</h2>
+  </div>
+  <div class="wrap faq reveal">
+    <details><summary data-i18n="q1">Будильник сработает, если экран выключен?</summary><p data-i18n="a1">Да, ради этого всё и сделано. Во время поездки работает фоновая служба с уведомлением, а звонок показывается поверх экрана блокировки. При первом запуске приложение подскажет, какие разрешения включить, чтобы система его не усыпила.</p></details>
+    <details><summary data-i18n="q2">Сколько тратит батареи?</summary><p data-i18n="a2">Пока до остановки далеко, координаты запрашиваются редко — раз в двадцать секунд. Ближе к месту опрос учащается до двух секунд. За часовую поездку уходит немного, а приложение предупредит, если заряд садится.</p></details>
+    <details><summary data-i18n="q3">А если пропадёт интернет или GPS?</summary><p data-i18n="a3">Карту можно скачать заранее, а расстояние считается на самом телефоне и интернета не требует. На случай полной потери спутников есть страховочный таймер: он разбудит через заданное время в любом случае.</p></details>
+    <details><summary data-i18n="q4">Почему не в Google Play?</summary><p data-i18n="a4">Приложение готовится к публикации: подпись, политика конфиденциальности и анкеты уже сделаны. Пока магазин проверяет, файл можно скачать здесь — он подписан тем же ключом, что и будущая версия в Play.</p></details>
+    <details><summary data-i18n="q5">Это бесплатно? В чём подвох?</summary><p data-i18n="a5">Подвоха нет: ни рекламы, ни платежей, ни сбора данных. Код открыт, его можно прочитать и собрать самому.</p></details>
+  </div>
+</section>
+</main>
 
-    <h2>Дети</h2>
-    <p>Приложение не предназначено специально для детей и не собирает данные о них.</p>
-
-    <h2>Изменения</h2>
-    <p>Если политика изменится, новая версия появится на этой странице с новой датой.</p>
-
-    <h2>Связь</h2>
-    <p>Вопросы и жалобы: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
-       Исходный код открыт:
-       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
-  </section>
-
-  <section id="en" hidden>
-    <p><strong>Last updated: 23 September 2026.</strong></p>
-    <p>Don’t Oversleep is an alarm that rings when you are approaching your stop.
-       It works without registration and creates no accounts.</p>
-
-    <h2>What the app does NOT do</h2>
-    <ul>
-      <li>It does not send your location to the developer or to any third party.</li>
-      <li>It shows no ads and uses no advertising identifiers.</li>
-      <li>It collects no analytics and does not track you between sessions.</li>
-      <li>It does not ask for contacts, calls, photos or files.</li>
-      <li>It never sends messages or makes calls on its own.</li>
-    </ul>
-
-    <h2>Location</h2>
-    <p>During a trip the app reads GPS coordinates to measure the distance to your
-       destination and ring in time. Coordinates are processed on the phone itself.
-       They are not stored on any server and are not sent anywhere, except for the
-       one case described below.</p>
-
-    <h2>Maps and address search (OpenStreetMap)</h2>
-    <p>To draw the map, find an address and show transit stops, the app contacts the open
-       OpenStreetMap services: map tile servers,
-       <a href="https://nominatim.org/">Nominatim</a> (search and place names) and
-       <a href="https://overpass-api.de/">Overpass</a> (transit stops).
-       Your search text and the map area you are viewing are sent to them.
-       These services belong to third parties and follow their own rules:
-       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
-       Downloading an offline map of your country removes these requests.</p>
-
-    <h2>What is stored on your phone</h2>
-    <ul>
-      <li>Saved destinations and trip history.</li>
-      <li>Settings: alarm sound, language, theme, units.</li>
-      <li>A family member’s phone number, if you entered one.</li>
-    </ul>
-    <p>All of it stays in the app’s own storage on your phone. Uninstalling the app
-       deletes it completely.</p>
-
-    <h2>Message to family</h2>
-    <p>If you enable this and enter a number, the app prepares the text and shows a
-       notification. You send the message yourself: tapping it opens your usual SMS app
-       with the text ready. The app holds no SMS permission and never sends anything
-       without you. Your carrier’s rates apply.</p>
-
-    <h2>Why the permissions are needed</h2>
-    <ul>
-      <li><strong>Location</strong> — to measure the distance to your stop.</li>
-      <li><strong>Notifications</strong> — to show trip progress and the alarm screen.</li>
-      <li><strong>Background work and battery optimisation exemption</strong> — so the alarm
-          fires with the screen off.</li>
-      <li><strong>Exact alarms</strong> — for the backup timer.</li>
-      <li><strong>Flashlight and vibration</strong> — ways to wake you when sound is off.</li>
-    </ul>
-
-    <h2>Children</h2>
-    <p>The app is not directed at children and collects no data about them.</p>
-
-    <h2>Changes</h2>
-    <p>If this policy changes, the new version will appear on this page with a new date.</p>
-
-    <h2>Contact</h2>
-    <p>Questions and complaints: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
-       The source code is open:
-       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
-  </section>
-
-  <section id="ky" hidden>
-    <p><strong>Жаңыланды: 2026-жылдын 23-сентябры.</strong></p>
-    <p>«Уктап калба» — керектүү аялдамага жакындаганда шыңгыраган ойготкуч.
-       Колдонмо катталуусуз иштейт жана эч кандай эсеп түзбөйт.</p>
-
-    <h2>Колдонмо эмне кылбайт</h2>
-    <ul>
-      <li>Сиздин жайгашкан жериңизди иштеп чыгуучуга же башкаларга жөнөтпөйт.</li>
-      <li>Жарнак көрсөтпөйт жана жарнак идентификаторлорун колдонбойт.</li>
-      <li>Жүрүм-турум статистикасын чогултпайт, сизди көзөмөлдөбөйт.</li>
-      <li>Байланыштарга, чалууларга, сүрөттөргө жана файлдарга уруксат сурабайт.</li>
-      <li>Кабарларды өзү жөнөтпөйт жана чалбайт.</li>
-    </ul>
-
-    <h2>Жайгашкан жер</h2>
-    <p>Сапар учурунда колдонмо GPS координаттарын алат: тандалган чекитке чейинки
-       аралыкты эсептеп, өз убагында шыңгыратуу үчүн. Координаттар телефондун өзүндө
-       иштетилет. Алар серверде сакталбайт жана эч жакка жөнөтүлбөйт — төмөндө
-       айтылган бир учурдан тышкары.</p>
-
-    <h2>Карта жана даректерди издөө (OpenStreetMap)</h2>
-    <p>Картаны көрсөтүү, даректи табуу жана аялдамаларды белгилөө үчүн колдонмо ачык
-       OpenStreetMap кызматтарына кайрылат: карта серверлерине,
-       <a href="https://nominatim.org/">Nominatim</a> (издөө жана чекиттин аты) жана
-       <a href="https://overpass-api.de/">Overpass</a> (коомдук транспорт аялдамалары).
-       Аларга сиз издеген текст жана кароодогу карта аймагы жөнөтүлөт.
-       Бул кызматтар башка уюмдарга таандык жана өз эрежелери боюнча иштейт:
-       <a href="https://osmfoundation.org/wiki/Privacy_Policy">osmfoundation.org/wiki/Privacy_Policy</a>.
-       Өлкөңүздүн офлайн картасын жүктөп алсаңыз, картага интернет аркылуу кайрылуу болбойт.</p>
-
-    <h2>Телефондо эмне сакталат</h2>
-    <ul>
-      <li>Сакталган чекиттер жана сапарлардын тарыхы.</li>
-      <li>Жөндөөлөр: ойготкучтун үнү, тил, тема, өлчөө бирдиктери.</li>
-      <li>Жакын адамдын номери, эгер киргизген болсоңуз.</li>
-    </ul>
-    <p>Мунун баары телефонуңуздагы колдонмонун эстутумунда гана турат. Колдонмону
-       өчүрүү бул маалыматты толугу менен жок кылат.</p>
-
-    <h2>Жакындарга кабар</h2>
-    <p>Бул мүмкүнчүлүктү күйгүзүп, номер киргизсеңиз, колдонмо текстти даярдап,
-       билдирме көрсөтөт. Кабарды өзүңүз жөнөтөсүз: басканда кадимки SMS колдонмоңуз
-       даяр текст менен ачылат. Колдонмодо SMS жөнөтүүгө уруксат жок, ал сизсиз эч нерсе
-       жөнөтпөйт. Кабардын баасы операторуңуздун тарифи боюнча.</p>
-
-    <h2>Уруксаттар эмне үчүн керек</h2>
-    <ul>
-      <li><strong>Жайгашкан жер</strong> — аялдамага чейинки аралыкты эсептөө.</li>
-      <li><strong>Билдирмелер</strong> — сапардын жүрүшүн жана ойготкуч экранын көрсөтүү.</li>
-      <li><strong>Фондо иштөө жана батареяны үнөмдөөнү өчүрүү</strong> — экран өчүк турганда
-          ойготкуч иштеши үчүн.</li>
-      <li><strong>Так ойготкучтар</strong> — камсыздандыруу таймери үчүн.</li>
-      <li><strong>Колчырак жана дирилдөө</strong> — үн өчүк болгондо ойготуунун жолдору.</li>
-    </ul>
-
-    <h2>Балдар</h2>
-    <p>Колдонмо атайын балдарга арналган эмес жана алар жөнүндө маалымат чогултпайт.</p>
-
-    <h2>Өзгөрүүлөр</h2>
-    <p>Саясат өзгөрсө, жаңы нускасы ушул бетте жаңы дата менен чыгат.</p>
-
-    <h2>Байланыш</h2>
-    <p>Суроолор жана арыздар: <a href="mailto:sgoo0931@gmail.com">sgoo0931@gmail.com</a>.
-       Баштапкы код ачык:
-       <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">github.com/Emirkhan-Sharshenov/ne_prospi_app</a>.</p>
-  </section>
-
-  <footer>© 2026 Не проспи · Don’t Oversleep · Уктап калба</footer>
-</div>
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Не проспи · Don't Oversleep · Уктап калба</span>
+    <a href="privacy.html" data-i18n="foot_privacy">Политика конфиденциальности</a>
+    <a href="https://github.com/Emirkhan-Sharshenov/ne_prospi_app">GitHub</a>
+    <span class="sp">Карта и остановки © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a></span>
+  </div>
+</footer>
 
 <script>
-  var buttons = document.querySelectorAll('nav button');
-  buttons.forEach(function (b) {
-    b.addEventListener('click', function () {
-      buttons.forEach(function (o) {
-        o.setAttribute('aria-selected', String(o === b));
-        document.getElementById(o.dataset.lang).hidden = o !== b;
+(function () {
+  "use strict";
+  var REPO = "Emirkhan-Sharshenov/ne_prospi_app";
+  var RELEASES = "https://github.com/" + REPO + "/releases/latest";
+
+  /* ---------------- переводы ---------------- */
+  var I18N = {
+    ru: {
+      nav_how: "Как работает", nav_demo: "Демо", nav_features: "Возможности", nav_download: "Скачать",
+      hero_badge: "Android · бесплатно · без рекламы",
+      hero_title: "Не проспи<br><span>свою остановку</span>",
+      hero_lead: "Будильник, который звонит не по времени, а по расстоянию: когда автобус, маршрутка или поезд подъезжает к нужному месту. Экран можно выключить и спокойно спать.",
+      cta_download: "Скачать APK", cta_try: "Попробовать прямо здесь",
+      note_1: "Работает при выключенном экране", note_2: "Любая страна мира", note_3: "Открытый код",
+      stat_1: "остановок Кыргызстана внутри, работают без интернета",
+      stat_2: "языка: русский, кыргызский, английский",
+      stat_3: "рекламы, регистрации и слежки",
+      stat_4: "запас по умолчанию, чтобы успеть собраться",
+      how_badge: "Три шага", how_title: "Отметил, поехал, проснулся вовремя",
+      how_lead: "Ничего настраивать не нужно: приложение открывается на карте вашего города и сразу готово к поездке.",
+      how_1_t: "Отметьте остановку", how_1_d: "Ткните в точку на карте, найдите её по названию или выберите готовую остановку транспорта.",
+      how_2_t: "Выберите, когда будить", how_2_d: "За 300, 500, 1000 метров — или за 3, 5, 10 минут до прибытия. Плюс страховочный таймер.",
+      how_3_t: "Заблокируйте телефон", how_3_d: "Приложение следит за дорогой в фоне и звонит поверх экрана блокировки. Выключается удержанием.",
+      demo_badge: "Попробуйте", demo_title: "Проедьте маршрут прямо здесь",
+      demo_lead: "Это настоящая логика приложения, только время ускорено в сорок раз. Выберите точку на карте, задайте расстояние и отправляйтесь.",
+      demo_s1: "Нажмите на карту", demo_s1d: "Куда вам нужно выйти",
+      demo_s2: "Выберите расстояние", demo_s2d: "За сколько метров разбудить",
+      demo_s3: "Нажмите «В путь»", demo_s3d: "И дождитесь будильника",
+      demo_sound: "Включить звук", demo_sound_off: "Выключить звук", demo_reset: "Сбросить", demo_tag: "Симуляция · ускорено ×40",
+      feat_badge: "Возможности", feat_title: "Сделано, чтобы не подвести",
+      feat_lead: "Будильник бесполезен, если сработает через раз. Поэтому у каждой мелочи здесь есть запасной путь.",
+      f1_t: "Страховочный таймер", f1_d: "Разбудит через заданное время, даже если спутники пропали совсем или система закрыла приложение.",
+      f2_t: "Выключается удержанием", f2_d: "Спросонья не смахнёте случайно. А если захотите — приложение переспросит через минуту, не уснули ли вы снова.",
+      f3_t: "Любая страна", f3_d: "Карта и остановки из OpenStreetMap работают везде. Метры или мили выбираются по стране сами.",
+      f4_t: "Офлайн-карта", f4_d: "Скачайте свою страну — и поездка не зависит ни от интернета, ни от роуминга.",
+      f5_t: "Фонарик и вибрация", f5_d: "Если звук нужно держать выключенным: вибрация, вспышки фонарика, голос или звук только в наушниках.",
+      f6_t: "Предупредит заранее", f6_d: "Скажет, если потерялись спутники или садится батарея. А если остановку всё-таки проехали — зазвонит снова.",
+      f7_t: "Маршрут на карте", f7_d: "Видно, как ехать: линия по улицам и расстояние по дороге. Сам будильник считает по прямой и без интернета.",
+      f8_t: "Ничего о вас не знает", f8_d: "Ни аккаунта, ни аналитики, ни рекламы. Координаты остаются в телефоне, код открыт и его можно проверить.",
+      video_badge: "За 37 секунд", video_title: "Как это выглядит",
+      dl_title: "Скачайте и проверьте сами", dl_lead: "Файл лежит на GitHub: без магазинов, регистрации и лишних разрешений.", dl_version: "версия",
+      ins_1_t: "1. Откройте файл", ins_1_d: "Скачайте APK на телефон и нажмите на него в списке загрузок.",
+      ins_2_t: "2. Разрешите установку", ins_2_d: "Android спросит про установку из этого источника — это обычное дело для файлов вне магазина.",
+      ins_3_t: "3. Пройдите проверку", ins_3_d: "При первом запуске приложение само покажет, что включить, и предложит проверить будильник.",
+      faq_badge: "Вопросы", faq_title: "Коротко о главном",
+      q1: "Будильник сработает, если экран выключен?", a1: "Да, ради этого всё и сделано. Во время поездки работает фоновая служба с уведомлением, а звонок показывается поверх экрана блокировки. При первом запуске приложение подскажет, какие разрешения включить, чтобы система его не усыпила.",
+      q2: "Сколько тратит батареи?", a2: "Пока до остановки далеко, координаты запрашиваются редко — раз в двадцать секунд. Ближе к месту опрос учащается до двух секунд. За часовую поездку уходит немного, а приложение предупредит, если заряд садится.",
+      q3: "А если пропадёт интернет или GPS?", a3: "Карту можно скачать заранее, а расстояние считается на самом телефоне и интернета не требует. На случай полной потери спутников есть страховочный таймер: он разбудит через заданное время в любом случае.",
+      q4: "Почему не в Google Play?", a4: "Приложение готовится к публикации: подпись, политика конфиденциальности и анкеты уже сделаны. Пока магазин проверяет, файл можно скачать здесь — он подписан тем же ключом, что и будущая версия в Play.",
+      q5: "Это бесплатно? В чём подвох?", a5: "Подвоха нет: ни рекламы, ни платежей, ни сбора данных. Код открыт, его можно прочитать и собрать самому.",
+      foot_privacy: "Политика конфиденциальности",
+      ph_title: "Сквер Молодёжи", ph_sub: "1,2 км от вас · по дороге 2,4 км", ph_go: "В путь",
+      ph_left: "До остановки", ph_speed: "Скорость", ph_tap: "Нажмите на карту, чтобы выбрать остановку",
+      al_title: "Пора выходить!", al_en: "Time to get off!", al_hold: "Держите, чтобы выключить",
+      al_passed: "Вы проехали остановку", al_passed_en: "You passed your stop",
+      done_t: "Вышли вовремя!", done_d: "Именно так это и работает в дороге.", done_btn: "Ещё раз"
+    },
+    en: {
+      nav_how: "How it works", nav_demo: "Demo", nav_features: "Features", nav_download: "Download",
+      hero_badge: "Android · free · no ads",
+      hero_title: "Never miss<br><span>your stop again</span>",
+      hero_lead: "An alarm that goes off by distance, not by time: it rings when your bus, minibus or train is approaching the place you need. Lock the screen and sleep.",
+      cta_download: "Download APK", cta_try: "Try it right here",
+      note_1: "Works with the screen off", note_2: "Any country in the world", note_3: "Open source",
+      stat_1: "Kyrgyzstan stops built in, working with no internet",
+      stat_2: "languages: English, Russian, Kyrgyz",
+      stat_3: "ads, sign-ups and tracking",
+      stat_4: "default head start, so you have time to get ready",
+      how_badge: "Three steps", how_title: "Tap it, ride, wake up in time",
+      how_lead: "Nothing to set up: the app opens on your own city's map and is ready to go.",
+      how_1_t: "Mark your stop", how_1_d: "Tap a point on the map, search it by name, or pick a transit stop.",
+      how_2_t: "Choose when to wake", how_2_d: "0.2, 0.3, 0.5, 1 mile away — or 3, 5, 10 minutes before arrival. Plus a backup timer.",
+      how_3_t: "Lock the phone", how_3_d: "The app follows the road in the background and rings over the lock screen. Hold to dismiss.",
+      demo_badge: "Try it", demo_title: "Take a ride right here",
+      demo_lead: "This is the real logic of the app, only time runs forty times faster. Pick a point on the map, set the distance and go.",
+      demo_s1: "Tap the map", demo_s1d: "Where you need to get off",
+      demo_s2: "Pick the distance", demo_s2d: "How early to wake you",
+      demo_s3: "Press Start", demo_s3d: "And wait for the alarm",
+      demo_sound: "Turn sound on", demo_sound_off: "Turn sound off", demo_reset: "Reset", demo_tag: "Simulation · 40× speed",
+      feat_badge: "Features", feat_title: "Built not to let you down",
+      feat_lead: "An alarm is useless if it works every other time. That is why every detail here has a fallback.",
+      f1_t: "Backup timer", f1_d: "Wakes you after the time you set, even if satellites are gone or the system closed the app.",
+      f2_t: "Hold to dismiss", f2_d: "You can't swipe it away half asleep. And if you like, the app asks a minute later whether you dozed off again.",
+      f3_t: "Any country", f3_d: "OpenStreetMap maps and stops work everywhere. Metres or miles are chosen by your country.",
+      f4_t: "Offline maps", f4_d: "Download your country and the trip no longer depends on the internet or roaming.",
+      f5_t: "Flashlight and vibration", f5_d: "For when the sound must stay off: vibration, torch flashes, a spoken announcement, or sound in headphones only.",
+      f6_t: "Warns you in advance", f6_d: "Tells you when satellites are lost or the battery runs low. And if you pass the stop anyway, it rings again.",
+      f7_t: "Route on the map", f7_d: "See how to get there: a line along the streets and the distance by road. The alarm itself measures straight-line and needs no internet.",
+      f8_t: "Knows nothing about you", f8_d: "No account, no analytics, no ads. Coordinates stay on the phone and the code is open to read.",
+      video_badge: "37 seconds", video_title: "What it looks like",
+      dl_title: "Download and see for yourself", dl_lead: "The file lives on GitHub: no stores, no sign-up, no extra permissions.", dl_version: "version",
+      ins_1_t: "1. Open the file", ins_1_d: "Download the APK on your phone and tap it in the downloads list.",
+      ins_2_t: "2. Allow the install", ins_2_d: "Android will ask about installing from this source — normal for files outside the store.",
+      ins_3_t: "3. Run the check", ins_3_d: "On first launch the app shows exactly what to enable and offers to test the alarm.",
+      faq_badge: "Questions", faq_title: "The short answers",
+      q1: "Does the alarm work with the screen off?", a1: "Yes, that is the whole point. During a trip a foreground service runs with a notification, and the alarm appears over the lock screen. On first launch the app tells you which permissions to enable so the system doesn't put it to sleep.",
+      q2: "How much battery does it use?", a2: "While your stop is far away, location is polled rarely — once every twenty seconds. Closer to the place it speeds up to two seconds. An hour-long ride costs little, and the app warns you if the battery runs low.",
+      q3: "What if the internet or GPS is gone?", a3: "You can download the map in advance, and the distance is computed on the phone itself, with no internet. If satellites disappear entirely, the backup timer still wakes you after the time you set.",
+      q4: "Why not on Google Play?", a4: "It is on its way there: signing, privacy policy and the declarations are already done. While the store reviews it, you can download the file here — signed with the same key as the future Play version.",
+      q5: "Is it free? What's the catch?", a5: "No catch: no ads, no payments, no data collection. The code is open — read it or build it yourself.",
+      foot_privacy: "Privacy policy",
+      ph_title: "Youth Park", ph_sub: "1.2 km away · 2.4 km by road", ph_go: "Start",
+      ph_left: "To your stop", ph_speed: "Speed", ph_tap: "Tap the map to choose your stop",
+      al_title: "Time to get off!", al_en: "Пора выходить!", al_hold: "Hold to dismiss",
+      al_passed: "You passed your stop", al_passed_en: "Вы проехали остановку",
+      done_t: "Off in time!", done_d: "That is exactly how it works on the road.", done_btn: "Again"
+    },
+    ky: {
+      nav_how: "Кантип иштейт", nav_demo: "Демо", nav_features: "Мүмкүнчүлүктөр", nav_download: "Жүктөө",
+      hero_badge: "Android · акысыз · жарнаксыз",
+      hero_title: "Аялдамаңызды<br><span>уктап калбаңыз</span>",
+      hero_lead: "Убакыт боюнча эмес, аралык боюнча шыңгыраган ойготкуч: автобус, маршрутка же поезд керектүү жерге жакындаганда ойготот. Экранды өчүрүп, тынч уктасаңыз болот.",
+      cta_download: "APK жүктөө", cta_try: "Ушул жерден сынап көрүңүз",
+      note_1: "Экран өчүк турганда иштейт", note_2: "Дүйнөнүн каалаган өлкөсү", note_3: "Ачык код",
+      stat_1: "Кыргызстандын аялдамасы ичинде, интернетсиз иштейт",
+      stat_2: "тил: кыргызча, орусча, англисче",
+      stat_3: "жарнак, катталуу жана көзөмөл",
+      stat_4: "демейки запас, даярданууга үлгүрүү үчүн",
+      how_badge: "Үч кадам", how_title: "Белгиле, жөнө, өз убагында ойгон",
+      how_lead: "Эч нерсе жөндөөнүн кереги жок: колдонмо өз шаарыңыздын картасын ачып, дароо даяр турат.",
+      how_1_t: "Аялдаманы белгилеңиз", how_1_d: "Картадан чекитти басыңыз, аты боюнча издеңиз же даяр аялдаманы тандаңыз.",
+      how_2_t: "Качан ойготууну тандаңыз", how_2_d: "300, 500, 1000 метр калганда — же 3, 5, 10 мүнөт мурун. Камсыздандыруу таймери да бар.",
+      how_3_t: "Телефонду кулпулаңыз", how_3_d: "Колдонмо жолду фондо карап, кулпуланган экрандын үстүнөн шыңгырайт. Басып туруу менен өчөт.",
+      demo_badge: "Сынап көрүңүз", demo_title: "Маршрутту ушул жерден басып өтүңүз",
+      demo_lead: "Бул колдонмонун чыныгы логикасы, убакыт гана кырк эсе тезделген. Картадан чекит тандап, аралыкты коюп, жолго чыгыңыз.",
+      demo_s1: "Картаны басыңыз", demo_s1d: "Кайда түшүшүңүз керек",
+      demo_s2: "Аралыкты тандаңыз", demo_s2d: "Канча метр калганда ойготуу",
+      demo_s3: "«Жолго» басыңыз", demo_s3d: "Жана ойготкучту күтүңүз",
+      demo_sound: "Үндү күйгүзүү", demo_sound_off: "Үндү өчүрүү", demo_reset: "Кайра баштоо", demo_tag: "Сыноо · ×40 тезделген",
+      feat_badge: "Мүмкүнчүлүктөр", feat_title: "Шылтоо кылбаш үчүн жасалган",
+      feat_lead: "Бир жолу иштеп, бир жолу иштебеген ойготкучтун кереги жок. Ошондуктан бул жерде ар бир нерсенин запастык жолу бар.",
+      f1_t: "Камсыздандыруу таймери", f1_d: "Спутниктер таптакыр жоголсо да, система колдонмону жапса да, тандалган убакыттан кийин ойготот.",
+      f2_t: "Басып туруу менен өчөт", f2_d: "Уйкулуу кезде байкоосуз өчүрүп албайсыз. Кааласаңыз, колдонмо бир мүнөттөн кийин кайра уктап калдыңызбы деп сурайт.",
+      f3_t: "Каалаган өлкө", f3_d: "OpenStreetMap картасы жана аялдамалары бардык жерде иштейт. Метр же миля өлкө боюнча өзү тандалат.",
+      f4_t: "Офлайн карта", f4_d: "Өлкөңүздү жүктөп алыңыз — сапар интернетке да, роумингге да көз каранды болбойт.",
+      f5_t: "Колчырак жана дирилдөө", f5_d: "Үндү өчүк кармоо керек болсо: дирилдөө, колчырактын жарыгы, үн менен жарыялоо же кулакчында гана үн.",
+      f6_t: "Алдын ала эскертет", f6_d: "Спутниктер жоголсо же батарея отурса айтат. Аялдаманы өтүп кетсеңиз — кайра шыңгырайт.",
+      f7_t: "Картадагы маршрут", f7_d: "Кантип жетүү керектиги көрүнөт: көчөлөр боюнча сызык жана жол аралыгы. Ойготкучтун өзү түз аралык менен, интернетсиз эсептейт.",
+      f8_t: "Сиз жөнүндө эч нерсе билбейт", f8_d: "Эсеп да, аналитика да, жарнак да жок. Координаттар телефондо калат, код ачык жана аны текшерсе болот.",
+      video_badge: "37 секунд", video_title: "Кандай көрүнөт",
+      dl_title: "Жүктөп алып, өзүңүз сынаңыз", dl_lead: "Файл GitHubда: дүкөнсүз, катталуусуз жана ашыкча уруксатсыз.", dl_version: "версия",
+      ins_1_t: "1. Файлды ачыңыз", ins_1_d: "APK'ны телефонго жүктөп, жүктөөлөр тизмесинен басыңыз.",
+      ins_2_t: "2. Орнотууга уруксат бериңиз", ins_2_d: "Android ушул булактан орнотуу жөнүндө сурайт — дүкөндөн тышкаркы файлдар үчүн бул кадимки нерсе.",
+      ins_3_t: "3. Текшерүүдөн өтүңүз", ins_3_d: "Биринчи жолу ачканда колдонмо эмнени күйгүзүү керектигин көрсөтөт жана ойготкучту текшерүүнү сунуштайт.",
+      faq_badge: "Суроолор", faq_title: "Кыскача эң негизгиси",
+      q1: "Экран өчүк турганда ойготкуч иштейби?", a1: "Ооба, баары ошол үчүн жасалган. Сапар учурунда билдирмеси менен фондогу кызмат иштейт, ал эми чалуу кулпуланган экрандын үстүнөн көрүнөт. Биринчи жолу ачканда колдонмо кайсы уруксаттарды күйгүзүү керектигин айтып берет.",
+      q2: "Батареяны канча коротот?", a2: "Аялдама алыс турганда координаттар сейрек — жыйырма секундда бир жолу суралат. Жакындаганда эки секундга чейин тездейт. Бир сааттык сапарга аз кетет, батарея отурса колдонмо эскертет.",
+      q3: "Интернет же GPS жоголсочу?", a3: "Картаны алдын ала жүктөп койсо болот, ал эми аралык телефондун өзүндө эсептелет жана интернет талап кылбайт. Спутниктер таптакыр жоголсо, камсыздандыруу таймери тандалган убакыттан кийин баары бир ойготот.",
+      q4: "Эмне үчүн Google Playде жок?", a4: "Колдонмо жарыялоого даярдалып жатат: кол тамга, купуялык саясаты жана анкеталар даяр. Дүкөн текшерип жатканда файлды ушул жерден жүктөсөңүз болот — ал Playдеги келечектеги версия менен бир эле ачкыч менен кол коюлган.",
+      q5: "Бул акысызбы? Кайсы жерде кармаш бар?", a5: "Кармаш жок: жарнак да, төлөм да, маалымат чогултуу да жок. Код ачык — окуп да, өзүңүз чогултуп да алсаңыз болот.",
+      foot_privacy: "Купуялык саясаты",
+      ph_title: "Жаштар сейил багы", ph_sub: "Сизден 1,2 км · жол менен 2,4 км", ph_go: "Жолго",
+      ph_left: "Аялдамага чейин", ph_speed: "Ылдамдык", ph_tap: "Аялдаманы тандоо үчүн картаны басыңыз",
+      al_title: "Түшөр убак!", al_en: "Time to get off!", al_hold: "Өчүрүү үчүн басып туруңуз",
+      al_passed: "Аялдаманы өтүп кеттиңиз", al_passed_en: "You passed your stop",
+      done_t: "Өз убагында түштүңүз!", done_d: "Жолдо дал ушундай иштейт.", done_btn: "Дагы бир жолу"
+    }
+  };
+
+  var lang = "ru";
+  function t(key) { return (I18N[lang] && I18N[lang][key]) || I18N.ru[key] || key; }
+
+  function setLang(next) {
+    lang = I18N[next] ? next : "ru";
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.dataset.i18nHtml); });
+    document.querySelectorAll(".lang button").forEach(function (b) {
+      b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+    });
+    try { localStorage.setItem("np-lang", lang); } catch (e) {}
+    phones.forEach(function (p) { p.relabel(); });
+    if (soundOn) soundBtn.querySelector("span").textContent = t("demo_sound_off");
+    else soundBtn.querySelector("span").textContent = t("demo_sound");
+  }
+
+  /* ---------------- тема ---------------- */
+  var themeBtn = document.getElementById("themeBtn");
+  function setTheme(next) {
+    document.documentElement.dataset.theme = next;
+    themeBtn.textContent = next === "dark" ? "☾" : "☀";
+    var meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.content = next === "dark" ? "#0B0E16" : "#F5F7FC";
+    try { localStorage.setItem("np-theme", next); } catch (e) {}
+  }
+  themeBtn.addEventListener("click", function () {
+    setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+  });
+
+  /* ---------------- звук: синтез, файлов нет ---------------- */
+  var actx = null, soundOn = false;
+  var soundBtn = document.getElementById("soundBtn");
+  function audio() {
+    if (!actx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      actx = new AC();
+    }
+    if (actx.state === "suspended") actx.resume();
+    return actx;
+  }
+  function bell(when, freq) {
+    var ac = audio();
+    if (!ac || !soundOn) return;
+    var t0 = ac.currentTime + (when || 0);
+    [[1, .5, 1.3], [2, .3, .8], [2.76, .22, .55], [5.4, .1, .3]].forEach(function (p) {
+      var o = ac.createOscillator(), g = ac.createGain();
+      o.frequency.value = (freq || 880) * p[0];
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(p[1] * .22, t0 + .005);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + p[2]);
+      o.connect(g); g.connect(ac.destination);
+      o.start(t0); o.stop(t0 + p[2] + .05);
+    });
+  }
+  function blip(freq, dur, vol) {
+    var ac = audio();
+    if (!ac || !soundOn) return;
+    var t0 = ac.currentTime, o = ac.createOscillator(), g = ac.createGain();
+    o.type = "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, t0);
+    g.gain.linearRampToValueAtTime(vol || .12, t0 + .004);
+    g.gain.exponentialRampToValueAtTime(.0001, t0 + (dur || .12));
+    o.connect(g); g.connect(ac.destination);
+    o.start(t0); o.stop(t0 + (dur || .12) + .02);
+  }
+  soundBtn.addEventListener("click", function () {
+    soundOn = !soundOn;
+    if (soundOn) { audio(); blip(880, .1); }
+    soundBtn.firstChild.nodeValue = soundOn ? "🔊 " : "🔇 ";
+    soundBtn.querySelector("span").textContent = soundOn ? t("demo_sound_off") : t("demo_sound");
+  });
+
+  /* ---------------- телефон с картой ---------------- */
+  var METERS_PER_PX = 12;
+  var ROUTE = [[40, 404], [40, 330], [95, 330], [95, 250], [150, 250], [150, 160], [205, 160], [205, 54]];
+  var MAP_W = 260, MAP_H = 440;
+
+  function dist(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
+
+  function routeLength(pts) {
+    var s = 0;
+    for (var i = 0; i < pts.length - 1; i++) s += dist(pts[i], pts[i + 1]);
+    return s;
+  }
+  function pointAt(pts, travelled) {
+    var left = travelled;
+    for (var i = 0; i < pts.length - 1; i++) {
+      var d = dist(pts[i], pts[i + 1]);
+      if (left <= d) {
+        var k = d ? left / d : 0;
+        return [pts[i][0] + (pts[i + 1][0] - pts[i][0]) * k, pts[i][1] + (pts[i + 1][1] - pts[i][1]) * k];
+      }
+      left -= d;
+    }
+    return pts[pts.length - 1].slice();
+  }
+
+  var MAP_SVG =
+    '<svg viewBox="0 0 260 440" preserveAspectRatio="xMidYMid slice">' +
+      '<rect width="260" height="440" fill="#EAEFF6"/>' +
+      '<rect x="12" y="52" width="76" height="86" rx="10" fill="#D8ECD9"/>' +
+      '<rect x="160" y="286" width="118" height="80" rx="12" fill="#CFE2F0"/>' +
+      '<g stroke="#FFFFFF" stroke-width="9" stroke-linecap="round">' +
+        '<path d="M-10 74 H270 M-10 160 H270 M-10 250 H270 M-10 330 H270 M-10 404 H270"/>' +
+        '<path d="M40 -10 V450 M95 -10 V450 M150 -10 V450 M205 -10 V450"/>' +
+      '</g>' +
+      '<path d="M-20 430 L180 -20" stroke="#E2E8F2" stroke-width="20" stroke-linecap="round"/>' +
+      '<path class="route" fill="none" stroke="#2F6FE4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>' +
+      '<g class="destg" opacity="0">' +
+        '<circle class="zone" fill="rgba(239,68,68,.12)" stroke="#EF4444" stroke-width="2" stroke-dasharray="6 5"/>' +
+        '<g class="pin"><path d="M0 -26 C8 -26 14 -20 14 -12 C14 -3 0 12 0 12 C0 12 -14 -3 -14 -12 C-14 -20 -8 -26 0 -26 Z" fill="#EF4444"/>' +
+        '<circle cy="-13" r="5" fill="#fff"/></g>' +
+      '</g>' +
+      '<g class="busg" opacity="0">' +
+        '<circle class="halo" r="15" fill="rgba(47,111,228,.18)"/>' +
+        '<circle r="8" fill="#2F6FE4" stroke="#fff" stroke-width="3"/>' +
+      '</g>' +
+    '</svg>';
+
+  var SHEET_HTML =
+    '<div class="sheet">' +
+      '<div class="grab"></div>' +
+      '<h4 class="t"></h4>' +
+      '<div class="sub"></div>' +
+      '<div class="chips">' +
+        '<button data-m="300">300 м</button><button data-m="500" aria-pressed="true">500 м</button>' +
+        '<button data-m="1000">1 км</button>' +
+      '</div>' +
+      '<button class="go"></button>' +
+      '<div class="trip-line" hidden><span class="left"></span><span class="speed"></span></div>' +
+      '<div class="bar" hidden><i></i></div>' +
+    '</div>' +
+    '<div class="alarm"><div class="rings"><i></i><i></i><i></i></div>' +
+      '<div class="bell">🔔</div><h4 class="at"></h4><div class="en"></div><div class="where"></div>' +
+      '<button class="hold"><i></i><span></span></button></div>' +
+    '<div class="done"><div style="font-size:52px">✅</div><h4 class="dt"></h4><p class="dd" style="font-size:14px;opacity:.9"></p>' +
+      '<button class="btn btn-ghost db" style="margin-top:12px;background:rgba(255,255,255,.2);border-color:transparent;color:#fff"></button></div>';
+
+  var phones = [];
+
+  function createPhone(root, opts) {
+    var screen = root.querySelector(".screen");
+    screen.innerHTML = MAP_SVG + SHEET_HTML;
+    var svg = screen.querySelector("svg");
+    var routeEl = svg.querySelector(".route");
+    var destg = svg.querySelector(".destg");
+    var zone = svg.querySelector(".zone");
+    var pin = svg.querySelector(".pin");
+    var busg = svg.querySelector(".busg");
+    var sheet = screen.querySelector(".sheet");
+    var titleEl = sheet.querySelector(".t");
+    var subEl = sheet.querySelector(".sub");
+    var goBtn = sheet.querySelector(".go");
+    var tripLine = sheet.querySelector(".trip-line");
+    var leftEl = sheet.querySelector(".left");
+    var speedEl = sheet.querySelector(".speed");
+    var bar = sheet.querySelector(".bar");
+    var barFill = bar.querySelector("i");
+    var alarm = screen.querySelector(".alarm");
+    var alarmT = alarm.querySelector(".at");
+    var alarmEn = alarm.querySelector(".en");
+    var alarmWhere = alarm.querySelector(".where");
+    var holdBtn = alarm.querySelector(".hold");
+    var holdFill = holdBtn.querySelector("i");
+    var holdText = holdBtn.querySelector("span");
+    var done = screen.querySelector(".done");
+
+    var state = {
+      dest: opts.dest ? opts.dest.slice() : null,
+      metres: 500,
+      running: false,
+      travelled: 0,
+      raf: 0,
+      alarmOn: false,
+      speedPxPerSec: opts.speed || 36
+    };
+    var TOTAL = routeLength(ROUTE);
+    routeEl.setAttribute("d", "M" + ROUTE.map(function (p) { return p.join(" "); }).join(" L "));
+
+    function drawDest() {
+      if (!state.dest) { destg.setAttribute("opacity", "0"); return; }
+      destg.setAttribute("opacity", "1");
+      pin.setAttribute("transform", "translate(" + state.dest[0] + "," + state.dest[1] + ")");
+      zone.setAttribute("cx", state.dest[0]);
+      zone.setAttribute("cy", state.dest[1]);
+      zone.setAttribute("r", state.metres / METERS_PER_PX);
+    }
+
+    function fmt(m) {
+      if (m < 1000) return Math.round(m / 10) * 10 + (lang === "en" ? " m" : " м");
+      return (m / 1000).toFixed(1).replace(".", lang === "en" ? "." : ",") + (lang === "en" ? " km" : " км");
+    }
+
+    function relabel() {
+      titleEl.textContent = t("ph_title");
+      subEl.textContent = state.dest ? t("ph_sub") : t("ph_tap");
+      goBtn.textContent = t("ph_go");
+      holdText.textContent = t("al_hold");
+      alarmWhere.textContent = t("ph_title");
+      done.querySelector(".dt").textContent = t("done_t");
+      done.querySelector(".dd").textContent = t("done_d");
+      done.querySelector(".db").textContent = t("done_btn");
+      sheet.querySelectorAll(".chips button").forEach(function (b) {
+        var m = +b.dataset.m;
+        var EN = { 300: "0.2 mi", 500: "0.3 mi", 1000: "0.6 mi" };
+        var KY = { 300: "300 м", 500: "500 м", 1000: "1 км" };
+        b.textContent = lang === "en" ? EN[m] : KY[m];
       });
-      document.documentElement.lang = b.dataset.lang;
+      if (!state.running) speedEl.textContent = "";
+    }
+
+    function reset(keepDest) {
+      cancelAnimationFrame(state.raf);
+      state.running = false; state.travelled = 0; state.alarmOn = false;
+      if (!keepDest) state.dest = opts.dest ? opts.dest.slice() : null;
+      alarm.classList.remove("on", "passed");
+      done.classList.remove("on");
+      sheet.style.transform = "translateY(0)";
+      tripLine.hidden = true; bar.hidden = true; barFill.style.width = "0";
+      busg.setAttribute("opacity", "0");
+      goBtn.disabled = !state.dest;
+      drawDest();
+      relabel();
+      setStep(state.dest ? 2 : 1);
+    }
+
+    function setStep(n) {
+      if (!opts.steps) return;
+      opts.steps.querySelectorAll("li").forEach(function (li) {
+        li.classList.toggle("active", +li.dataset.step === n);
+      });
+    }
+
+    function finish(passed) {
+      state.running = false;
+      cancelAnimationFrame(state.raf);
+      state.alarmOn = true;
+      alarm.classList.toggle("passed", !!passed);
+      alarmT.textContent = passed ? t("al_passed") : t("al_title");
+      alarmEn.textContent = passed ? t("al_passed_en") : t("al_en");
+      alarm.classList.add("on");
+      if (opts.interactive && navigator.vibrate) { try { navigator.vibrate([120, 80, 120]); } catch (e) {} }
+      bell(0, passed ? 660 : 880); bell(.45, passed ? 560 : 1046); bell(.9, passed ? 660 : 880);
+      setStep(0);
+    }
+
+    function tick(now) {
+      if (!state.running) return;
+      var dt = Math.min(.05, (now - (state.last || now)) / 1000);
+      state.last = now;
+      state.travelled += state.speedPxPerSec * dt;
+      var p = pointAt(ROUTE, state.travelled);
+      busg.setAttribute("transform", "translate(" + p[0] + "," + p[1] + ")");
+      var remaining = state.dest ? dist(p, state.dest) * METERS_PER_PX : 0;
+      leftEl.textContent = t("ph_left") + ": " + fmt(remaining);
+      speedEl.textContent = lang === "en" ? "38 mph" : "62 км/ч";
+      barFill.style.width = Math.min(100, (state.travelled / TOTAL) * 100) + "%";
+      if (state.dest && remaining <= state.metres) { finish(false); return; }
+      if (state.travelled >= TOTAL) { finish(true); return; }
+      state.raf = requestAnimationFrame(tick);
+    }
+
+    function start() {
+      if (!state.dest || state.running) return;
+      state.running = true; state.travelled = 0; state.last = 0;
+      busg.setAttribute("opacity", "1");
+      tripLine.hidden = false; bar.hidden = false;
+      goBtn.disabled = true;
+      setStep(0);
+      blip(1200, .1);
+      state.raf = requestAnimationFrame(tick);
+    }
+
+    if (opts.interactive) {
+      svg.style.cursor = "crosshair";
+      // точку ставим по короткому касанию: прокрутка страницы пальцем по карте ничего не меняет
+      var down = null;
+      svg.addEventListener("pointerdown", function (e) { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
+      svg.addEventListener("pointercancel", function () { down = null; });
+      svg.addEventListener("pointerup", function (e) {
+        var start = down; down = null;
+        if (!start || state.running || state.alarmOn) return;
+        if (Math.hypot(e.clientX - start.x, e.clientY - start.y) > 9) return;   // это была прокрутка
+        if (performance.now() - start.t > 700) return;                          // это было удержание
+        var r = svg.getBoundingClientRect();
+        var x = ((e.clientX - r.left) / r.width) * MAP_W;
+        var y = ((e.clientY - r.top) / r.height) * MAP_H;
+        if (y > MAP_H - 150) return;          // не мешаем панели снизу
+        state.dest = [x, y];
+        goBtn.disabled = false;
+        drawDest();
+        subEl.textContent = t("ph_sub");
+        blip(700, .08);
+        setStep(2);
+      });
+      sheet.querySelectorAll(".chips button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          sheet.querySelectorAll(".chips button").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+          state.metres = +b.dataset.m;
+          drawDest();
+          blip(1500, .07);
+          setStep(3);
+        });
+      });
+      goBtn.addEventListener("click", start);
+      done.querySelector(".db").addEventListener("click", function () { reset(true); });
+
+      var holding = 0, holdRaf = 0;
+      function holdStep(now) {
+        if (!holding) return;
+        var k = Math.min(1, (now - holding) / 1200);
+        holdFill.style.width = (k * 100) + "%";
+        if (k >= 1) {
+          holding = 0;
+          alarm.classList.remove("on");
+          done.classList.add("on");
+          blip(880, .18, .1); setTimeout(function () { blip(1320, .25, .1); }, 130);
+          return;
+        }
+        holdRaf = requestAnimationFrame(holdStep);
+      }
+      function holdStart(e) { e.preventDefault(); holding = performance.now(); holdRaf = requestAnimationFrame(holdStep); }
+      function holdEnd() { holding = 0; cancelAnimationFrame(holdRaf); holdFill.style.width = "0"; }
+      holdBtn.addEventListener("pointerdown", holdStart);
+      holdBtn.addEventListener("pointerup", holdEnd);
+      holdBtn.addEventListener("pointerleave", holdEnd);
+      holdBtn.addEventListener("pointercancel", holdEnd);
+    } else {
+      goBtn.disabled = true;
+      svg.style.pointerEvents = "none";
+      // витрина: бесконечный цикл поездки
+      var loop = function () {
+        reset(true);
+        setTimeout(function () {
+          state.running = true; state.last = 0; state.travelled = 0;
+          busg.setAttribute("opacity", "1");
+          tripLine.hidden = false; bar.hidden = false;
+          state.raf = requestAnimationFrame(tick);
+        }, 1400);
+        setTimeout(loop, 17000);
+      };
+      var seen = false;
+      var io = new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.isIntersecting && !seen) { seen = true; loop(); } });
+      }, { threshold: .25 });
+      io.observe(root);
+    }
+
+    var api = { reset: reset, relabel: relabel, start: start };
+    phones.push(api);
+    reset(true);
+    return api;
+  }
+
+  var heroPhone = createPhone(document.getElementById("heroPhone"), { dest: [205, 60], speed: 42 });
+  var demoPhone = createPhone(document.getElementById("demoPhone"), {
+    interactive: true, speed: 34, steps: document.getElementById("demoSteps")
+  });
+  document.getElementById("resetBtn").addEventListener("click", function () { demoPhone.reset(false); });
+
+  /* ---------------- наклон телефона за курсором ---------------- */
+  if (matchMedia("(pointer:fine)").matches && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll(".phone-stage").forEach(function (stage) {
+      var ph = stage.querySelector(".phone");
+      stage.addEventListener("pointermove", function (e) {
+        var r = stage.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+        ph.style.transform = "rotateY(" + (x * 13) + "deg) rotateX(" + (-y * 13) + "deg)";
+      });
+      stage.addEventListener("pointerleave", function () { ph.style.transform = ""; });
+    });
+  }
+
+  /* ---------------- появление и счётчики ---------------- */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add("in");
+      en.target.querySelectorAll("[data-count]").forEach(function (el) {
+        var to = +el.dataset.count, suffix = el.dataset.suffix || "", t0 = performance.now();
+        (function step(now) {
+          var k = Math.min(1, (now - t0) / 1100);
+          el.textContent = Math.round(to * (1 - Math.pow(1 - k, 3))).toLocaleString("ru") + suffix;
+          if (k < 1) requestAnimationFrame(step);
+        })(t0);
+      });
+      io.unobserve(en.target);
+    });
+  }, { threshold: .18, rootMargin: "0px 0px -40px" });
+  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+
+  /* ---------------- подсветка карточек под курсором ---------------- */
+  document.querySelectorAll(".card").forEach(function (c) {
+    c.addEventListener("pointermove", function (e) {
+      var r = c.getBoundingClientRect();
+      c.style.setProperty("--mx", (e.clientX - r.left) + "px");
+      c.style.setProperty("--my", (e.clientY - r.top) + "px");
     });
   });
+
+  /* ---------------- шапка, видео, ссылки ---------------- */
+  var header = document.querySelector("header");
+  addEventListener("scroll", function () { header.classList.toggle("stuck", scrollY > 10); }, { passive: true });
+
+  var reel = document.getElementById("reel"), playBtn = document.getElementById("playBtn");
+  playBtn.addEventListener("click", function () {
+    reel.setAttribute("controls", "");
+    reel.play();
+    playBtn.classList.add("hidden");
+  });
+
+  document.querySelectorAll(".lang button").forEach(function (b) {
+    b.addEventListener("click", function () { setLang(b.dataset.lang); });
+  });
+
+  /* ---------------- свежий релиз с GitHub ---------------- */
+  function human(bytes) {
+    var v = (bytes / 1048576).toFixed(1);
+    return lang === "en" ? v + " MB" : v.replace(".", ",") + (lang === "ky" ? " МБ" : " МБ");
+  }
+  fetch("https://api.github.com/repos/" + REPO + "/releases/latest")
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+    .then(function (rel) {
+      var apk = (rel.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+      var url = apk ? apk.browser_download_url : RELEASES;
+      document.getElementById("dlTop").href = url;
+      document.getElementById("dlMain").href = url;
+      document.getElementById("verText").textContent = rel.tag_name || "";
+      if (apk) {
+        document.getElementById("sizeText").textContent = human(apk.size);
+        document.getElementById("dlMeta").textContent = "Android 8.0+ · " + human(apk.size);
+      }
+      if (rel.published_at) {
+        document.getElementById("dateText").textContent =
+          new Date(rel.published_at).toLocaleDateString(lang === "en" ? "en-GB" : "ru-RU",
+            { day: "numeric", month: "long", year: "numeric" });
+      }
+    })
+    .catch(function () {
+      document.getElementById("verText").textContent = "GitHub";
+      document.getElementById("sizeText").textContent = "≈ 6 МБ";
+      document.getElementById("dateText").textContent = "";
+    });
+
+  /* ---------------- запуск ---------------- */
+  var savedTheme = null, savedLang = null;
+  try { savedTheme = localStorage.getItem("np-theme"); savedLang = localStorage.getItem("np-lang"); } catch (e) {}
+  setTheme(savedTheme || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark"));
+  setLang(savedLang || (navigator.language || "ru").slice(0, 2).toLowerCase());
+})();
 </script>
 </body>
 </html>

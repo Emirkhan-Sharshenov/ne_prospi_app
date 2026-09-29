@@ -52,8 +52,13 @@ The app follows your GPS in the background, gives you a gentle heads-up first, t
 
 JDK 17, Android SDK 36, targetSdk 36.
 
+## Website
+The landing page with an interactive in-browser demo lives in [`docs/`](docs/) and is published at
+<https://emirkhan-sharshenov.github.io/ne_prospi_app/> — three languages, dark and light themes,
+and a working simulation of a trip and the alarm.
+
 ## Google Play
-- Privacy policy: <https://emirkhan-sharshenov.github.io/ne_prospi_app/>
+- Privacy policy: <https://emirkhan-sharshenov.github.io/ne_prospi_app/privacy.html>
 - Store listing texts, feature graphics and the publishing checklist: [`store/`](store/)
 
 ## Limitations
